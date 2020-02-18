@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/refreshItem"
+        android:title="@string/menu_refresh" />
+    <item
+        android:id="@+id/changeCoursesItem"
+        android:title="@string/menu_option_courses" />
+    <item
+        android:id="@+id/changeAuthorizationItem"
+        android:title="@string/menu_option_credentials" />
+    <item
+        android:id="@+id/manageAccountItem"
+        android:title="@string/menu_manage_account" />
+    <item
+        android:id="@+id/feedbackItem"
+        android:title="@string/menu_feedback" />
+</menu>

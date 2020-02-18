@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GMB-Planer</string>
+    <string name="error_nomailclient">Kein E-Mail-Client installiert</string>
+    <string name="feedback_subject">[GMB-Planer] Feedback</string>
+    <string name="menu_feedback">Feedback senden</string>
+    <string name="menu_option_credentials">Zugangsdaten ändern</string>
+    <string name="menu_option_courses">Kurse auswählen</string>
+    <string name="menu_refresh">Aktualisieren</string>
+    <string name="nocontent_all">✔️\nKeine Vertretungen gefunden</string>
+    <string name="nocontent_mine">👨‍🏫\nDu hast regulären Unterricht</string>
+    <string name="tab_all">Alle Vertretungen</string>
+    <string name="tab_mine">Dein Plan</string>
+    <string name="menu_manage_account">Account verwalten</string>
+    <string name="start_add_courses">Füge deine Kurse hinzu</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="courses_add">Füge einen Kurs hinzu</string>
+    <string name="credentials_name">Nutzername oder E-Mail</string>
+    <string name="credentials_pass">Passwort</string>
+    <string name="done">Fertig</string>
+    <string name="save">Speichern</string>
+    <string name="start_credentials_explanation"><![CDATA[Hey!<br>Um diese Ap zu nutzen benötigst du einen Account des Gymnasiums am Mosbacher Bergs.<br>Bitte gib deine Anmeldeinformationen ein oder <a href="https://mosbacher-berg.de/user/register">erstelle einen Account mit deinem Aktivierungscode</a>.]]></string>
+    <string name="credentials_invalidated">Whoops!\nDeine Zugangsdaten funktionieren scheinbar nicht. Bitte versuche es noch einmal.</string>
+    <string name="remove">Entfernen</string>
+</resources>

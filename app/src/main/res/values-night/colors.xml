@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#202125</color>
+    <color name="colorPrimaryDark">#202125</color>
+    <color name="colorAccent">#4f76c5</color>
+    <color name="background">#202125</color>
+    <color name="cardBackground">#161719</color>
+    <color name="tabText">#eee</color>
+    <color name="tabTextSelected">#4f76c5</color>
+    <color name="titleText">#ddd</color>
+    <bool name="lightStatusBar">false</bool>
+</resources>

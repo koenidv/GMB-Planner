@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">GMB Planner</string>
+    <string name="tab_mine">Yours</string>
+    <string name="tab_all">All changes</string>
+    <string name="nocontent_mine">👨‍🏫 Your schedule seems to be regular</string>
+    <string name="nocontent_all">✔️\nNo irregularities found</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="done">Done</string>
+    <string name="remove">Remove</string>
+
+    <string name="menu_option_credentials">Change credentials</string>
+    <string name="menu_option_courses">Change your courses</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_manage_account">Edit your account</string>
+    <string name="menu_feedback">Send feedback</string>
+
+    <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
+    <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
+    <string name="start_add_courses">Add your courses</string>
+
+    <string name="credentials_name">Username or email</string>
+    <string name="credentials_pass">Password</string>
+    <string name="courses_add">Add a course</string>
+
+    <string name="feedback_subject">[GMB Planner] Feedback</string>
+
+    <string name="error_nomailclient">No email client installed</string>
+</resources>
