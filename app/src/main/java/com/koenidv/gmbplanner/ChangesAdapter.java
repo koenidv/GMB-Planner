@@ -59,17 +59,17 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
                 centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew());
                 bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew()).append(" • ");
             }
-            if (thisChange.isTeacherChanged()) {
-                centerString.append(context.getString(R.string.change_connect_teacher)).append(thisChange.getTeacherNew());
-                bottomString.append("<strike>").append(thisChange.getTeacher()).append("</strike> ").append(thisChange.getTeacherNew()).append(" • ");
-            } else {
-                bottomString.append(thisChange.getTeacher()).append(" • ");
-            }
             if (thisChange.isRoomChanged()) {
                 centerString.append(context.getString(R.string.change_connect_room)).append(thisChange.getRoomNew());
-                bottomString.append("<strike>").append(thisChange.getRoom()).append("</strike> ").append(thisChange.getRoomNew());
+                bottomString.append("<strike>").append(thisChange.getRoom()).append("</strike>").append(" • ");
             } else {
-                bottomString.append(thisChange.getRoom());
+                bottomString.append(thisChange.getRoom()).append(" • ");
+            }
+            if (thisChange.isTeacherChanged()) {
+                centerString.append(context.getString(R.string.change_connect_teacher)).append(thisChange.getTeacherNew());
+                bottomString.append("<strike>").append(thisChange.getTeacher()).append("</strike>");
+            } else {
+                bottomString.append(thisChange.getTeacher());
             }
         }
         //Todo: Klausuren
