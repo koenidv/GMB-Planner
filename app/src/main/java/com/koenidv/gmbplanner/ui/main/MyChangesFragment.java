@@ -99,7 +99,7 @@ public class MyChangesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
-        ChangesAdapter mAdapter = new ChangesAdapter(myChangeList);
+        ChangesAdapter mAdapter = new ChangesAdapter(myChangeList, true);
         myChangesRecycler.setAdapter(mAdapter);
 
         if (myChangeList.isEmpty()) {

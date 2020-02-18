@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -95,6 +96,9 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             } else {
                 // Login succeeded
+                String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
+                lastChange = lastChange.substring(0, lastChange.indexOf("<"));
+
                 result = result.substring(result.indexOf("<div class=\"view-content\">"));
                 result = result.substring(result.indexOf("<tbody>") + 7, result.indexOf("</tbody>"));
 
@@ -114,7 +118,9 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     if (!allCourses.contains(change.getCourse()))
                         allCourses.add(change.getCourse());
 
-                prefsEdit.putString("allCourses", gson.toJson(allCourses));
+                prefsEdit.putString("allCourses", gson.toJson(allCourses))
+                        .putString("lastChange", lastChange)
+                        .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
                 prefsEdit.commit();
             }
         } catch (IndexOutOfBoundsException ignored) {

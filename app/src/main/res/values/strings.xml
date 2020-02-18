@@ -12,6 +12,7 @@
     <string name="menu_option_credentials">Change credentials</string>
     <string name="menu_option_courses">Change your courses</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_information">Information</string>
     <string name="menu_manage_account">Edit your account</string>
     <string name="menu_feedback">Send feedback</string>
 
@@ -23,7 +24,34 @@
     <string name="credentials_pass">Password</string>
     <string name="courses_add">Add a course</string>
 
+    <string name="change_hours">h</string>
+    <string name="change_workorders">Note work orders</string>
+    <string name="change_connect_teacher">" with "</string>
+    <string name="change_connect_room">" in "</string>
+
     <string name="feedback_subject">[GMB Planner] Feedback</string>
 
     <string name="error_nomailclient">No email client installed</string>
+
+    <string name="last_refreshed">Last refresh: %refresh\nLast change: %change</string>
+    <string name="dateformat_hours">HH:mm:ss</string>
+
+    <string name="course_german">German</string>
+    <string name="course_english">English</string>
+    <string name="course_latin">Latin</string>
+    <string name="course_french">French</string>
+    <string name="course_history">History</string>
+    <string name="course_it">IT</string>
+    <string name="course_arts">Arts</string>
+    <string name="course_music">Music</string>
+    <string name="course_maths">Maths</string>
+    <string name="course_physics">Physics</string>
+    <string name="course_biology">Biology</string>
+    <string name="course_chemistry">Chemistry</string>
+    <string name="course_geography">Geography</string>
+    <string name="course_politics">Politics</string>
+    <string name="course_sports">Sports</string>
+    <string name="course_religion">Religion</string>
+    <string name="course_ethics">Ethics</string>
+    <string name="course_intensified" />
 </resources>

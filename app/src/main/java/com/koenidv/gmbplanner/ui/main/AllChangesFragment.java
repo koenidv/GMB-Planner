@@ -83,7 +83,7 @@ public class AllChangesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
-        ChangesAdapter mAdapter = new ChangesAdapter(mChangeList);
+        ChangesAdapter mAdapter = new ChangesAdapter(mChangeList, false);
         myChangesRecycler.setAdapter(mAdapter);
 
         if (mChangeList == null || mChangeList.isEmpty()) {

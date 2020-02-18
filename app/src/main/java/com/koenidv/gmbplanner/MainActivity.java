@@ -12,9 +12,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.koenidv.gmbplanner.ui.main.SectionsPagerAdapter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +58,17 @@ public class MainActivity extends AppCompatActivity {
     };
 
     @Override
+    protected void onResume() {
+        SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        // Refresh if last refresh is more than 15 minutes ago
+        if ((Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastRefresh", 0)) > 900 * 1000) {
+            new ChangesManager().refreshChanges(getApplicationContext());
+            swiperefresh.setRefreshing(true);
+        }
+        super.onResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -71,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
         broadcastManager.registerReceiver(mMessageReceiver, new IntentFilter("changesRefreshed"));
         broadcastManager.registerReceiver(mRefreshingReceiver, new IntentFilter("refreshing"));
         LocalBroadcastManager.getInstance(this).registerReceiver(mInvalidateCredentialsReceiver, new IntentFilter("invalidateCredentials"));
-
-        //new ChangesManager().refreshChanges(getApplicationContext());
 
         swiperefresh = findViewById(R.id.swiperefresh);
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -103,6 +118,25 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.refreshItem:
+                // Refresh all changes
+                swiperefresh.setRefreshing(true);
+                new ChangesManager().refreshChanges(getApplicationContext());
+                break;
+            case R.id.informationItem:
+                // Show a bottom sheet describing the time of the last refresh
+                SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+                DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
+                String info = getString(R.string.last_refreshed)
+                        .replace("%refresh", dateFormatter.format(prefs.getLong("lastRefresh", 0)))
+                        .replace("%change", prefs.getString("lastChange", "?"));
+                BottomSheetDialog infoSheet = new BottomSheetDialog(this, R.style.AppTheme_Sheet);
+                TextView infoTextView = new TextView(this);
+                infoTextView.setText(info);
+                infoTextView.setPaddingRelative(32, 64, 32, 64);
+                infoSheet.setContentView(infoTextView);
+                infoSheet.show();
+                break;
             case R.id.changeAuthorizationItem:
                 // Show a bottom sheet to edit credentials
                 CredentialsSheet bottomsheet = new CredentialsSheet();
@@ -112,10 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 // Show a bottom sheet to edit favorite courses
                 coursesSheet = new CoursesSheet();
                 coursesSheet.show(getSupportFragmentManager(), "coursesSheet");
-                break;
-            case R.id.refreshItem:
-                swiperefresh.setRefreshing(true);
-                new ChangesManager().refreshChanges(getApplicationContext());
                 break;
             case R.id.manageAccountItem:
                 // Open the website to edit the user account.

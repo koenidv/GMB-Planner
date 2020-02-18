@@ -8,5 +8,6 @@
     <color name="tabText">#202125</color>
     <color name="tabTextSelected">#4f76c5</color>
     <color name="titleText">#808080</color>
+    <color name="infoText">#cccccc</color>
     <bool name="lightStatusBar">true</bool>
 </resources>

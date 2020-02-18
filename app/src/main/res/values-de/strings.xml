@@ -22,4 +22,29 @@
     <string name="start_credentials_explanation"><![CDATA[Hey!<br>Um diese Ap zu nutzen benötigst du einen Account des Gymnasiums am Mosbacher Bergs.<br>Bitte gib deine Anmeldeinformationen ein oder <a href="https://mosbacher-berg.de/user/register">erstelle einen Account mit deinem Aktivierungscode</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nDeine Zugangsdaten funktionieren scheinbar nicht. Bitte versuche es noch einmal.</string>
     <string name="remove">Entfernen</string>
+    <string name="change_connect_room">" in "</string>
+    <string name="change_connect_teacher">" bei "</string>
+    <string name="change_workorders">Arbeitsaufträge liegen aus</string>
+    <string name="change_hours">" Std."</string>
+    <string name="course_intensified">-LK</string>
+    <string name="course_it">Informatik</string>
+    <string name="course_arts">Kunst</string>
+    <string name="course_biology">Biologie</string>
+    <string name="course_chemistry">Chemie</string>
+    <string name="course_english">Englisch</string>
+    <string name="course_ethics">Ethik</string>
+    <string name="course_french">Französisch</string>
+    <string name="course_geography">Erdkunde</string>
+    <string name="course_german">Deutsch</string>
+    <string name="course_history">Geschichte</string>
+    <string name="course_latin">Latein</string>
+    <string name="course_maths">Mathe</string>
+    <string name="course_music">Musik</string>
+    <string name="course_physics">Physik</string>
+    <string name="course_politics">PoWi</string>
+    <string name="course_religion">Religion</string>
+    <string name="course_sports">Sport</string>
+    <string name="dateformat_hours">HH:mm:ss</string>
+    <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change</string>
+    <string name="menu_information">Informationen</string>
 </resources>

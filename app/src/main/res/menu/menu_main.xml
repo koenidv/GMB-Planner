@@ -5,6 +5,9 @@
         android:id="@+id/refreshItem"
         android:title="@string/menu_refresh" />
     <item
+        android:id="@+id/informationItem"
+        android:title="@string/menu_information" />
+    <item
         android:id="@+id/changeCoursesItem"
         android:title="@string/menu_option_courses" />
     <item
