@@ -47,4 +47,7 @@
     <string name="dateformat_hours">HH:mm:ss</string>
     <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change</string>
     <string name="menu_information">Informationen</string>
+    <string name="info_author">Florian König 2020 • Eure SV am GMB</string>
+    <string name="menu_darkmode_disable">Helles Design</string>
+    <string name="menu_darkmode_enable">Dunkles Design</string>
 </resources>

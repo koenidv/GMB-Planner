@@ -85,6 +85,8 @@ public class ChangesManager extends AsyncTask<String, String, String> {
      *
      * @param result The entire user web page from mosbacher-berg.de
      */
+
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onPostExecute(String result) {
         try {
@@ -98,6 +100,12 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 // Login succeeded
                 String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
                 lastChange = lastChange.substring(0, lastChange.indexOf("<"));
+
+                String grade = prefs.getString("grade", "");
+                if (grade.isEmpty()) {
+                    grade = result.substring(result.indexOf("Stufe ") + 6);
+                    grade = grade.substring(0, grade.indexOf("<"));
+                }
 
                 result = result.substring(result.indexOf("<div class=\"view-content\">"));
                 result = result.substring(result.indexOf("<tbody>") + 7, result.indexOf("</tbody>"));
@@ -114,9 +122,42 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     allCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
                 } catch (NullPointerException ignored) {
                 }
+                // Get course presets if no courses are saved or after 2 weeks
+                if (allCourses.size() == 0
+                        || Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
+                    // Get course presets from koenidv.de
+                    final String finalGrade = grade;
+                    new AsyncTask<String, String, String>() {
+                        @Override
+                        protected String doInBackground(String... mStrings) {
+                            // Network request needs to be async
+                            Request request = new Request.Builder()
+                                    .url(context.getString(R.string.url_presets).replace("%grade", finalGrade.toLowerCase()))
+                                    .header("User-Agent", "GMB Planner")
+                                    .build();
+                            try (Response response = client.newCall(request).execute()) {
+                                String responseString = Objects.requireNonNull(response.body()).string();
+                                // Remove newlines so that gson can parse the data
+                                responseString = responseString.replace("\n", "");
+                                String[] presets = gson.fromJson(responseString, String[].class);
+                                // Add all loaded courses if they aren't already in the list
+                                List<String> allCoursesAsync = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
+                                for (String preset : presets)
+                                    if (!allCoursesAsync.contains(preset))
+                                        allCoursesAsync.add(preset);
+                                prefsEdit.putString("allCourses", gson.toJson(allCoursesAsync))
+                                        .putLong("lastCourseRefresh", Calendar.getInstance().getTimeInMillis())
+                                        .commit();
+                            } catch (IOException | RuntimeException mE) {
+                                mE.printStackTrace();
+                            }
+                            return null;
+                        }
+                    }.execute();
+                }
                 for (Change change : mChangeList)
-                    if (!allCourses.contains(change.getCourse()))
-                        allCourses.add(change.getCourse());
+                    if (!allCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
+                        allCourses.add(change.getCourse() + " (" + change.getTeacher() + ")");
 
                 prefsEdit.putString("allCourses", gson.toJson(allCourses))
                         .putString("lastChange", lastChange)

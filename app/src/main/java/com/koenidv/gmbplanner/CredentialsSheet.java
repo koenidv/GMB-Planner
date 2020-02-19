@@ -51,19 +51,22 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
 
         final EditText nameEditText = view.findViewById(R.id.nameEditText),
                 passEditText = view.findViewById(R.id.passEditText);
-        final Button saveButton = view.findViewById(R.id.saveButton);
+        final Button saveButton = view.findViewById(R.id.saveButton),
+                cancelButton = view.findViewById(R.id.cancelButton);
         final TextView explanationTextView = view.findViewById(R.id.explanationTextView);
 
         // Setup
         if (prefs.getString("name", "").isEmpty()) {
             // First setup
-            disableOutsideTouch = true;
+            setCancelable(false);
+            cancelButton.setVisibility(View.GONE);
             explanationTextView.setText(Html.fromHtml(getString(R.string.start_credentials_explanation), Html.FROM_HTML_MODE_COMPACT));
             explanationTextView.setMovementMethod(LinkMovementMethod.getInstance());
             explanationTextView.setVisibility(View.VISIBLE);
         } else if (prefs.getString("pass", "").isEmpty()) {
             // Credentials invalidated
-            disableOutsideTouch = true;
+            setCancelable(false);
+            cancelButton.setVisibility(View.GONE);
             explanationTextView.setText(R.string.credentials_invalidated);
             explanationTextView.setVisibility(View.VISIBLE);
         }

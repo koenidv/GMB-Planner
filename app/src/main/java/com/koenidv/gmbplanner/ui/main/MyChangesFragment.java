@@ -90,7 +90,8 @@ public class MyChangesFragment extends Fragment {
 
         if (everyChangeList != null) {
             for (Change change : everyChangeList) {
-                if (myCourses.contains(change.getCourse().toUpperCase()))
+                // Convert to string so that the list can contain a note about the teacher (eg course (teacher))
+                if (myCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
                     myChangeList.add(change);
             }
         }

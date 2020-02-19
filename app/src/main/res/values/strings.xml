@@ -15,6 +15,8 @@
     <string name="menu_information">Information</string>
     <string name="menu_manage_account">Edit your account</string>
     <string name="menu_feedback">Send feedback</string>
+    <string name="menu_darkmode_enable">Dark theme</string>
+    <string name="menu_darkmode_disable">Light theme</string>
 
     <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
@@ -32,9 +34,11 @@
     <string name="feedback_subject">[GMB Planner] Feedback</string>
 
     <string name="error_nomailclient">No email client installed</string>
+    <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses_%grade.json</string>
 
     <string name="last_refreshed">Last refresh: %refresh\nLast change: %change</string>
     <string name="dateformat_hours">HH:mm:ss</string>
+    <string name="info_author">Florian König 2020</string>
 
     <string name="course_german">German</string>
     <string name="course_english">English</string>

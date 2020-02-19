@@ -71,9 +71,11 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         inputLayout.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myCourses.add(Objects.requireNonNull(editText.getText()).toString());
-                editText.setText("");
-                adapter.notifyDataSetChanged();
+                if (!Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
+                    myCourses.add(Objects.requireNonNull(editText.getText()).toString());
+                    editText.setText("");
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -90,6 +92,13 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                 v.setVisibility(View.GONE);
             }
         };
+        View.OnLongClickListener chipLongListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                v.setVisibility(View.GONE);
+                return true;
+            }
+        };
 
         if (allCourses != null) {
             for (String thisCourse : allCourses) {
@@ -98,6 +107,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                     final Chip chip = new Chip(chipgroup.getContext());
                     chip.setClickable(true);
                     chip.setOnClickListener(chipListener);
+                    chip.setOnLongClickListener(chipLongListener);
                     chip.setText(thisCourse);
                     chipgroup.addView(chip);
                 }
@@ -108,6 +118,10 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.doneButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
+                    myCourses.add(Objects.requireNonNull(editText.getText()).toString().toUpperCase());
+                    editText.setText("");
+                }
                 CoursesSheet.this.dismiss();
             }
         });
