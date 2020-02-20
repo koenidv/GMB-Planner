@@ -74,12 +74,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+
+        // Force dark option below Android 10
+        // Needs to be set before activity is created
+        if (Build.VERSION.SDK_INT < 29) {
+            if (prefs.getBoolean("forceDark", true))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            else
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -108,14 +117,6 @@ public class MainActivity extends AppCompatActivity {
             // Show a bottom sheet to add credentials
             CredentialsSheet bottomsheet = new CredentialsSheet();
             bottomsheet.show(getSupportFragmentManager(), "credentialsSheet");
-        }
-
-        // Force dark option below Android 10
-        if (Build.VERSION.SDK_INT < 29) {
-            if (prefs.getBoolean("forceDark", true))
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
 
