@@ -1,5 +1,6 @@
 package com.koenidv.gmbplanner;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -36,21 +39,28 @@ public class MainActivity extends AppCompatActivity {
 
     CoursesSheet coursesSheet;
     private SwipeRefreshLayout swiperefresh;
+    boolean ignoreFirstRefreshed = false;
+
     // Show that changes are refreshing when the broadcast "refreshing" is received
     private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             swiperefresh.setRefreshing(true);
+            if (intent.getBooleanExtra("ignoreFirst", false))
+                ignoreFirstRefreshed = true;
         }
     };
     // Show that refreshing is done when the broadcast "changesRefreshed" is received
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            swiperefresh.setRefreshing(false);
+            if (!ignoreFirstRefreshed || intent.getBooleanExtra("dontIgnore", false))
+                swiperefresh.setRefreshing(false);
+            else
+                ignoreFirstRefreshed = false;
         }
     };
-    // Show the credentials sheet when the ChangesManager encounters wrong credentials
+    // Show the credentials sheet when ChangesManager encounters wrong credentials
     private BroadcastReceiver mInvalidateCredentialsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Set up tabs
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -102,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         broadcastManager.registerReceiver(mRefreshingReceiver, new IntentFilter("refreshing"));
         LocalBroadcastManager.getInstance(this).registerReceiver(mInvalidateCredentialsReceiver, new IntentFilter("invalidateCredentials"));
 
+        // Set up swipe to refresh
         swiperefresh = findViewById(R.id.swiperefresh);
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -110,9 +122,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Switch to all changes if no courses are specified
         if (prefs.getString("myCourses", "").isEmpty()) {
             viewPager.setCurrentItem(1);
         }
+        // Ask for credentials if none have been entered yet
         if (prefs.getString("name", "").isEmpty()) {
             // Show a bottom sheet to add credentials
             CredentialsSheet bottomsheet = new CredentialsSheet();
@@ -123,121 +137,145 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        if (Build.VERSION.SDK_INT < 29) {
-            // Display force dark toggle if below Android 10
-            final SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-            MenuItem darkModeItem = menu.findItem(R.id.darkmodeItem);
-            darkModeItem.setVisible(true);
-            if (prefs.getBoolean("forceDark", true))
-                darkModeItem.setTitle(R.string.menu_darkmode_disable);
-            darkModeItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                // Invert forceDark and recreate activity
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    prefs.edit().putBoolean("forceDark", !prefs.getBoolean("forceDark", true)).apply();
-                    recreate();
-                    return false;
-                }
-            });
-        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        // Ignore item, there's only one
 
-        switch (id) {
-            case R.id.refreshItem:
+        // Show a bottom sheet describing the time of the last refresh and some more actions
+        final SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
+
+        final BottomSheetDialog infoSheet = new BottomSheetDialog(this, R.style.AppTheme_Sheet);
+        infoSheet.setContentView(R.layout.sheet_information);
+
+        Objects.requireNonNull(infoSheet.findViewById(R.id.authorTextView)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Link to my instagram
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://instagram.com/halbunsichtbar"));
+                startActivity(i);
+            }
+        });
+
+        TextView refreshTextView = infoSheet.findViewById(R.id.lastRefreshedTextView);
+        assert refreshTextView != null;
+        refreshTextView.setText(getString(R.string.last_refreshed)
+                .replace("%refresh", dateFormatter.format(prefs.getLong("lastRefresh", 0)))
+                .replace("%change", prefs.getString("lastChange", "?")));
+        refreshTextView.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ApplySharedPref")
+            @Override
+            public void onClick(View v) {
                 // Refresh all changes
                 swiperefresh.setRefreshing(true);
+                prefs.edit().putLong("lastCourseRefresh", 0).commit();
                 new ChangesManager().refreshChanges(getApplicationContext());
-                break;
-            case R.id.changeAuthorizationItem:
-                // Show a bottom sheet to edit credentials
-                CredentialsSheet bottomsheet = new CredentialsSheet();
-                bottomsheet.show(getSupportFragmentManager(), "credentialsSheet");
-                break;
-            case R.id.changeCoursesItem:
+                infoSheet.dismiss();
+            }
+        });
+
+        Objects.requireNonNull(infoSheet.findViewById(R.id.coursesButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 // Show a bottom sheet to edit favorite courses
                 coursesSheet = new CoursesSheet();
                 coursesSheet.show(getSupportFragmentManager(), "coursesSheet");
-                break;
-            case R.id.informationItem:
-                // Show a bottom sheet describing the time of the last refresh and some more actions
-                SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-                DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
+                infoSheet.dismiss();
+            }
+        });
 
-                final BottomSheetDialog infoSheet = new BottomSheetDialog(this, R.style.AppTheme_Sheet);
-                infoSheet.setContentView(R.layout.sheet_information);
+        Objects.requireNonNull(infoSheet.findViewById(R.id.credentialsButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a bottom sheet to edit credentials
+                CredentialsSheet bottomsheet = new CredentialsSheet();
+                bottomsheet.show(getSupportFragmentManager(), "credentialsSheet");
+                infoSheet.dismiss();
+            }
+        });
 
-                Objects.requireNonNull(infoSheet.findViewById(R.id.authorTextView)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Link to my instagram
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse("https://instagram.com/halbunsichtbar"));
-                        startActivity(i);
-                    }
-                });
-
-                TextView refreshTextView = infoSheet.findViewById(R.id.lastRefreshedTextView);
-                assert refreshTextView != null;
-                refreshTextView.setText(getString(R.string.last_refreshed)
-                        .replace("%refresh", dateFormatter.format(prefs.getLong("lastRefresh", 0)))
-                        .replace("%change", prefs.getString("lastChange", "?")));
-                refreshTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Refresh all changes
-                        swiperefresh.setRefreshing(true);
-                        new ChangesManager().refreshChanges(getApplicationContext());
-                        infoSheet.dismiss();
-                    }
-                });
-
-                Objects.requireNonNull(infoSheet.findViewById(R.id.manageAccountButton)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Open the website to edit the user account.
-                        // Can't automatically log the user in as that would require a post request.
-                        Uri uri = Uri.parse("https://mosbacher-berg.de/user/login");
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(browserIntent);
-                        infoSheet.dismiss();
-                    }
-                });
-
-                Objects.requireNonNull(infoSheet.findViewById(R.id.feedbackButton)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Send an email
-                        Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
-                                .setData(Uri.parse("mailto:"))
-                                .putExtra(Intent.EXTRA_EMAIL, new String[]{"sv@gmbwi.de"})
-                                .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
-                        // Only open if email client is installed
-                        if (emailIntent.resolveActivity(getPackageManager()) != null)
-                            startActivity(emailIntent);
-                        else
-                            Snackbar.make(findViewById(R.id.rootview), R.string.error_nomailclient, Snackbar.LENGTH_SHORT);
-                        infoSheet.dismiss();
-                    }
-                });
-
-                Objects.requireNonNull(infoSheet.findViewById(R.id.doneButton)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Dismiss the sheet
-                        infoSheet.dismiss();
-                    }
-                });
-
-                infoSheet.show();
-                break;
+        if (Build.VERSION.SDK_INT < 29) {
+            // Display force dark switch if below Android 10
+            Switch darkSwitch = infoSheet.findViewById(R.id.darkmodeSwitch);
+            assert darkSwitch != null;
+            darkSwitch.setVisibility(View.VISIBLE);
+            if (prefs.getBoolean("forceDark", true))
+                darkSwitch.setChecked(true);
+            darkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // Toggle force dark and recreate the activity to apply changes
+                    prefs.edit().putBoolean("forceDark", !prefs.getBoolean("forceDark", true)).apply();
+                    recreate();
+                }
+            });
         }
 
+        Switch backgroundSwitch = infoSheet.findViewById(R.id.backgroundUpdateSwitch);
+        assert backgroundSwitch != null;
+        backgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Todo: Toggle background updates
+            }
+        });
+
+        Objects.requireNonNull(infoSheet.findViewById(R.id.manageAccountButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open the website to edit the user account.
+                // Can't automatically log the user in as that would require a post request.
+                Uri uri = Uri.parse("https://mosbacher-berg.de/user/login");
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(browserIntent);
+                infoSheet.dismiss();
+            }
+        });
+
+        Objects.requireNonNull(infoSheet.findViewById(R.id.feedbackButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send an email
+                Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
+                        .setData(Uri.parse("mailto:"))
+                        .putExtra(Intent.EXTRA_EMAIL, new String[]{"sv@gmbwi.de"})
+                        .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
+                // Only open if email client is installed
+                if (emailIntent.resolveActivity(getPackageManager()) != null)
+                    startActivity(emailIntent);
+                else
+                    Snackbar.make(findViewById(R.id.rootview), R.string.error_nomailclient, Snackbar.LENGTH_SHORT);
+                infoSheet.dismiss();
+            }
+        });
+
+        Objects.requireNonNull(infoSheet.findViewById(R.id.rateButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open Play Store to let the user rate the app
+                final String appPackageName = getPackageName();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+                infoSheet.dismiss();
+            }
+        });
+
+        Objects.requireNonNull(infoSheet.findViewById(R.id.doneButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Dismiss the sheet
+                infoSheet.dismiss();
+            }
+        });
+
+        infoSheet.show();
 
         return super.onOptionsItemSelected(item);
     }

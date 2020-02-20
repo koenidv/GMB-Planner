@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 //  Created by koenidv on 15.02.2020.
 public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {
     private List<Change> mDataset;
-    String lastDate = "";
+    private String lastDate = "";
     private boolean isFavorite;
 
     public ChangesAdapter(List<Change> dataset, boolean isFavorite) {
@@ -44,7 +44,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         StringBuilder bottomString = new StringBuilder();
 
         if (isFavorite)
-            centerString.append(resolveCourseName(thisChange.getCourse(), context));
+            centerString.append((new NameResolver()).resolveCourse(thisChange.getCourse(), context));
         else
             centerString.append(thisChange.getCourse());
 
@@ -94,49 +94,6 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         } catch (NullPointerException npe) {
             return 0;
         }
-    }
-
-    private String resolveCourseName(String courseName, Context context) {
-        StringBuilder name = new StringBuilder();
-        if (courseName.contains("D-")) {
-            name.append(context.getString(R.string.course_german));
-        } else if (courseName.contains("E-")) {
-            name.append(context.getString(R.string.course_english));
-        } else if (courseName.contains("L-")) {
-            name.append(context.getString(R.string.course_latin));
-        } else if (courseName.contains("F-")) {
-            name.append(context.getString(R.string.course_french));
-        } else if (courseName.contains("G-")) {
-            name.append(context.getString(R.string.course_history));
-        } else if (courseName.contains("INFO-")) {
-            name.append(context.getString(R.string.course_it));
-        } else if (courseName.contains("KU-")) {
-            name.append(context.getString(R.string.course_arts));
-        } else if (courseName.contains("MU-")) {
-            name.append(context.getString(R.string.course_music));
-        } else if (courseName.contains("M-")) {
-            name.append(context.getString(R.string.course_maths));
-        } else if (courseName.contains("PH-")) {
-            name.append(context.getString(R.string.course_physics));
-        } else if (courseName.contains("BIO-")) {
-            name.append(context.getString(R.string.course_biology));
-        } else if (courseName.contains("CH-")) {
-            name.append(context.getString(R.string.course_chemistry));
-        } else if (courseName.contains("EK-")) {
-            name.append(context.getString(R.string.course_geography));
-        } else if (courseName.contains("POWI-")) {
-            name.append(context.getString(R.string.course_politics));
-        } else if (courseName.contains("SPO-")) {
-            name.append(context.getString(R.string.course_sports));
-        } else if (courseName.contains("RKA-") || courseName.contains("REV-")) {
-            name.append(context.getString(R.string.course_german));
-        } else if (courseName.contains("ETH-")) {
-            name.append(context.getString(R.string.course_ethics));
-        }
-        if (courseName.contains("-LK")) {
-            name.append(context.getString(R.string.course_intensified));
-        }
-        return name.toString();
     }
 
     // Provide a reference to the views for each data item

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -7,8 +9,12 @@
     android:paddingTop="16dp">
 
     <TextView
+        android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -16,6 +22,8 @@
         android:id="@+id/authorTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:text="@string/info_author"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -23,33 +31,112 @@
         android:id="@+id/lastRefreshedTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:background="?attr/selectableItemBackground"
+        android:drawableEnd="@drawable/ic_refresh"
+        android:drawablePadding="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:text="@string/last_refreshed"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:drawableTint="@color/titleText" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/coursesButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:text="@string/menu_option_courses"
+            android:textColor="@color/tabText" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/credentialsButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/menu_option_credentials"
+            android:textColor="@color/tabText" />
+
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/darkmodeSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:checked="false"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="@string/option_darkmode"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <Switch
+        android:id="@+id/backgroundUpdateSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:checked="true"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:splitTrack="false"
+        android:text="@string/option_background_update" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/manageAccountButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="@string/menu_manage_account"
         android:textColor="@color/tabText" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/feedbackButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/menu_feedback"
-        android:textColor="@color/tabText" />
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/feedbackButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:text="@string/menu_feedback"
+            android:textColor="@color/tabText" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/rateButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/menu_rate"
+            android:textColor="@color/tabText" />
+
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/doneButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="@string/done"
         android:textColor="@color/tabText" />
 </LinearLayout>

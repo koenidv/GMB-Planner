@@ -31,6 +31,7 @@ import okhttp3.Response;
 // This class handles all the network requests
 public class ChangesManager extends AsyncTask<String, String, String> {
 
+    @SuppressLint("StaticFieldLeak")
     private Context context;
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefsEdit;
@@ -122,14 +123,18 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     allCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
                 } catch (NullPointerException ignored) {
                 }
-                // Get course presets if no courses are saved or after 2 weeks
-                if (allCourses.size() == 0
-                        || Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
+                // Get course presets for the first time or after 2 weeks
+                if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
                     // Get course presets from koenidv.de
                     final String finalGrade = grade;
                     new AsyncTask<String, String, String>() {
                         @Override
                         protected String doInBackground(String... mStrings) {
+                            // Ignore first refresh broadcast, as this request will still be still running
+                            Intent ignoreIntent = new Intent("refreshing");
+                            ignoreIntent.putExtra("ignoreFirst", true);
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(ignoreIntent);
+
                             // Network request needs to be async
                             Request request = new Request.Builder()
                                     .url(context.getString(R.string.url_presets).replace("%grade", finalGrade.toLowerCase()))
@@ -148,6 +153,11 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                                 prefsEdit.putString("allCourses", gson.toJson(allCoursesAsync))
                                         .putLong("lastCourseRefresh", Calendar.getInstance().getTimeInMillis())
                                         .commit();
+
+                                // Broadcast to refresh UI
+                                Intent doneIntent = new Intent("changesRefreshed");
+                                doneIntent.putExtra("dontIgnore", true);
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                             } catch (IOException | RuntimeException mE) {
                                 mE.printStackTrace();
                             }

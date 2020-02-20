@@ -15,8 +15,11 @@
     <string name="menu_information">Information</string>
     <string name="menu_manage_account">Edit your account</string>
     <string name="menu_feedback">Send feedback</string>
+    <string name="menu_rate">Rate</string>
     <string name="menu_darkmode_enable">Dark theme</string>
     <string name="menu_darkmode_disable">Light theme</string>
+    <string name="option_darkmode">Dark theme</string>
+    <string name="option_background_update">Background update</string>
 
     <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
@@ -57,5 +60,6 @@
     <string name="course_sports">Sports</string>
     <string name="course_religion">Religion</string>
     <string name="course_ethics">Ethics</string>
+    <string name="coursr_bili">Bili</string>
     <string name="course_intensified" />
 </resources>
