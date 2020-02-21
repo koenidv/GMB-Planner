@@ -182,6 +182,8 @@ class Resolver {
                 return "Schneider";
             case "Sha":
                 return "Shahvari";
+            case "Sht":
+                return "Scheinert";
             case "Sol":
                 return "Scholzen";
             case "Sta":

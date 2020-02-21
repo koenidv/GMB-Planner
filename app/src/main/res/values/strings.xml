@@ -40,9 +40,9 @@
     <string name="error_nomailclient">No email client installed</string>
     <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses_%grade.json</string>
 
-    <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourse presets refreshed: %courses</string>
+    <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourses refreshed: %courses</string>
     <string name="dateformat_hours">HH:mm:ss</string>
-    <string name="dateformat_coursesrefreshed">d. MM</string>
+    <string name="dateformat_coursesrefreshed">d. MMM</string>
     <string name="info_author">Florian König 2020</string>
 
     <string name="course_german">German</string>

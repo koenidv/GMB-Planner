@@ -46,7 +46,7 @@
     <string name="course_sports">Sport</string>
     <string name="coursr_bili">Bili</string>
     <string name="dateformat_hours">HH:mm:ss</string>
-    <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change\nKursvorschläge aktualisiert: %courses</string>
+    <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change\nKurse aktualisiert: %courses</string>
     <string name="menu_information">Informationen</string>
     <string name="info_author">Florian König 2020 • Eure SV am GMB</string>
     <string name="menu_darkmode_disable">Helles Design</string>

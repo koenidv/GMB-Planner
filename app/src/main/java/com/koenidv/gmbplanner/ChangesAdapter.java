@@ -39,25 +39,25 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Change thisChange = mDataset.get(position);
         Context context = holder.centerTextView.getContext();
+        Resolver resolver = new Resolver();
         StringBuilder topString = new StringBuilder(thisChange.getTime() + context.getString(R.string.change_hours));
         StringBuilder centerString = new StringBuilder();
         StringBuilder bottomString = new StringBuilder();
 
         if (isFavorite)
-            centerString.append((new Resolver()).resolveCourse(thisChange.getCourse(), context));
+            centerString.append(resolver.resolveCourse(thisChange.getCourse(), context));
         else
-            centerString.append(thisChange.getCourse());
+            centerString.append(resolver.resolveCourse(thisChange.getCourse(), context)).append(" (").append(resolver.resolveTeacher(thisChange.getTeacher())).append(")");
 
         if (thisChange.getType().equals("EVA") || thisChange.getType().equals("Entfall") || thisChange.getType().equals("Freistellung")) {
             if (thisChange.getRoomNew().equals("Sek"))
                 topString.append(context.getString(R.string.change_workorders));
             centerString.append(" ").append(thisChange.getType());
-            bottomString.append(thisChange.getRoom()).append(" • ").append(thisChange.getTeacher());
+            bottomString.append(thisChange.getRoom()).append(" • ").append(thisChange.getCourse());
         } else {
             topString.append(" • ").append(thisChange.getType());
             if (thisChange.isCourseChanged()) {
                 centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew());
-                bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew()).append(" • ");
             }
             if (thisChange.isRoomChanged()) {
                 centerString.append(context.getString(R.string.change_connect_room)).append(thisChange.getRoomNew());
@@ -68,8 +68,11 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (thisChange.isTeacherChanged()) {
                 centerString.append(context.getString(R.string.change_connect_teacher)).append(thisChange.getTeacherNew());
                 bottomString.append("<strike>").append(thisChange.getTeacher()).append("</strike>");
+            }
+            if (thisChange.isCourseChanged()) {
+                bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike>");
             } else {
-                bottomString.append(thisChange.getTeacher());
+                bottomString.append(thisChange.getCourse());
             }
         }
         //Todo: Klausuren
