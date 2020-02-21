@@ -109,6 +109,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                     chip.setOnClickListener(chipListener);
                     chip.setOnLongClickListener(chipLongListener);
                     chip.setText(thisCourse);
+                    chip.setMinHeight(32);
                     chipgroup.addView(chip);
                 }
             }

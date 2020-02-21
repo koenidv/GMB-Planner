@@ -100,6 +100,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Postprocessing the last update
+        if (!prefs.getBoolean("updated_111", false)) {
+            prefs.edit().putLong("lastCourseRefresh", 0)
+                    .putBoolean("updated_111", true)
+                    .apply();
+        }
+
         // Set up tabs
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -164,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView refreshTextView = infoSheet.findViewById(R.id.lastRefreshedTextView);
         assert refreshTextView != null;
-        Long test = prefs.getLong("lastCourseRefresh", 5);
         refreshTextView.setText(getString(R.string.last_refreshed)
                 .replace("%refresh", timeFormatter.format(prefs.getLong("lastRefresh", 0)))
                 .replace("%change", prefs.getString("lastChange", "?"))
@@ -213,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     // Toggle force dark and recreate the activity to apply changes
                     prefs.edit().putBoolean("forceDark", !prefs.getBoolean("forceDark", true)).apply();
+                    infoSheet.dismiss();
                     recreate();
                 }
             });

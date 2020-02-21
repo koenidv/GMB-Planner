@@ -55,7 +55,7 @@ class Resolver {
             name.append(context.getString(R.string.course_sports));
         } else if (courseName.contains("RKA-") || courseName.contains("REV-")) {
             name.append(context.getString(R.string.course_german));
-        } else if (courseName.contains("ETH-")) {
+        } else if (courseName.contains("ETHI-")) {
             name.append(context.getString(R.string.course_ethics));
         } else if (courseName.contains("BI-")) {
             name.append(context.getString(R.string.coursr_bili));

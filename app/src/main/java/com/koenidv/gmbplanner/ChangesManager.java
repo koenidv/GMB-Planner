@@ -101,7 +101,6 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 // Login succeeded
                 String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
                 lastChange = lastChange.substring(0, lastChange.indexOf("<"));
-                Calendar time = Calendar.getInstance();
 
                 String grade = prefs.getString("grade", "");
                 if (grade.isEmpty()) {
@@ -182,7 +181,6 @@ public class ChangesManager extends AsyncTask<String, String, String> {
             }
         } catch (IndexOutOfBoundsException ignored) {
             // Do nothing if network request failed
-            ignored.printStackTrace();
         }
 
         // Broadcast to refresh UI

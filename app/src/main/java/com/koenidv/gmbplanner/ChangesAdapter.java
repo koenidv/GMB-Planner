@@ -104,10 +104,11 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView topTextView, centerTextView, bottomTextView, dateTextView;
+        View card;
 
         ViewHolder(View view) {
             super(view);
-
+            card = view.findViewById(R.id.changeCard);
             topTextView = view.findViewById(R.id.topTextView);
             centerTextView = view.findViewById(R.id.centerTextView);
             bottomTextView = view.findViewById(R.id.bottomTextView);
