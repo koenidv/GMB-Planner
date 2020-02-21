@@ -101,6 +101,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 // Login succeeded
                 String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
                 lastChange = lastChange.substring(0, lastChange.indexOf("<"));
+                Calendar time = Calendar.getInstance();
 
                 String grade = prefs.getString("grade", "");
                 if (grade.isEmpty()) {
@@ -108,13 +109,18 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     grade = grade.substring(0, grade.indexOf("<"));
                 }
 
-                result = result.substring(result.indexOf("<div class=\"view-content\">"));
-                result = result.substring(result.indexOf("<tbody>") + 7, result.indexOf("</tbody>"));
+                try {
+                    result = result.substring(result.indexOf("<div class=\"view-content\">"));
+                    result = result.substring(result.indexOf("<tbody>") + 7, result.indexOf("</tbody>"));
 
-                while (result.contains("</tr>")) { // Can't check for <tr> as tag might include classes
-                    mChangeList.add(new Change(result.substring(result.indexOf(">") + 1, result.indexOf("</tr>"))));
-                    result = result.substring(result.indexOf("</tr>") + 5);
+                    while (result.contains("</tr>")) { // Can't check for <tr> as tag might include classes
+                        mChangeList.add(new Change(result.substring(result.indexOf(">") + 1, result.indexOf("</tr>"))));
+                        result = result.substring(result.indexOf("</tr>") + 5);
+                    }
+                } catch (IndexOutOfBoundsException ignored) {
+                    // Currently no changes
                 }
+
                 prefsEdit.putString("changes", gson.toJson(mChangeList));
 
                 // Add all courses that have not yet been seen
@@ -176,6 +182,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
             }
         } catch (IndexOutOfBoundsException ignored) {
             // Do nothing if network request failed
+            ignored.printStackTrace();
         }
 
         // Broadcast to refresh UI

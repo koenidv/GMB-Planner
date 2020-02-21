@@ -2,8 +2,17 @@ package com.koenidv.gmbplanner;
 
 import android.content.Context;
 
+import java.util.Date;
+
+import kotlin.NotImplementedError;
+
 //  Created by koenidv on 20.02.2020.
-class NameResolver {
+class Resolver {
+
+    Date resolveDate(String date) {
+        // Todo: Resolve dates like Mo, 24.2.
+        throw new NotImplementedError("Not yet implemented..");
+    }
 
     /**
      * Resolves course descriptions to subject names

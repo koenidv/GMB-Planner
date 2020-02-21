@@ -109,6 +109,7 @@ public class MyChangesFragment extends Fragment {
             emptyTextView.setText(R.string.nocontent_mine);
 
             if (prefs.getString("myCourses", "").length() <= 2) {
+                emptyTextView.setText(R.string.nocontent_mine_nocourses);
                 mView.findViewById(R.id.addCoursesButton).setVisibility(View.VISIBLE);
                 mView.findViewById(R.id.addCoursesButton).setOnClickListener(new View.OnClickListener() {
                     @Override

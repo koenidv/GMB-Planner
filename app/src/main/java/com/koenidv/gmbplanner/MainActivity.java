@@ -146,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Show a bottom sheet describing the time of the last refresh and some more actions
         final SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
+        DateFormat timeFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
+        DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_coursesrefreshed), Locale.GERMAN);
 
         final BottomSheetDialog infoSheet = new BottomSheetDialog(this, R.style.AppTheme_Sheet);
         infoSheet.setContentView(R.layout.sheet_information);
@@ -163,9 +164,11 @@ public class MainActivity extends AppCompatActivity {
 
         TextView refreshTextView = infoSheet.findViewById(R.id.lastRefreshedTextView);
         assert refreshTextView != null;
+        Long test = prefs.getLong("lastCourseRefresh", 5);
         refreshTextView.setText(getString(R.string.last_refreshed)
-                .replace("%refresh", dateFormatter.format(prefs.getLong("lastRefresh", 0)))
-                .replace("%change", prefs.getString("lastChange", "?")));
+                .replace("%refresh", timeFormatter.format(prefs.getLong("lastRefresh", 0)))
+                .replace("%change", prefs.getString("lastChange", "?"))
+                .replace("%courses", dateFormatter.format(prefs.getLong("lastCourseRefresh", 0))));
         refreshTextView.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ApplySharedPref")
             @Override

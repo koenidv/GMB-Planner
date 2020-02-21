@@ -44,7 +44,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         StringBuilder bottomString = new StringBuilder();
 
         if (isFavorite)
-            centerString.append((new NameResolver()).resolveCourse(thisChange.getCourse(), context));
+            centerString.append((new Resolver()).resolveCourse(thisChange.getCourse(), context));
         else
             centerString.append(thisChange.getCourse());
 

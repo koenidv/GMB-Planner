@@ -2,7 +2,8 @@
     <string name="app_name">GMB Planner</string>
     <string name="tab_mine">Yours</string>
     <string name="tab_all">All changes</string>
-    <string name="nocontent_mine">👨‍🏫 Your schedule seems to be regular</string>
+    <string name="nocontent_mine">👨‍🏫\nYour schedule seems to be regular</string>
+    <string name="nocontent_mine_nocourses">➕\nAdd your own courses to see them here</string>
     <string name="nocontent_all">✔️\nNo irregularities found</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -39,8 +40,9 @@
     <string name="error_nomailclient">No email client installed</string>
     <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses_%grade.json</string>
 
-    <string name="last_refreshed">Last refresh: %refresh\nLast change: %change</string>
+    <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourse presets refreshed: %courses</string>
     <string name="dateformat_hours">HH:mm:ss</string>
+    <string name="dateformat_coursesrefreshed">d. MM</string>
     <string name="info_author">Florian König 2020</string>
 
     <string name="course_german">German</string>
