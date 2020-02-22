@@ -252,7 +252,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     notification.setChannelId("changes");
                 }
                 notification
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSmallIcon(R.drawable.ic_notification)
                         .setSubText(context.getResources().getQuantityString(R.plurals.notification_title, newChanges.size()))
                         .setContentText(notificationString.toString())
                         .setStyle(new Notification.BigTextStyle()
