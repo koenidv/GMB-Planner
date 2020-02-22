@@ -47,10 +47,19 @@ public class Change {
         courseChanged = !courseNew.equals(course);
         roomNew = room.substring(room.indexOf(" &rArr; ") + 8);
         room = room.substring(0, room.indexOf(" &rArr; "));
-        roomChanged = !roomNew.equals(room);
+        roomChanged = !roomNew.equals("Sek") && !roomNew.equals(room);
         teacherNew = teacher.substring(teacher.indexOf(" &rArr; ") + 8);
         teacher = teacher.substring(0, teacher.indexOf(" &rArr; "));
-        teacherChanged = !teacherNew.equals(teacher);
+        teacherChanged = !teacherNew.equals("+") && !teacherNew.equals(teacher);
+    }
+
+    Change(String mCourse, String mType, String mTeacher, boolean mTeacherChanged, String mDate) {
+        course = mCourse;
+        type = mType;
+        teacher = mTeacher;
+        teacherChanged = mTeacherChanged;
+        teacherNew = teacher;
+        date = mDate;
     }
 
 

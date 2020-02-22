@@ -20,7 +20,7 @@
     <string name="menu_darkmode_enable">Dark theme</string>
     <string name="menu_darkmode_disable">Light theme</string>
     <string name="option_darkmode">Dark theme</string>
-    <string name="option_background_update">Background update</string>
+    <string name="option_background_update">Background update (higher data usage)</string>
 
     <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
@@ -44,6 +44,13 @@
     <string name="dateformat_hours">HH:mm:ss</string>
     <string name="dateformat_coursesrefreshed">d. MMM</string>
     <string name="info_author">Florian König 2020</string>
+
+    <string name="notification_channel_name">Changes</string>
+    <string name="notification_channel_description">This will notify you when a new change is made public. </string>
+    <plurals name="notification_title">
+        <item quantity="one">New change</item>
+        <item quantity="other">New changes</item>
+    </plurals>
 
     <string name="course_german">German</string>
     <string name="course_english">English</string>

@@ -24,6 +24,10 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            android:exported="false" />
     </application>
 
 </manifest>

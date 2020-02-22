@@ -1,22 +1,28 @@
 package com.koenidv.gmbplanner;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -38,6 +44,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
     private OkHttpClient client = new OkHttpClient.Builder().cookieJar(new MyCookieJar()).build();
     private Gson gson = new Gson();
     private ArrayList<Change> mChangeList = new ArrayList<>();
+    private boolean isBackground = false;
 
     /**
      * Sets the context and executes the changes request
@@ -50,6 +57,11 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         prefs = mContext.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
         prefsEdit = prefs.edit();
         execute("https://mosbacher-berg.de/user/login", prefs.getString("name", ""), prefs.getString("pass", ""));
+    }
+
+    void refreshChanges(Context mContext, boolean mIsBackground) {
+        isBackground = mIsBackground;
+        refreshChanges(mContext);
     }
 
     /**
@@ -76,7 +88,8 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         try (Response response = client.newCall(request).execute()) {
             return Objects.requireNonNull(response.body()).string();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            if (!Arrays.toString(ioe.getStackTrace()).contains("Unable to resolve host"))
+                ioe.printStackTrace();
             return "";
         }
     }
@@ -90,6 +103,11 @@ public class ChangesManager extends AsyncTask<String, String, String> {
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onPostExecute(String result) {
+
+        Type listType = new TypeToken<ArrayList<Change>>() {
+        }.getType();
+        List<Change> previousChanges = gson.fromJson(prefs.getString("changes", ""), listType);
+
         try {
             if (result.contains("Anmelden")) {
                 // Login failed
@@ -186,6 +204,66 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         // Broadcast to refresh UI
         Intent intent = new Intent("changesRefreshed");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+        // Send a notification for new changes within myCourses
+        if (isBackground) {
+            List<Change> newChanges = new ArrayList<>();
+            List<String> myCourses = new ArrayList<>();
+            StringBuilder notificationString = new StringBuilder();
+            try {
+                myCourses = Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class));
+            } catch (NullPointerException ignored) {
+            }
+
+            // Add all new favorite changes
+            for (Change thisChange : mChangeList) {
+                if (!previousChanges.contains(thisChange)) {
+                    if (myCourses.toString().toUpperCase().contains(thisChange.getCourse().toUpperCase())) {
+                        newChanges.add(thisChange);
+                    }
+                }
+            }
+
+            // Create notification text with new changes
+            for (Change thisChange : newChanges) {
+                notificationString.append(new Resolver().resolveCourse(thisChange.getCourse(), context));
+                if (thisChange.isTeacherChanged()) {
+                    notificationString.append(context.getString(R.string.change_connect_teacher)).append(new Resolver().resolveTeacher(thisChange.getTeacherNew()));
+                }
+                if (thisChange.isRoomChanged()) {
+                    notificationString.append(context.getString(R.string.change_connect_room)).append(thisChange.getRoomNew());
+                }
+                if (!thisChange.getType().equals("Raum") && !thisChange.getType().equals("Vertretung")) {
+                    notificationString.append(" ").append(thisChange.getType());
+                }
+                notificationString.append(" (").append(thisChange.getDate().substring(0, 2)).append("),\n");
+            }
+
+            if (!newChanges.isEmpty()) {
+                notificationString.delete(notificationString.lastIndexOf(","), notificationString.length());
+
+                // Create an explicit intent for an Activity in your app
+                Intent notificationIntent = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+
+                Notification.Builder notification = new Notification.Builder(context).setPriority(Notification.PRIORITY_HIGH);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notification.setChannelId("changes");
+                }
+                notification
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSubText(context.getResources().getQuantityString(R.plurals.notification_title, newChanges.size()))
+                        .setContentText(notificationString.toString())
+                        .setStyle(new Notification.BigTextStyle()
+                                .bigText(notificationString.toString()))
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.notify(0, notification.build());
+            }
+        }
     }
 
     /**

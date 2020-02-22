@@ -94,9 +94,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:splitTrack="false"
-        android:text="@string/option_background_update"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:text="@string/option_background_update" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/manageAccountButton"

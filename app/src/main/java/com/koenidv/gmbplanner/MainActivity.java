@@ -1,6 +1,8 @@
 package com.koenidv.gmbplanner;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +37,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -139,6 +147,22 @@ public class MainActivity extends AppCompatActivity {
             CredentialsSheet bottomsheet = new CredentialsSheet();
             bottomsheet.show(getSupportFragmentManager(), "credentialsSheet");
         }
+
+
+        if (prefs.getBoolean("backgroundRefresh", true)) {
+            Constraints workConstraints = new Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build();
+            PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(RefreshWorker.class, 60, TimeUnit.MINUTES)
+                    .setInitialDelay(45 - Calendar.getInstance().get(Calendar.MINUTE), TimeUnit.MINUTES)
+                    .setConstraints(workConstraints)
+                    .addTag("changesRefresh")
+                    .build();
+            WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("changesRefresh", ExistingPeriodicWorkPolicy.KEEP, workRequest);
+        }
+
+        createNotificationChannel();
+
     }
 
     @Override
@@ -225,12 +249,24 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        Switch backgroundSwitch = infoSheet.findViewById(R.id.backgroundUpdateSwitch);
+        final Switch backgroundSwitch = infoSheet.findViewById(R.id.backgroundUpdateSwitch);
         assert backgroundSwitch != null;
         backgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Todo: Toggle background updates
+                prefs.edit().putBoolean("backgroundRefresh", backgroundSwitch.isChecked()).apply();
+                if (backgroundSwitch.isChecked()) {
+                    Constraints workConstraints = new Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build();
+                    PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(RefreshWorker.class, 15, TimeUnit.MINUTES)
+                            .setConstraints(workConstraints)
+                            .addTag("changesRefresh")
+                            .build();
+                    WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("changesRefresh", ExistingPeriodicWorkPolicy.KEEP, workRequest);
+                } else {
+                    WorkManager.getInstance(getApplicationContext()).cancelUniqueWork("changesRefresh");
+                }
             }
         });
 
@@ -288,6 +324,20 @@ public class MainActivity extends AppCompatActivity {
         infoSheet.show();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("changes", getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(getString(R.string.notification_channel_description));
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
