@@ -22,6 +22,11 @@
     <string name="option_darkmode">Dark theme</string>
     <string name="option_background_update">Background update (higher data usage)</string>
 
+    <string name="action_email">Send email</string>
+    <string name="action_favorites_add">Add to your plan</string>
+    <string name="action_favorites_remove">Remove from your plan</string>
+    <string name="action_share">Share</string>
+
     <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
     <string name="start_add_courses">Add your courses</string>
@@ -34,10 +39,12 @@
     <string name="change_workorders">Note work orders</string>
     <string name="change_connect_teacher">" with "</string>
     <string name="change_connect_room">" in "</string>
+    <string name="change_connect_date">" on "</string>
 
     <string name="feedback_subject">[GMB Planner] Feedback</string>
 
     <string name="error_nomailclient">No email client installed</string>
+    <string name="error_offline">You\'re currently offline</string>
     <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses_%grade.json</string>
 
     <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourses refreshed: %courses</string>

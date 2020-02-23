@@ -8,12 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/lightStatusBar</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
+        <item name="android:windowContentTransitions">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.ShadowStyle" />
 
     <style name="AppTheme.Sheet" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
@@ -21,9 +21,19 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="bottomSheetStyle">@style/AppTheme.ModalStyle</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme.ModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
+
+    <style name="AppTheme.Sheet.Transparent" parent="AppTheme.Sheet">
+        <item name="bottomSheetStyle">@style/AppTheme.ModalStyle.Transparent</item>
+    </style>
+
+    <style name="AppTheme.ModalStyle.Transparent" parent="AppTheme.ModalStyle">
+        <item name="android:background">@drawable/transparent</item>
     </style>
 </resources>

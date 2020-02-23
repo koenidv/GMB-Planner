@@ -55,11 +55,17 @@
     <string name="option_background_update">Hintergrundaktualisierung (Erhöhter Datenverbrauch)</string>
     <string name="option_darkmode">Dunkles Design</string>
     <string name="dateformat_coursesrefreshed">d.M.</string>
-    <string name="nocontent_mine_nocourses">➕\\nFüge deine Kurse hinzu, um sie hier zu sehen</string>
+    <string name="nocontent_mine_nocourses">➕\nFüge deine Kurse hinzu, um sie hier zu sehen</string>
     <string name="notification_channel_name">Änderungen</string>
     <string name="notification_channel_description">GMB-Planer benachrichtigt dich, wenn es neue Änderungen an deinem Plan gibt.</string>
     <plurals name="notification_title">
         <item quantity="one">Neue Änderung</item>
         <item quantity="other">Neue Änderungen</item>
     </plurals>
+    <string name="change_connect_date">" am "</string>
+    <string name="action_email">E-Mail senden</string>
+    <string name="action_favorites_add">Zu deinem Plan hinzufügen</string>
+    <string name="action_favorites_remove">Aus deinem Plan entfernen</string>
+    <string name="action_share">Teilen</string>
+    <string name="error_offline">Du bist aktuell offline</string>
 </resources>

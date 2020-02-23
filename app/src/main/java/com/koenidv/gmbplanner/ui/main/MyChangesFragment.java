@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.koenidv.gmbplanner.Change;
@@ -42,12 +43,17 @@ public class MyChangesFragment extends Fragment {
             refreshList();
         }
     };
+    private BroadcastReceiver mFailedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.constraintLayout), R.string.error_offline, Snackbar.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
-
         refreshList();
     }
 
@@ -57,6 +63,8 @@ public class MyChangesFragment extends Fragment {
         // Register to receive messages.
         LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext())).registerReceiver(mMessageReceiver,
                 new IntentFilter("changesRefreshed"));
+        LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext())).registerReceiver(mFailedReceiver,
+                new IntentFilter("refreshFailed"));
     }
 
     @Override
@@ -70,6 +78,7 @@ public class MyChangesFragment extends Fragment {
     public void onDestroy() {
         // Unregister since the activity is about to be closed.
         LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(mFailedReceiver);
         super.onDestroy();
     }
 
@@ -100,7 +109,7 @@ public class MyChangesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
-        ChangesAdapter mAdapter = new ChangesAdapter(myChangeList, true);
+        ChangesAdapter mAdapter = new ChangesAdapter(myChangeList, true, prefs.getBoolean("compactModeFavorite", false));
         myChangesRecycler.setAdapter(mAdapter);
 
         if (myChangeList.isEmpty()) {

@@ -345,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
         // Unregister since the activity is about to be closed.
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshingReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mInvalidateCredentialsReceiver);
         super.onDestroy();
     }
 
@@ -355,5 +356,12 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = parent.findViewById(R.id.courseTextView);
         coursesSheet.myCourses.remove(textView.getText().toString());
         coursesSheet.adapter.notifyDataSetChanged();
+    }
+
+    // OnClick for changeItem
+    public void showChangeActions(final View view) {
+        ActionsSheet actionsSheet = new ActionsSheet(view);
+        actionsSheet.setSharedElementEnterTransition(view);
+        actionsSheet.show(getSupportFragmentManager(), "actionsSheet");
     }
 }

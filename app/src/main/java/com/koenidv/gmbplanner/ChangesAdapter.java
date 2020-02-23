@@ -18,25 +18,31 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {
     private List<Change> mDataset;
     private String lastDate = "";
-    private boolean isFavorite;
+    private boolean isFavorite, isCompact;
 
-    public ChangesAdapter(List<Change> dataset, boolean isFavorite) {
+    public ChangesAdapter(List<Change> dataset, boolean isFavorite, boolean isCompact) {
         mDataset = dataset;
         this.isFavorite = isFavorite;
+        this.isCompact = isCompact;
     }
 
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_change, parent, false);
+        View itemView;
+        if (isCompact) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_change_compact, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_change, parent, false);
+        }
         return new ViewHolder(itemView);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Change thisChange = mDataset.get(position);
         Context context = holder.centerTextView.getContext();
         Resolver resolver = new Resolver();
@@ -80,13 +86,19 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         holder.topTextView.setText(Html.fromHtml(topString.toString(), Html.FROM_HTML_MODE_COMPACT));
         holder.centerTextView.setText(Html.fromHtml(centerString.toString(), Html.FROM_HTML_MODE_COMPACT));
         holder.bottomTextView.setText(Html.fromHtml(bottomString.toString(), Html.FROM_HTML_MODE_COMPACT));
+        holder.courseHiddenTextView.setText(thisChange.getCourse());
+        holder.teacherHiddenTextView.setText(thisChange.getTeacher());
 
+        holder.dateTextView.setText(thisChange.getDate());
         if (!thisChange.getDate().equals(lastDate)) {
-            holder.dateTextView.setText(thisChange.getDate());
             holder.dateTextView.setVisibility(View.VISIBLE);
             lastDate = thisChange.getDate();
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            holder.card.setOutlineAmbientShadowColor(resolver.resolveCourseColor(thisChange.getCourse(), context));
+            holder.card.setOutlineSpotShadowColor(resolver.resolveCourseColor(thisChange.getCourse(), context));
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -103,7 +115,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView topTextView, centerTextView, bottomTextView, dateTextView;
+        TextView topTextView, centerTextView, bottomTextView, dateTextView, courseHiddenTextView, teacherHiddenTextView;
         View card;
 
         ViewHolder(View view) {
@@ -113,6 +125,8 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             centerTextView = view.findViewById(R.id.centerTextView);
             bottomTextView = view.findViewById(R.id.bottomTextView);
             dateTextView = view.findViewById(R.id.dateTextView);
+            courseHiddenTextView = view.findViewById(R.id.courseHiddenTextView);
+            teacherHiddenTextView = view.findViewById(R.id.teacherHiddenTextView);
         }
     }
 }

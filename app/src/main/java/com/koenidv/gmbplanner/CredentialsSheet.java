@@ -29,8 +29,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 //  Created by koenidv on 16.02.2020.
 public class CredentialsSheet extends BottomSheetDialogFragment {
 
-    private boolean disableOutsideTouch = false;
-
     public CredentialsSheet() {
     }
 
@@ -124,17 +122,5 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
         });
 
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // Disable cancelling on touch outside of the sheet
-        if (disableOutsideTouch) {
-            View touchOutsideView = Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow())
-                    .getDecorView()
-                    .findViewById(R.id.touch_outside);
-            touchOutsideView.setOnClickListener(null);
-        }
     }
 }

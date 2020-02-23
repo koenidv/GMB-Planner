@@ -60,6 +60,7 @@ public class AllChangesFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
@@ -83,7 +84,7 @@ public class AllChangesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
-        ChangesAdapter mAdapter = new ChangesAdapter(mChangeList, false);
+        ChangesAdapter mAdapter = new ChangesAdapter(mChangeList, false, prefs.getBoolean("compactModeAll", true));
         myChangesRecycler.setAdapter(mAdapter);
 
         if (mChangeList == null || mChangeList.isEmpty()) {

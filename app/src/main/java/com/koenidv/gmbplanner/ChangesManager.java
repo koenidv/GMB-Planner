@@ -24,6 +24,11 @@ import java.util.Objects;
 
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.Constraints;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.FormBody;
@@ -88,8 +93,20 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         try (Response response = client.newCall(request).execute()) {
             return Objects.requireNonNull(response.body()).string();
         } catch (IOException ioe) {
-            if (!Arrays.toString(ioe.getStackTrace()).contains("Unable to resolve host"))
-                ioe.printStackTrace();
+            // Display offline error
+            Intent intent = new Intent("refreshFailed");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+            // Update when device goes online
+            Constraints workConstraints = new Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build();
+            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(RefreshWorker.class)
+                    .setConstraints(workConstraints)
+                    .addTag("changesRefreshWhenOnline")
+                    .build();
+            WorkManager.getInstance(context).enqueueUniqueWork("changesRefreshWhenOnline", ExistingWorkPolicy.KEEP, workRequest);
+
             return "";
         }
     }
@@ -198,7 +215,6 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 prefsEdit.commit();
             }
         } catch (IndexOutOfBoundsException ignored) {
-            // Do nothing if network request failed
         }
 
         // Broadcast to refresh UI

@@ -25,12 +25,13 @@ public class RefreshWorker extends Worker {
     @Override
     public Result doWork() {
 
-        if (!foregrounded() && Calendar.getInstance().get(Calendar.HOUR_OF_DAY) >= 5) {
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) >= 5) {
             Log.d("GMB Planner", "Refreshing in background");
-            (new ChangesManager()).refreshChanges(getApplicationContext(), true);
+            (new ChangesManager()).refreshChanges(getApplicationContext(), !foregrounded());
+            return Result.success();
+        } else {
+            return Result.retry();
         }
-
-        return Result.success();
     }
 
     private boolean foregrounded() {

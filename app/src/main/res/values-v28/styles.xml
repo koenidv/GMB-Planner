@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.ShadowStyle" parent="AppTheme">
+        <item name="android:ambientShadowAlpha">0.4</item>
+        <item name="android:outlineAmbientShadowColor">@color/ambientShadowColor</item>
+        <item name="android:spotShadowAlpha">1</item>
+        <item name="android:outlineSpotShadowColor">@color/spotShadowColor</item>
+    </style>
+</resources>

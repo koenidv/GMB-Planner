@@ -9,5 +9,27 @@
     <color name="tabTextSelected">#4f76c5</color>
     <color name="titleText">#ddd</color>
     <color name="infoText">#4c4d50</color>
+    <color name="textColor">#fff</color>
     <bool name="lightStatusBar">false</bool>
+
+    <color name="ambientShadowColor">#0A000000</color>
+    <color name="spotShadowColor">#30000000</color>
+
+    <color name="course_german">#40ff0000</color>
+    <color name="course_english">#40ffae19</color>
+    <color name="course_latin">#40000000</color>
+    <color name="course_french">#40000000</color>
+    <color name="course_history">#40a5682a</color>
+    <color name="course_it">#40acacac</color>
+    <color name="course_arts">#40ffff00</color>
+    <color name="course_music">#40ffff00</color>
+    <color name="course_maths">#401919ff</color>
+    <color name="course_physics">#40ff00ff</color>
+    <color name="course_biology">#4000ff00</color>
+    <color name="course_chemistry">#40993299</color>
+    <color name="course_geography">#406b4013</color>
+    <color name="course_politics">#404c4cff</color>
+    <color name="course_sports">#40000000</color>
+    <color name="course_religion">#40202020</color>
+
 </resources>
