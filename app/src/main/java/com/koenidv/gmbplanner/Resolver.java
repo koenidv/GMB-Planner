@@ -14,7 +14,7 @@ import java.util.Objects;
 import kotlin.NotImplementedError;
 
 //  Created by koenidv on 20.02.2020.
-class Resolver {
+public class Resolver {
 
     Date resolveDate(String date) {
         // Todo: Resolve dates like Mo, 24.2.
@@ -28,7 +28,7 @@ class Resolver {
      * @param context    Context to get resources
      * @return The entire subject name as String, eg "Physics"
      */
-    String resolveCourse(String courseName, Context context) {
+    public String resolveCourse(String courseName, Context context) {
         StringBuilder name = new StringBuilder();
         if (courseName.contains("D-")) {
             name.append(context.getString(R.string.course_german));
@@ -126,7 +126,7 @@ class Resolver {
      * @param shorthand A teachers shorthand like "Fgr"
      * @return Their last name, if known, eg Fachinger
      */
-    String resolveTeacher(String shorthand) {
+    public String resolveTeacher(String shorthand) {
         switch (shorthand) {
             case "Adb":
                 return "Adelsberger";

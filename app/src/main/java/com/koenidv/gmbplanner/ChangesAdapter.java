@@ -59,7 +59,11 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (thisChange.getRoomNew().equals("Sek"))
                 topString.append(context.getString(R.string.change_workorders));
             centerString.append(" ").append(thisChange.getType());
-            bottomString.append(thisChange.getRoom()).append(" • ").append(thisChange.getCourse());
+            bottomString.append(thisChange.getRoom()).append(" • ");
+            if (isFavorite)
+                bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
+            else
+                bottomString.append(thisChange.getCourse());
         } else {
             topString.append(" • ").append(thisChange.getType());
             if (thisChange.isCourseChanged()) {
@@ -72,16 +76,21 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
                 bottomString.append(thisChange.getRoom()).append(" • ");
             }
             if (thisChange.isTeacherChanged()) {
-                centerString.append(context.getString(R.string.change_connect_teacher)).append(thisChange.getTeacherNew());
-                bottomString.append("<strike>").append(thisChange.getTeacher()).append("</strike>");
+                centerString.append(context.getString(R.string.change_connect_teacher)).append(resolver.resolveTeacher(thisChange.getTeacherNew()));
+                bottomString.append("<strike>").append(resolver.resolveTeacher(thisChange.getTeacher())).append("</strike>");
+            } else if (isFavorite) {
+                bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
             }
             if (thisChange.isCourseChanged()) {
                 bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike>");
-            } else {
+            } else if (!isFavorite) {
                 bottomString.append(thisChange.getCourse());
             }
+            if (!thisChange.isRoomChanged() && !thisChange.isTeacherChanged() && !thisChange.isCourseChanged()) {
+                // Probably an exam
+                centerString.append(" • ").append(thisChange.getType());
+            }
         }
-        //Todo: Klausuren
 
         holder.topTextView.setText(Html.fromHtml(topString.toString(), Html.FROM_HTML_MODE_COMPACT));
         holder.centerTextView.setText(Html.fromHtml(centerString.toString(), Html.FROM_HTML_MODE_COMPACT));

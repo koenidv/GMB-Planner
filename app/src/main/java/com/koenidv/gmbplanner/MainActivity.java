@@ -2,7 +2,9 @@ package com.koenidv.gmbplanner;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.koenidv.gmbplanner.ui.main.SectionsPagerAdapter;
+import com.koenidv.gmbplanner.widget.WidgetProvider;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
                 swiperefresh.setRefreshing(false);
             else
                 ignoreFirstRefreshed = false;
+
+            // Update widget
+            Intent widgetIntent = new Intent(MainActivity.this, WidgetProvider.class);
+            widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            int[] ids = AppWidgetManager.getInstance(getApplication())
+                    .getAppWidgetIds(new ComponentName(getApplication(), WidgetProvider.class));
+            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            sendBroadcast(widgetIntent);
         }
     };
     // Show the credentials sheet when ChangesManager encounters wrong credentials
@@ -104,13 +115,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // Postprocessing the last update
-        if (!prefs.getBoolean("updated_111", false)) {
-            prefs.edit().putLong("lastCourseRefresh", 0)
-                    .putBoolean("updated_111", true)
-                    .apply();
-        }
 
         // Set up tabs
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -224,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
     // OnClick for changeItem
     public void showChangeActions(final View view) {
         ActionsSheet actionsSheet = new ActionsSheet(view);
-        actionsSheet.setSharedElementEnterTransition(view);
         actionsSheet.show(getSupportFragmentManager(), "actionsSheet");
     }
 }

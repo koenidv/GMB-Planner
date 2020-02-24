@@ -53,25 +53,16 @@ public class Change {
         teacherChanged = !teacherNew.equals("+") && !teacherNew.equals(teacher);
     }
 
-    Change(String mCourse, String mType, String mTeacher, boolean mTeacherChanged, String mDate) {
-        course = mCourse;
-        type = mType;
-        teacher = mTeacher;
-        teacherChanged = mTeacherChanged;
-        teacherNew = teacher;
-        date = mDate;
-    }
 
-
-    String getType() {
+    public String getType() {
         return type;
     }
 
-    String getDate() {
+    public String getDate() {
         return date;
     }
 
-    String getTime() {
+    public String getTime() {
         return time;
     }
 
@@ -83,23 +74,23 @@ public class Change {
         return course;
     }
 
-    String getCourseNew() {
+    public String getCourseNew() {
         return courseNew;
     }
 
-    String getRoom() {
+    public String getRoom() {
         return room;
     }
 
-    String getRoomNew() {
+    public String getRoomNew() {
         return roomNew;
     }
 
-    String getTeacher() {
+    public String getTeacher() {
         return teacher;
     }
 
-    String getTeacherNew() {
+    public String getTeacherNew() {
         return teacherNew;
     }
 
@@ -107,15 +98,15 @@ public class Change {
         return information;
     }
 
-    boolean isCourseChanged() {
+    public boolean isCourseChanged() {
         return courseChanged;
     }
 
-    boolean isRoomChanged() {
+    public boolean isRoomChanged() {
         return roomChanged;
     }
 
-    boolean isTeacherChanged() {
+    public boolean isTeacherChanged() {
         return teacherChanged;
     }
 }

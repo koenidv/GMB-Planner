@@ -44,6 +44,7 @@
 
     <string name="change_hours">h</string>
     <string name="change_workorders">Note work orders</string>
+    <string name="change_exam">Exam</string>
     <string name="change_connect_teacher">" with "</string>
     <string name="change_connect_room">" in "</string>
     <string name="change_connect_date">" on "</string>
@@ -53,6 +54,8 @@
     <string name="error_nomailclient">No email client installed</string>
     <string name="error_offline">You\'re currently offline</string>
     <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses_%grade.json</string>
+    <string name="widget_title">Your changes:</string>
+    <string name="widget_nodata">Currently no changes</string>
 
     <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourses refreshed: %courses</string>
     <string name="dateformat_hours">HH:mm:ss</string>

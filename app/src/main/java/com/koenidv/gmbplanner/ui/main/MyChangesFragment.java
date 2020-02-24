@@ -88,6 +88,7 @@ public class MyChangesFragment extends Fragment {
 
         List<Change> everyChangeList;
         ArrayList<Change> myChangeList = new ArrayList<>();
+
         Type listType = new TypeToken<ArrayList<Change>>() {
         }.getType();
         everyChangeList = gson.fromJson(prefs.getString("changes", ""), listType);
