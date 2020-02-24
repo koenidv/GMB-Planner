@@ -11,9 +11,10 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="bottomSheetDialogTheme">@style/AppTheme.Sheet</item>
     </style>
 
-    <style name="AppTheme.ShadowStyle" />
+    <style name="AppTheme.ShadowStyle" parent="AppTheme" />
 
     <style name="AppTheme.Sheet" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
@@ -21,7 +22,7 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="bottomSheetStyle">@style/AppTheme.ModalStyle</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/textColor</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
 

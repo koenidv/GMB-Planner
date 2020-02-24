@@ -1,6 +1,5 @@
 package com.koenidv.gmbplanner;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -8,26 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.koenidv.gmbplanner.ui.main.SectionsPagerAdapter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -75,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
             // Show a bottom sheet to edit credentials
             CredentialsSheet bottomsheet = new CredentialsSheet();
             bottomsheet.show(getSupportFragmentManager(), "credentialsSheet");
+        }
+    };
+    // Recreate Activity after design change
+    private BroadcastReceiver mRecreateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            recreate();
         }
     };
 
@@ -126,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(mMessageReceiver, new IntentFilter("changesRefreshed"));
         broadcastManager.registerReceiver(mRefreshingReceiver, new IntentFilter("refreshing"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mInvalidateCredentialsReceiver, new IntentFilter("invalidateCredentials"));
+        broadcastManager.registerReceiver(mInvalidateCredentialsReceiver, new IntentFilter("invalidateCredentials"));
+        broadcastManager.registerReceiver(mRecreateReceiver, new IntentFilter("recreate"));
 
         // Set up swipe to refresh
         swiperefresh = findViewById(R.id.swiperefresh);
@@ -150,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (prefs.getBoolean("backgroundRefresh", true)) {
+            // Enqueue background workers
+
             Constraints workConstraints = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build();
@@ -159,6 +159,12 @@ public class MainActivity extends AppCompatActivity {
                     .addTag("changesRefresh")
                     .build();
             WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("changesRefresh", ExistingPeriodicWorkPolicy.KEEP, workRequest);
+
+            PeriodicWorkRequest morningWorkRequest = new PeriodicWorkRequest.Builder(RefreshWorker.class, 15, TimeUnit.MINUTES)
+                    .setConstraints(workConstraints)
+                    .addTag("morningReinforcement")
+                    .build();
+            WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("morningReinforcement", ExistingPeriodicWorkPolicy.KEEP, morningWorkRequest);
         }
 
         createNotificationChannel();
@@ -174,154 +180,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Ignore item, there's only one
+        // Show a bottom sheet with information and options
 
-        // Show a bottom sheet describing the time of the last refresh and some more actions
-        final SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        DateFormat timeFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
-        DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_coursesrefreshed), Locale.GERMAN);
-
-        final BottomSheetDialog infoSheet = new BottomSheetDialog(this, R.style.AppTheme_Sheet);
-        infoSheet.setContentView(R.layout.sheet_information);
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.authorTextView)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Link to my instagram
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://instagram.com/halbunsichtbar"));
-                startActivity(i);
-            }
-        });
-
-        TextView refreshTextView = infoSheet.findViewById(R.id.lastRefreshedTextView);
-        assert refreshTextView != null;
-        refreshTextView.setText(getString(R.string.last_refreshed)
-                .replace("%refresh", timeFormatter.format(prefs.getLong("lastRefresh", 0)))
-                .replace("%change", prefs.getString("lastChange", "?"))
-                .replace("%courses", dateFormatter.format(prefs.getLong("lastCourseRefresh", 0))));
-        refreshTextView.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ApplySharedPref")
-            @Override
-            public void onClick(View v) {
-                // Refresh all changes
-                swiperefresh.setRefreshing(true);
-                prefs.edit().putLong("lastCourseRefresh", 0).commit();
-                new ChangesManager().refreshChanges(getApplicationContext());
-                infoSheet.dismiss();
-            }
-        });
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.coursesButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show a bottom sheet to edit favorite courses
-                coursesSheet = new CoursesSheet();
-                coursesSheet.show(getSupportFragmentManager(), "coursesSheet");
-                infoSheet.dismiss();
-            }
-        });
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.credentialsButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show a bottom sheet to edit credentials
-                CredentialsSheet bottomsheet = new CredentialsSheet();
-                bottomsheet.show(getSupportFragmentManager(), "credentialsSheet");
-                infoSheet.dismiss();
-            }
-        });
-
-        if (Build.VERSION.SDK_INT < 29) {
-            // Display force dark switch if below Android 10
-            Switch darkSwitch = infoSheet.findViewById(R.id.darkmodeSwitch);
-            assert darkSwitch != null;
-            darkSwitch.setVisibility(View.VISIBLE);
-            if (prefs.getBoolean("forceDark", true))
-                darkSwitch.setChecked(true);
-            darkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // Toggle force dark and recreate the activity to apply changes
-                    prefs.edit().putBoolean("forceDark", !prefs.getBoolean("forceDark", true)).apply();
-                    infoSheet.dismiss();
-                    recreate();
-                }
-            });
-        }
-
-        final Switch backgroundSwitch = infoSheet.findViewById(R.id.backgroundUpdateSwitch);
-        assert backgroundSwitch != null;
-        backgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                prefs.edit().putBoolean("backgroundRefresh", backgroundSwitch.isChecked()).apply();
-                if (backgroundSwitch.isChecked()) {
-                    Constraints workConstraints = new Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .build();
-                    PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(RefreshWorker.class, 15, TimeUnit.MINUTES)
-                            .setConstraints(workConstraints)
-                            .addTag("changesRefresh")
-                            .build();
-                    WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("changesRefresh", ExistingPeriodicWorkPolicy.KEEP, workRequest);
-                } else {
-                    WorkManager.getInstance(getApplicationContext()).cancelUniqueWork("changesRefresh");
-                }
-            }
-        });
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.manageAccountButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open the website to edit the user account.
-                // Can't automatically log the user in as that would require a post request.
-                Uri uri = Uri.parse("https://mosbacher-berg.de/user/login");
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(browserIntent);
-                infoSheet.dismiss();
-            }
-        });
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.feedbackButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send an email
-                Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
-                        .setData(Uri.parse("mailto:"))
-                        .putExtra(Intent.EXTRA_EMAIL, new String[]{"sv@gmbwi.de"})
-                        .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
-                // Only open if email client is installed
-                if (emailIntent.resolveActivity(getPackageManager()) != null)
-                    startActivity(emailIntent);
-                else
-                    Snackbar.make(findViewById(R.id.rootview), R.string.error_nomailclient, Snackbar.LENGTH_SHORT);
-                infoSheet.dismiss();
-            }
-        });
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.rateButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open Play Store to let the user rate the app
-                final String appPackageName = getPackageName();
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                }
-                infoSheet.dismiss();
-            }
-        });
-
-        Objects.requireNonNull(infoSheet.findViewById(R.id.doneButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Dismiss the sheet
-                infoSheet.dismiss();
-            }
-        });
-
-        infoSheet.show();
+        OptionsSheet optionsSheet = new OptionsSheet();
+        optionsSheet.show(getSupportFragmentManager(), "optionsSheet");
 
         return super.onOptionsItemSelected(item);
     }
@@ -346,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshingReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mInvalidateCredentialsReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRecreateReceiver);
         super.onDestroy();
     }
 

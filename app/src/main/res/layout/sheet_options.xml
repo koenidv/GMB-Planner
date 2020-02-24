@@ -70,31 +70,93 @@
 
     </LinearLayout>
 
-    <Switch
-        android:id="@+id/darkmodeSwitch"
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/darkmodeToggleGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:checked="false"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:switchTextAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:text="@string/option_darkmode"
         android:visibility="gone"
-        tools:visibility="visible" />
+        app:selectionRequired="true"
+        app:singleSelection="true"
+        tools:visibility="visible">
 
-    <Switch
-        android:id="@+id/backgroundUpdateSwitch"
+        <Button
+            android:id="@+id/darkButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/option_theme_dark" />
+
+        <Button
+            android:id="@+id/lightButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/option_theme_light" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/compactToggleGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:checked="true"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:splitTrack="false"
-        android:text="@string/option_background_update" />
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <Button
+            android:id="@+id/comfortableButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/option_compact_off" />
+
+        <Button
+            android:id="@+id/autoCompactButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="@string/option_compact_auto" />
+
+        <Button
+            android:id="@+id/compactButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/option_compact_on" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/backgroundToggleGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <Button
+            android:id="@+id/backgroundOnButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxWidth="288dp"
+            android:text="@string/option_background_on" />
+
+        <Button
+            android:id="@+id/backgroundOffButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/option_background_off" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/manageAccountButton"

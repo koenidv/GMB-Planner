@@ -52,6 +52,8 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
         final String course = ((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString();
         final String teacher = ((TextView) mPreview.findViewById(R.id.teacherHiddenTextView)).getText().toString();
+        final String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString();
+        final String date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
 
         // Copy values
         ((TextView) view.findViewById(R.id.topTextView)).setText(((TextView) mPreview.findViewById(R.id.topTextView)).getText());
@@ -70,7 +72,8 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                 Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
                         .setData(Uri.parse("mailto:"))
                         .putExtra(Intent.EXTRA_EMAIL, new String[]{
-                                resolver.resolveTeacherInitial(teacher) + "." + resolver.resolveTeacher(teacher).toLowerCase() + "@mosbacher-berg.de"});
+                                resolver.resolveTeacherInitial(teacher) + "." + resolver.resolveTeacher(teacher).toLowerCase() + "@mosbacher-berg.de"})
+                        .putExtra(Intent.EXTRA_SUBJECT, type + getString(R.string.change_connect_date) + date);
                 // Only open if email client is installed
                 if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
                     startActivity(emailIntent);
@@ -128,7 +131,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                 String shareBody =
                         ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString()
                                 + getString(R.string.change_connect_date)
-                                + ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
+                                + date;
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);

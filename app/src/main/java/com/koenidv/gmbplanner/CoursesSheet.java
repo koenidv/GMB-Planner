@@ -43,9 +43,8 @@ public class CoursesSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.AppTheme_Sheet);
-
     }
+
 
     @Nullable
     @Override

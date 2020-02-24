@@ -21,6 +21,13 @@
     <string name="menu_darkmode_disable">Light theme</string>
     <string name="option_darkmode">Dark theme</string>
     <string name="option_background_update">Background update (higher data usage)</string>
+    <string name="option_theme_dark">Dark theme</string>
+    <string name="option_theme_light">Light theme</string>
+    <string name="option_compact_off">Comfortable</string>
+    <string name="option_compact_auto">Auto</string>
+    <string name="option_compact_on">Compact</string>
+    <string name="option_background_on">Background update</string>
+    <string name="option_background_off">Save data</string>
 
     <string name="action_email">Send email</string>
     <string name="action_favorites_add">Add to your plan</string>

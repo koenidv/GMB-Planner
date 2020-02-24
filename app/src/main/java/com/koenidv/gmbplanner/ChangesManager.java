@@ -78,6 +78,9 @@ public class ChangesManager extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... input) {
 
+        Intent refreshing = new Intent("refreshing");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(refreshing);
+
         RequestBody formBody = new FormBody.Builder()
                 .add("name", input[1])
                 .add("pass", input[2])
@@ -93,19 +96,21 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         try (Response response = client.newCall(request).execute()) {
             return Objects.requireNonNull(response.body()).string();
         } catch (IOException ioe) {
-            // Display offline error
-            Intent intent = new Intent("refreshFailed");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            if (!isBackground) {
+                // Display offline error
+                Intent intent = new Intent("refreshFailed");
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
-            // Update when device goes online
-            Constraints workConstraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build();
-            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(RefreshWorker.class)
-                    .setConstraints(workConstraints)
-                    .addTag("changesRefreshWhenOnline")
-                    .build();
-            WorkManager.getInstance(context).enqueueUniqueWork("changesRefreshWhenOnline", ExistingWorkPolicy.KEEP, workRequest);
+                // Update when device goes online
+                Constraints workConstraints = new Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build();
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(RefreshWorker.class)
+                        .setConstraints(workConstraints)
+                        .addTag("changesRefreshWhenOnline")
+                        .build();
+                WorkManager.getInstance(context).enqueueUniqueWork("changesRefreshWhenOnline", ExistingWorkPolicy.KEEP, workRequest);
+            }
 
             return "";
         }

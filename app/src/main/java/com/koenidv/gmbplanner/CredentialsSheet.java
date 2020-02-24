@@ -35,7 +35,6 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.AppTheme_Sheet);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
