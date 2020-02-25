@@ -115,7 +115,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         rv.setTextViewText(R.id.infoTextView, Html.fromHtml(infoString.toString()));
 
         if (!change.getDate().equals(lastDate)) {
-            rv.setTextViewText(R.id.dateTextView, change.getDate());
+            rv.setTextViewText(R.id.dateTextView, resolver.resolveDate(change.getDate(), mContext));
             rv.setViewVisibility(R.id.dateTextView, View.VISIBLE);
             lastDate = change.getDate();
         }

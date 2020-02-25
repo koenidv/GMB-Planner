@@ -58,6 +58,7 @@ public class Change {
         return type;
     }
 
+
     public String getDate() {
         return date;
     }

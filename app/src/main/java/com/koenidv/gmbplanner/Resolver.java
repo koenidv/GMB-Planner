@@ -5,20 +5,56 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
-
-import kotlin.NotImplementedError;
 
 //  Created by koenidv on 20.02.2020.
 public class Resolver {
 
-    Date resolveDate(String date) {
-        // Todo: Resolve dates like Mo, 24.2.
-        throw new NotImplementedError("Not yet implemented..");
+    /**
+     * Resolves absolute date Strings to relative date Strings
+     *
+     * @param dateString Date as imported, like "Di 25.02."
+     * @param context    Application context to get resources
+     * @return Relative date as string, eg "Today", "Tomorrow", etc.
+     */
+    public String resolveDate(String dateString, Context context) {
+        Calendar date = null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd.MM.", Locale.GERMAN);
+        try {
+            date = Calendar.getInstance();
+            date.setTime(Objects.requireNonNull(dateFormat.parse(dateString)));
+            date.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        } catch (ParseException mE) {
+            mE.printStackTrace();
+        }
+
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        long difference = date.getTimeInMillis() - today.getTimeInMillis();
+
+        if (difference < 86400000) {
+            return context.getString(R.string.today);
+        } else if (difference < 2 * 86400000) {
+            return context.getString(R.string.tomorrow);
+        }/* else if (difference < 3 * 86400000) {
+            return mContext.getString(R.string.aftertomorrow);
+        }*/ else {
+            SimpleDateFormat returnFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+            return returnFormat.format(date.getTimeInMillis());
+        }
+
     }
 
     /**
@@ -78,9 +114,9 @@ public class Resolver {
     /**
      * Resolves course descriptions to their according colors
      *
-     * @param courseName The description of a course, eg "PH-LK-1"
+     * @param courseName The description of a course
      * @param context    Context to get resources
-     * @return The entire subject name as String, eg "Physics"
+     * @return The according color
      */
     int resolveCourseColor(String courseName, Context context) {
         if (courseName.contains("D-")) {
@@ -117,6 +153,36 @@ public class Resolver {
             return context.getResources().getColor(R.color.course_religion);
         } else {
             return context.getResources().getColor(R.color.spotShadowColor);
+        }
+    }
+
+    /**
+     * Resolves change types to their according colors
+     *
+     * @param type    The change type
+     * @param context Context to get resources
+     * @return The according color
+     */
+    int resolveTypeColor(String type, Context context) {
+        switch (type.toLowerCase()) {
+            case "eva":
+                return context.getResources().getColor(R.color.type_eva);
+            case "freisetzung":
+                return context.getResources().getColor(R.color.type_freed);
+            case "entfall":
+                return context.getResources().getColor(R.color.type_cancelled);
+            case "vertretung":
+                return context.getResources().getColor(R.color.type_standin);
+            case "statt-vertretung":
+                return context.getResources().getColor(R.color.type_standin_instead);
+            case "verlegung":
+                return context.getResources().getColor(R.color.type_transfer);
+            case "betreuung":
+                return context.getResources().getColor(R.color.type_care);
+            case "Raum":
+                return context.getResources().getColor(R.color.type_room);
+            default:
+                return context.getResources().getColor(R.color.type_other);
         }
     }
 

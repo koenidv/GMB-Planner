@@ -78,4 +78,7 @@
     <string name="change_exam">Klausur</string>
     <string name="widget_title">Deine Änderungen:</string>
     <string name="widget_nodata">Aktuell keine Änderungen</string>
+    <string name="aftertomorrow">Übermorgen</string>
+    <string name="today">Heute</string>
+    <string name="tomorrow">Morgen</string>
 </resources>

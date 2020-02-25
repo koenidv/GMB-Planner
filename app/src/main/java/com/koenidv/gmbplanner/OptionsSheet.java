@@ -68,9 +68,9 @@ public class OptionsSheet extends BottomSheetDialogFragment {
         TextView refreshTextView = view.findViewById(R.id.lastRefreshedTextView);
         assert refreshTextView != null;
         refreshTextView.setText(getString(R.string.last_refreshed)
-                .replace("%refresh", timeFormatter.format(prefs.getLong("lastRefresh", 0)))
-                .replace("%change", prefs.getString("lastChange", "?"))
-                .replace("%courses", dateFormatter.format(prefs.getLong("lastCourseRefresh", 0))));
+                .replace("%refresh", prefs.getLong("lastRefresh", 0) == 0 ? "..." : timeFormatter.format(prefs.getLong("lastRefresh", 0)))
+                .replace("%change", prefs.getString("lastChange", "..."))
+                .replace("%courses", prefs.getLong("lastCourseRefresh", 0) == 0 ? "..." : dateFormatter.format(prefs.getLong("lastCourseRefresh", 0))));
         refreshTextView.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ApplySharedPref")
             @Override

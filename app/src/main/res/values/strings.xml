@@ -48,6 +48,9 @@
     <string name="change_connect_teacher">" with "</string>
     <string name="change_connect_room">" in "</string>
     <string name="change_connect_date">" on "</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="aftertomorrow">Day after tomorrow</string>
 
     <string name="feedback_subject">[GMB Planner] Feedback</string>
 

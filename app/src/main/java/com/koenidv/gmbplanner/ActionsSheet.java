@@ -61,7 +61,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         ((TextView) view.findViewById(R.id.centerTextView)).setText(((TextView) mPreview.findViewById(R.id.centerTextView)).getText());
         ((TextView) view.findViewById(R.id.bottomTextView)).setText(((TextView) mPreview.findViewById(R.id.bottomTextView)).getText());
         view.findViewById(R.id.changeCard).setOnClickListener(null);
-
+        view.findViewById(R.id.changeCard).setBackground(mPreview.getBackground());
 
         Button emailButton = view.findViewById(R.id.emailButton);
         if (resolver.resolveTeacherInitial(teacher).equals("unknown")) {
@@ -70,11 +70,17 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String subject;
+                if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
+                    subject = type + " " + date.toLowerCase();
+                } else {
+                    subject = type + getString(R.string.change_connect_date) + date;
+                }
                 Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
                         .setData(Uri.parse("mailto:"))
                         .putExtra(Intent.EXTRA_EMAIL, new String[]{
                                 resolver.resolveTeacherInitial(teacher) + "." + resolver.resolveTeacher(teacher).toLowerCase() + "@mosbacher-berg.de"})
-                        .putExtra(Intent.EXTRA_SUBJECT, type + getString(R.string.change_connect_date) + date);
+                        .putExtra(Intent.EXTRA_SUBJECT, subject);
                 // Only open if email client is installed
                 if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
                     startActivity(emailIntent);

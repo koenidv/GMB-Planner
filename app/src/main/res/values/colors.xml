@@ -31,4 +31,15 @@
     <color name="course_politics">#404c4cff</color>
     <color name="course_sports">#40000000</color>
     <color name="course_religion">#40202020</color>
+
+    <color name="type_eva">#6066cc99</color>
+    <color name="type_freed">#6087d37c</color>
+    <color name="type_cancelled">#6005731d</color>
+    <color name="type_standin">#60e0544e</color>
+    <color name="type_standin_instead">#60fc6f58</color>
+    <color name="type_transfer">#60e45d65</color>
+    <color name="type_care">#60f39c12</color>
+    <color name="type_room">#60ba8ee0</color>
+    <color name="type_other">#6059abe3</color>
+
 </resources>

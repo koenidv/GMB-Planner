@@ -1,6 +1,7 @@
 package com.koenidv.gmbplanner;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -65,7 +66,6 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             else
                 bottomString.append(thisChange.getCourse());
         } else {
-            topString.append(" • ").append(thisChange.getType());
             if (thisChange.isCourseChanged()) {
                 centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew());
             }
@@ -89,6 +89,8 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (!thisChange.isRoomChanged() && !thisChange.isTeacherChanged() && !thisChange.isCourseChanged()) {
                 // Probably an exam
                 centerString.append(" • ").append(thisChange.getType());
+            } else {
+                topString.append(" • ").append(thisChange.getType());
             }
         }
 
@@ -99,16 +101,16 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         holder.teacherHiddenTextView.setText(thisChange.getTeacher());
         holder.typeHiddenTextView.setText(thisChange.getType());
 
-        holder.dateTextView.setText(thisChange.getDate());
+        holder.dateTextView.setText(resolver.resolveDate(thisChange.getDate(), context));
         if (!thisChange.getDate().equals(lastDate)) {
             holder.dateTextView.setVisibility(View.VISIBLE);
             lastDate = thisChange.getDate();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            holder.card.setOutlineAmbientShadowColor(resolver.resolveCourseColor(thisChange.getCourse(), context));
-            holder.card.setOutlineSpotShadowColor(resolver.resolveCourseColor(thisChange.getCourse(), context));
-        }
+        int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourse(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
+        GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
+        gradient.setCornerRadius(24);
+        holder.card.setBackground(gradient);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

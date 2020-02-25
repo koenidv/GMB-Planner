@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        // Refresh if last refresh is more than 30 minutes ago and setup is complete
-        if ((Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastRefresh", 0)) > 1800 * 1000
+        // Refresh if last refresh is more than 15 minutes ago and setup is complete
+        if ((Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastRefresh", 0)) > 900 * 1000
                 && !prefs.getString("pass", "").isEmpty()) {
             new ChangesManager().refreshChanges(getApplicationContext());
             swiperefresh.setRefreshing(true);
@@ -115,6 +115,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Post-process last update
+        if (!prefs.getBoolean("updated_120", false)) {
+            prefs.edit().putString("changes", "")
+                    .putBoolean("updated_120", true)
+                    .apply();
+        }
 
         // Set up tabs
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
