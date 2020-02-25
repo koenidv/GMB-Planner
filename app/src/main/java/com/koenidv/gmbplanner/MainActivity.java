@@ -129,6 +129,22 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+        // Disable SwipeRefreshLayout while swiping
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (swiperefresh != null)
+                    swiperefresh.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
+            }
+        });
 
         // Register to receive messages.
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);

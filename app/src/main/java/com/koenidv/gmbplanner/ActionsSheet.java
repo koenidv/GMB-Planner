@@ -135,10 +135,14 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String dateBody;
+                if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
+                    dateBody = " " + date.toLowerCase();
+                } else {
+                    dateBody = getString(R.string.change_connect_date) + date;
+                }
                 String shareBody =
-                        ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString()
-                                + getString(R.string.change_connect_date)
-                                + date;
+                        ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString() + dateBody;
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
