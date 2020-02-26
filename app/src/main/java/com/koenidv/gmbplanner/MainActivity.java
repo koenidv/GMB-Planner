@@ -38,7 +38,7 @@ import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    static CoursesSheet coursesSheet;
+    public static CoursesSheet coursesSheet;
     private SwipeRefreshLayout swiperefresh;
     boolean ignoreFirstRefreshed = false;
 

@@ -234,7 +234,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
 
             // Add all new favorite changes
             for (Change thisChange : mChangeList) {
-                if (!previousChanges.contains(thisChange)) {
+                if (previousChanges.contains(thisChange)) {
                     if (resolver.isFavorite(thisChange.getCourse(), context)) {
                         newChanges.add(thisChange);
                     }
@@ -286,7 +286,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
     /**
      * Store cookies from the login page. Website will deny access otherwise.
      */
-    public class MyCookieJar implements CookieJar {
+    public static class MyCookieJar implements CookieJar {
 
         private List<Cookie> cookies;
 

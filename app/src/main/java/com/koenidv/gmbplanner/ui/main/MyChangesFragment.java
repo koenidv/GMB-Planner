@@ -33,6 +33,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.koenidv.gmbplanner.MainActivity.coursesSheet;
+
 //  Created by koenidv on 15.02.2020.
 public class MyChangesFragment extends Fragment {
 
@@ -123,7 +125,7 @@ public class MyChangesFragment extends Fragment {
                 mView.findViewById(R.id.addCoursesButton).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CoursesSheet coursesSheet = new CoursesSheet();
+                        coursesSheet = new CoursesSheet();
                         coursesSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "coursesSheet");
                     }
                 });

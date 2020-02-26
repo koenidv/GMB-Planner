@@ -213,6 +213,19 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             }
         });
 
+        /*Objects.requireNonNull(view.findViewById(R.id.manageAccountButton)).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // For debugging
+                OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(RefreshWorker.class)
+                        .addTag("changesRefreshWhenOnline")
+                        .setInitialDelay(5, TimeUnit.SECONDS)
+                        .build();
+                WorkManager.getInstance(getContext()).enqueueUniqueWork("changesRefreshWhenOnline", ExistingWorkPolicy.KEEP, workRequest);
+                return true;
+            }
+        });*/
+
         Objects.requireNonNull(view.findViewById(R.id.feedbackButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
