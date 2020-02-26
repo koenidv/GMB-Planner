@@ -79,6 +79,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                 myCourses.add(text);
                 adapter.notifyDataSetChanged();
                 v.setVisibility(View.GONE);
+                v.setEnabled(false);
                 editText.setText("");
             }
         };
@@ -131,12 +132,15 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                 else
                     inputLayout.setEndIconVisible(true);
                 for (int i = 0; i < chipgroup.getChildCount(); i++) {
-                    if (s.toString().isEmpty()) {
-                        chipgroup.getChildAt(i).setVisibility(View.VISIBLE);
-                    } else if (((Chip) chipgroup.getChildAt(i)).getText().toString().toUpperCase().contains(s.toString().toUpperCase())) {
-                        chipgroup.getChildAt(i).setVisibility(View.VISIBLE);
-                    } else {
-                        chipgroup.getChildAt(i).setVisibility(View.GONE);
+                    // Search chips
+                    if (chipgroup.getChildAt(i).isEnabled()) {
+                        if (s.toString().isEmpty()) {
+                            chipgroup.getChildAt(i).setVisibility(View.VISIBLE);
+                        } else if (((Chip) chipgroup.getChildAt(i)).getText().toString().toUpperCase().contains(s.toString().toUpperCase())) {
+                            chipgroup.getChildAt(i).setVisibility(View.VISIBLE);
+                        } else {
+                            chipgroup.getChildAt(i).setVisibility(View.GONE);
+                        }
                     }
                 }
             }

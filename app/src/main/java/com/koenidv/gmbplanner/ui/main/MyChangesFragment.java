@@ -1,5 +1,6 @@
 package com.koenidv.gmbplanner.ui.main;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -82,6 +83,7 @@ public class MyChangesFragment extends Fragment {
         super.onDestroy();
     }
 
+    @SuppressLint("SetTextI18n")
     private void refreshList() {
         SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -117,6 +119,8 @@ public class MyChangesFragment extends Fragment {
             TextView emptyTextView = mView.findViewById(R.id.noContentTextView);
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.nocontent_mine);
+            if (prefs.getBoolean("sveaEE", false))
+                emptyTextView.append(" :(");
 
             if (prefs.getString("myCourses", "").length() <= 2) {
                 emptyTextView.setText(R.string.nocontent_mine_nocourses);

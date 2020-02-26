@@ -1,6 +1,7 @@
 package com.koenidv.gmbplanner;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.Html;
@@ -14,6 +15,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 //  Created by koenidv on 15.02.2020.
 public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {
@@ -94,9 +97,9 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             }
         }
 
-        holder.topTextView.setText(Html.fromHtml(topString.toString(), Html.FROM_HTML_MODE_COMPACT));
-        holder.centerTextView.setText(Html.fromHtml(centerString.toString(), Html.FROM_HTML_MODE_COMPACT));
-        holder.bottomTextView.setText(Html.fromHtml(bottomString.toString(), Html.FROM_HTML_MODE_COMPACT));
+        holder.topTextView.setText(Html.fromHtml(topString.toString()));
+        holder.centerTextView.setText(Html.fromHtml(centerString.toString()));
+        holder.bottomTextView.setText(Html.fromHtml(bottomString.toString()));
         holder.courseHiddenTextView.setText(thisChange.getCourse());
         holder.teacherHiddenTextView.setText(thisChange.getTeacher());
         holder.typeHiddenTextView.setText(thisChange.getType());
@@ -111,6 +114,11 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
         gradient.setCornerRadius(24);
         holder.card.setBackground(gradient);
+
+        SharedPreferences prefs = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        if (prefs.getBoolean("colorless", false)) {
+            holder.innerCard.setBackground(context.getDrawable(R.drawable.card_background));
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -128,11 +136,12 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView topTextView, centerTextView, bottomTextView, dateTextView, courseHiddenTextView, teacherHiddenTextView, typeHiddenTextView;
-        View card;
+        View card, innerCard;
 
         ViewHolder(View view) {
             super(view);
             card = view.findViewById(R.id.changeCard);
+            innerCard = view.findViewById(R.id.innerCard);
             topTextView = view.findViewById(R.id.topTextView);
             centerTextView = view.findViewById(R.id.centerTextView);
             bottomTextView = view.findViewById(R.id.bottomTextView);

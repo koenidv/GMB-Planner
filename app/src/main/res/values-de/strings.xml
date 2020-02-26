@@ -81,4 +81,5 @@
     <string name="aftertomorrow">Übermorgen</string>
     <string name="today">Heute</string>
     <string name="tomorrow">Morgen</string>
+    <string name="course_examination">-PF</string>
 </resources>

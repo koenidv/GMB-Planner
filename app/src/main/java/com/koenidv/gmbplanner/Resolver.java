@@ -72,6 +72,8 @@ public class Resolver {
             name.append(context.getString(R.string.course_english));
         } else if (courseName.contains("L-")) {
             name.append(context.getString(R.string.course_latin));
+        } else if (courseName.contains("SPO-")) {
+            name.append(context.getString(R.string.course_sports));
         } else if (courseName.contains("F-")) {
             name.append(context.getString(R.string.course_french));
         } else if (courseName.contains("G-")) {
@@ -94,8 +96,6 @@ public class Resolver {
             name.append(context.getString(R.string.course_geography));
         } else if (courseName.contains("POWI-")) {
             name.append(context.getString(R.string.course_politics));
-        } else if (courseName.contains("SPO-")) {
-            name.append(context.getString(R.string.course_sports));
         } else if (courseName.contains("RKA-") || courseName.contains("REV-")) {
             name.append(context.getString(R.string.course_german));
         } else if (courseName.contains("ETHI-")) {
@@ -107,6 +107,8 @@ public class Resolver {
         }
         if (courseName.contains("-LK")) {
             name.append(context.getString(R.string.course_intensified));
+        } else if (courseName.contains("-PF")) {
+            name.append(context.getString(R.string.course_examination));
         }
         return name.toString();
     }
@@ -123,6 +125,8 @@ public class Resolver {
             return context.getResources().getColor(R.color.course_german);
         } else if (courseName.contains("E-")) {
             return context.getResources().getColor(R.color.course_english);
+        } else if (courseName.contains("SPO-")) {
+            return context.getResources().getColor(R.color.course_sports);
         } else if (courseName.contains("L-")) {
             return context.getResources().getColor(R.color.course_latin);
         } else if (courseName.contains("F-")) {
@@ -147,8 +151,6 @@ public class Resolver {
             return context.getResources().getColor(R.color.course_geography);
         } else if (courseName.contains("POWI-")) {
             return context.getResources().getColor(R.color.course_politics);
-        } else if (courseName.contains("SPO-")) {
-            return context.getResources().getColor(R.color.course_sports);
         } else if (courseName.contains("RKA-") || courseName.contains("REV-") || courseName.contains("ETHI-")) {
             return context.getResources().getColor(R.color.course_religion);
         } else {

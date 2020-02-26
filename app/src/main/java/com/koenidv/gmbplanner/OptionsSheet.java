@@ -32,6 +32,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.koenidv.gmbplanner.MainActivity.coursesSheet;
 
 //  Created by koenidv on 16.02.2020.
 public class OptionsSheet extends BottomSheetDialogFragment {
@@ -86,7 +87,7 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 // Show a bottom sheet to edit favorite courses
-                CoursesSheet coursesSheet = new CoursesSheet();
+                coursesSheet = new CoursesSheet();
                 coursesSheet.show(getActivity().getSupportFragmentManager(), "coursesSheet");
                 dismiss();
             }
@@ -227,6 +228,15 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             }
         });
 
+        Objects.requireNonNull(view.findViewById(R.id.feedbackButton)).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                prefs.edit().putBoolean("colorless", !prefs.getBoolean("colorless", false)).apply();
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent("changesRefreshed"));
+                return true;
+            }
+        });
+
         Objects.requireNonNull(view.findViewById(R.id.rateButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,6 +248,15 @@ public class OptionsSheet extends BottomSheetDialogFragment {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                 }
                 dismiss();
+            }
+        });
+
+        Objects.requireNonNull(view.findViewById(R.id.rateButton)).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                prefs.edit().putBoolean("sveaEE", !prefs.getBoolean("sveaEE", false)).apply();
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent("changesRefreshed"));
+                return true;
             }
         });
 
