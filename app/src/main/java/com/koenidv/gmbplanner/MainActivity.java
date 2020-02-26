@@ -116,13 +116,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Post-process last update
-        if (!prefs.getBoolean("updated_120", false)) {
-            prefs.edit().putString("changes", "")
-                    .putBoolean("updated_120", true)
-                    .apply();
-        }
-
         // Set up tabs
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
