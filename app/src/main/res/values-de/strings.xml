@@ -29,7 +29,7 @@
     <string name="course_intensified">-LK</string>
     <string name="course_it">Informatik</string>
     <string name="course_arts">Kunst</string>
-    <string name="course_biology">Biologie</string>
+    <string name="course_biology">Bio</string>
     <string name="course_chemistry">Chemie</string>
     <string name="course_english">Englisch</string>
     <string name="course_ethics">Ethik</string>
@@ -44,7 +44,7 @@
     <string name="course_politics">PoWi</string>
     <string name="course_religion">Religion</string>
     <string name="course_sports">Sport</string>
-    <string name="coursr_bili">Bili</string>
+    <string name="course_history_bili">Geschichte-Bili</string>
     <string name="dateformat_hours">HH:mm:ss</string>
     <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change\nKurse aktualisiert: %courses</string>
     <string name="menu_information">Informationen</string>
@@ -82,4 +82,5 @@
     <string name="today">Heute</string>
     <string name="tomorrow">Morgen</string>
     <string name="course_examination">-PF</string>
+    <string name="course_concb">Concert Band</string>
 </resources>

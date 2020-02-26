@@ -89,7 +89,8 @@
     <string name="course_sports">Sports</string>
     <string name="course_religion">Religion</string>
     <string name="course_ethics">Ethics</string>
-    <string name="coursr_bili">Bili</string>
+    <string name="course_history_bili">History Bili</string>
+    <string name="course_concb">Concert Band</string>
     <string name="course_intensified"> IC</string>
     <string name="course_examination"> ES</string>
 </resources>

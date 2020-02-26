@@ -129,6 +129,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         Type listType = new TypeToken<ArrayList<Change>>() {
         }.getType();
         List<Change> previousChanges = gson.fromJson(prefs.getString("changes", ""), listType);
+        Resolver resolver = new Resolver();
 
         try {
             if (result.contains("Anmelden")) {
@@ -229,17 +230,12 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         // Send a notification for new changes within myCourses
         if (isBackground) {
             List<Change> newChanges = new ArrayList<>();
-            List<String> myCourses = new ArrayList<>();
             StringBuilder notificationString = new StringBuilder();
-            try {
-                myCourses = Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class));
-            } catch (NullPointerException ignored) {
-            }
 
             // Add all new favorite changes
             for (Change thisChange : mChangeList) {
                 if (!previousChanges.contains(thisChange)) {
-                    if (myCourses.toString().toUpperCase().contains(thisChange.getCourse().toUpperCase())) {
+                    if (resolver.isFavorite(thisChange.getCourse(), context)) {
                         newChanges.add(thisChange);
                     }
                 }

@@ -19,10 +19,10 @@ import com.koenidv.gmbplanner.Change;
 import com.koenidv.gmbplanner.ChangesAdapter;
 import com.koenidv.gmbplanner.CoursesSheet;
 import com.koenidv.gmbplanner.R;
+import com.koenidv.gmbplanner.Resolver;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,16 +94,11 @@ public class MyChangesFragment extends Fragment {
         Type listType = new TypeToken<ArrayList<Change>>() {
         }.getType();
         everyChangeList = gson.fromJson(prefs.getString("changes", ""), listType);
-        List<String> myCourses = new ArrayList<>();
-        try {
-            myCourses = Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class));
-        } catch (NullPointerException ignored) {
-        }
 
         if (everyChangeList != null) {
             for (Change change : everyChangeList) {
                 // Convert to string so that the list can contain a note about the teacher (eg course (teacher))
-                if (myCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
+                if ((new Resolver()).isFavorite(change.getCourse(), getActivity()))
                     myChangeList.add(change);
             }
         }

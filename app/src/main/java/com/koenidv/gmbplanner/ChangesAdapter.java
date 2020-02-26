@@ -50,74 +50,79 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         Change thisChange = mDataset.get(position);
         Context context = holder.centerTextView.getContext();
         Resolver resolver = new Resolver();
-        StringBuilder topString = new StringBuilder(thisChange.getTime() + context.getString(R.string.change_hours));
-        StringBuilder centerString = new StringBuilder();
-        StringBuilder bottomString = new StringBuilder();
 
-        if (isFavorite)
-            centerString.append(resolver.resolveCourse(thisChange.getCourse(), context));
-        else
-            centerString.append(resolver.resolveCourse(thisChange.getCourse(), context)).append(" (").append(resolver.resolveTeacher(thisChange.getTeacher())).append(")");
+        if (thisChange.getType() != null) {
+            StringBuilder topString = new StringBuilder(thisChange.getTime() + context.getString(R.string.change_hours));
+            StringBuilder centerString = new StringBuilder();
+            StringBuilder bottomString = new StringBuilder();
 
-        if (thisChange.getType().equals("EVA") || thisChange.getType().equals("Entfall") || thisChange.getType().equals("Freistellung")) {
-            if (thisChange.getRoomNew().equals("Sek"))
-                topString.append(context.getString(R.string.change_workorders));
-            centerString.append(" ").append(thisChange.getType());
-            bottomString.append(thisChange.getRoom()).append(" • ");
+            if (isFavorite)
+                centerString.append(resolver.resolveCourse(thisChange.getCourse(), context));
+            else
+                centerString.append(resolver.resolveCourse(thisChange.getCourse(), context)).append(" (").append(resolver.resolveTeacher(thisChange.getTeacher())).append(")");
+
+            if (thisChange.getType().equals("EVA") || thisChange.getType().equals("Entfall") || thisChange.getType().equals("Freistellung")) {
+                if (thisChange.getRoomNew().equals("Sek"))
+                    topString.append(context.getString(R.string.change_workorders));
+                centerString.append(" ").append(thisChange.getType());
+                if (!thisChange.getRoom().equals(" "))
+                    bottomString.append(thisChange.getRoom()).append(" • ");
             if (isFavorite)
                 bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
             else
                 bottomString.append(thisChange.getCourse());
-        } else {
-            if (thisChange.isCourseChanged()) {
-                centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew());
-            }
-            if (thisChange.isRoomChanged()) {
-                centerString.append(context.getString(R.string.change_connect_room)).append(thisChange.getRoomNew());
-                bottomString.append("<strike>").append(thisChange.getRoom()).append("</strike>").append(" • ");
             } else {
-                bottomString.append(thisChange.getRoom()).append(" • ");
+                if (thisChange.isCourseChanged()) {
+                    centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew());
+                }
+                if (thisChange.isRoomChanged()) {
+                    centerString.append(context.getString(R.string.change_connect_room)).append(thisChange.getRoomNew());
+                    bottomString.append("<strike>").append(thisChange.getRoom()).append("</strike>").append(" • ");
+                } else {
+                    if (!thisChange.getRoom().equals(" "))
+                        bottomString.append(thisChange.getRoom()).append(" • ");
+                }
+                if (thisChange.isTeacherChanged()) {
+                    centerString.append(context.getString(R.string.change_connect_teacher)).append(resolver.resolveTeacher(thisChange.getTeacherNew()));
+                    bottomString.append("<strike>").append(resolver.resolveTeacher(thisChange.getTeacher())).append("</strike>");
+                } else if (isFavorite) {
+                    bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
+                }
+                if (thisChange.isCourseChanged()) {
+                    bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike>");
+                } else if (!isFavorite) {
+                    bottomString.append(thisChange.getCourse());
+                }
+                if (!thisChange.isRoomChanged() && !thisChange.isTeacherChanged() && !thisChange.isCourseChanged()) {
+                    // Probably an exam
+                    centerString.append(" • ").append(thisChange.getType());
+                } else {
+                    topString.append(" • ").append(thisChange.getType());
+                }
             }
-            if (thisChange.isTeacherChanged()) {
-                centerString.append(context.getString(R.string.change_connect_teacher)).append(resolver.resolveTeacher(thisChange.getTeacherNew()));
-                bottomString.append("<strike>").append(resolver.resolveTeacher(thisChange.getTeacher())).append("</strike>");
-            } else if (isFavorite) {
-                bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
+
+            holder.topTextView.setText(Html.fromHtml(topString.toString()));
+            holder.centerTextView.setText(Html.fromHtml(centerString.toString()));
+            holder.bottomTextView.setText(Html.fromHtml(bottomString.toString()));
+            holder.courseHiddenTextView.setText(thisChange.getCourse());
+            holder.teacherHiddenTextView.setText(thisChange.getTeacher());
+            holder.typeHiddenTextView.setText(thisChange.getType());
+
+            holder.dateTextView.setText(resolver.resolveDate(thisChange.getDate(), context));
+            if (!thisChange.getDate().equals(lastDate)) {
+                holder.dateTextView.setVisibility(View.VISIBLE);
+                lastDate = thisChange.getDate();
             }
-            if (thisChange.isCourseChanged()) {
-                bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike>");
-            } else if (!isFavorite) {
-                bottomString.append(thisChange.getCourse());
+
+            int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourse(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
+            GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
+            gradient.setCornerRadius(resolver.dpToPx(8, context));
+            holder.card.setBackground(gradient);
+
+            SharedPreferences prefs = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+            if (prefs.getBoolean("colorless", false)) {
+                holder.innerCard.setBackground(context.getDrawable(R.drawable.card_background));
             }
-            if (!thisChange.isRoomChanged() && !thisChange.isTeacherChanged() && !thisChange.isCourseChanged()) {
-                // Probably an exam
-                centerString.append(" • ").append(thisChange.getType());
-            } else {
-                topString.append(" • ").append(thisChange.getType());
-            }
-        }
-
-        holder.topTextView.setText(Html.fromHtml(topString.toString()));
-        holder.centerTextView.setText(Html.fromHtml(centerString.toString()));
-        holder.bottomTextView.setText(Html.fromHtml(bottomString.toString()));
-        holder.courseHiddenTextView.setText(thisChange.getCourse());
-        holder.teacherHiddenTextView.setText(thisChange.getTeacher());
-        holder.typeHiddenTextView.setText(thisChange.getType());
-
-        holder.dateTextView.setText(resolver.resolveDate(thisChange.getDate(), context));
-        if (!thisChange.getDate().equals(lastDate)) {
-            holder.dateTextView.setVisibility(View.VISIBLE);
-            lastDate = thisChange.getDate();
-        }
-
-        int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourse(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
-        GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
-        gradient.setCornerRadius(24);
-        holder.card.setBackground(gradient);
-
-        SharedPreferences prefs = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        if (prefs.getBoolean("colorless", false)) {
-            holder.innerCard.setBackground(context.getDrawable(R.drawable.card_background));
         }
     }
 

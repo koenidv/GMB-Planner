@@ -2,6 +2,7 @@ package com.koenidv.gmbplanner;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.TypedValue;
 
 import com.google.gson.Gson;
 
@@ -66,45 +67,50 @@ public class Resolver {
      */
     public String resolveCourse(String courseName, Context context) {
         StringBuilder name = new StringBuilder();
-        if (courseName.contains("D-")) {
+        if (courseName == null) {
+            return "";
+        } else if (courseName.startsWith("D-")) {
             name.append(context.getString(R.string.course_german));
-        } else if (courseName.contains("E-")) {
+        } else if (courseName.startsWith("E-")) {
             name.append(context.getString(R.string.course_english));
-        } else if (courseName.contains("L-")) {
+        } else if (courseName.startsWith("L-")) {
             name.append(context.getString(R.string.course_latin));
-        } else if (courseName.contains("SPO-")) {
+        } else if (courseName.startsWith("SPO-")) {
             name.append(context.getString(R.string.course_sports));
-        } else if (courseName.contains("F-")) {
+        } else if (courseName.startsWith("F-")) {
             name.append(context.getString(R.string.course_french));
-        } else if (courseName.contains("G-")) {
+        } else if (courseName.startsWith("G-")) {
             name.append(context.getString(R.string.course_history));
-        } else if (courseName.contains("INFO-")) {
+        } else if (courseName.startsWith("INFO-")) {
             name.append(context.getString(R.string.course_it));
-        } else if (courseName.contains("KU-")) {
+        } else if (courseName.startsWith("KU-")) {
             name.append(context.getString(R.string.course_arts));
-        } else if (courseName.contains("MU-")) {
+        } else if (courseName.startsWith("MU-")) {
             name.append(context.getString(R.string.course_music));
-        } else if (courseName.contains("M-")) {
+        } else if (courseName.startsWith("M-")) {
             name.append(context.getString(R.string.course_maths));
-        } else if (courseName.contains("PH-")) {
+        } else if (courseName.startsWith("PH-")) {
             name.append(context.getString(R.string.course_physics));
-        } else if (courseName.contains("BIO-")) {
+        } else if (courseName.startsWith("BIO-")) {
             name.append(context.getString(R.string.course_biology));
-        } else if (courseName.contains("CH-")) {
+        } else if (courseName.startsWith("CH-")) {
             name.append(context.getString(R.string.course_chemistry));
-        } else if (courseName.contains("EK-")) {
+        } else if (courseName.startsWith("EK-")) {
             name.append(context.getString(R.string.course_geography));
-        } else if (courseName.contains("POWI-")) {
+        } else if (courseName.startsWith("POWI-")) {
             name.append(context.getString(R.string.course_politics));
-        } else if (courseName.contains("RKA-") || courseName.contains("REV-")) {
+        } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-")) {
             name.append(context.getString(R.string.course_german));
-        } else if (courseName.contains("ETHI-")) {
+        } else if (courseName.startsWith("ETHI-")) {
             name.append(context.getString(R.string.course_ethics));
-        } else if (courseName.contains("BI-")) {
-            name.append(context.getString(R.string.coursr_bili));
+        } else if (courseName.startsWith("GBi-")) {
+            name.append(context.getString(R.string.course_history_bili));
+        } else if (courseName.startsWith("AG-ConcB")) {
+            name.append(context.getString(R.string.course_concb));
         } else {
             name.append(courseName.substring(0, courseName.indexOf('-')));
         }
+
         if (courseName.contains("-LK")) {
             name.append(context.getString(R.string.course_intensified));
         } else if (courseName.contains("-PF")) {
@@ -121,37 +127,37 @@ public class Resolver {
      * @return The according color
      */
     int resolveCourseColor(String courseName, Context context) {
-        if (courseName.contains("D-")) {
+        if (courseName.startsWith("D-")) {
             return context.getResources().getColor(R.color.course_german);
-        } else if (courseName.contains("E-")) {
+        } else if (courseName.startsWith("E-")) {
             return context.getResources().getColor(R.color.course_english);
-        } else if (courseName.contains("SPO-")) {
+        } else if (courseName.startsWith("SPO-")) {
             return context.getResources().getColor(R.color.course_sports);
-        } else if (courseName.contains("L-")) {
+        } else if (courseName.startsWith("L-")) {
             return context.getResources().getColor(R.color.course_latin);
-        } else if (courseName.contains("F-")) {
+        } else if (courseName.startsWith("F-")) {
             return context.getResources().getColor(R.color.course_french);
-        } else if (courseName.contains("G-") || courseName.contains("BI-")) {
+        } else if (courseName.startsWith("G-") || courseName.startsWith("GBi-")) {
             return context.getResources().getColor(R.color.course_history);
-        } else if (courseName.contains("INFO-")) {
+        } else if (courseName.startsWith("INFO-")) {
             return context.getResources().getColor(R.color.course_it);
-        } else if (courseName.contains("KU-")) {
+        } else if (courseName.startsWith("KU-")) {
             return context.getResources().getColor(R.color.course_arts);
-        } else if (courseName.contains("MU-")) {
+        } else if (courseName.startsWith("MU-")) {
             return context.getResources().getColor(R.color.course_music);
-        } else if (courseName.contains("M-")) {
+        } else if (courseName.startsWith("M-")) {
             return context.getResources().getColor(R.color.course_maths);
-        } else if (courseName.contains("PH-")) {
+        } else if (courseName.startsWith("PH-")) {
             return context.getResources().getColor(R.color.course_physics);
-        } else if (courseName.contains("BIO-")) {
+        } else if (courseName.startsWith("BIO-")) {
             return context.getResources().getColor(R.color.course_biology);
-        } else if (courseName.contains("CH-")) {
+        } else if (courseName.startsWith("CH-")) {
             return context.getResources().getColor(R.color.course_chemistry);
-        } else if (courseName.contains("EK-")) {
+        } else if (courseName.startsWith("EK-")) {
             return context.getResources().getColor(R.color.course_geography);
-        } else if (courseName.contains("POWI-")) {
+        } else if (courseName.startsWith("POWI-")) {
             return context.getResources().getColor(R.color.course_politics);
-        } else if (courseName.contains("RKA-") || courseName.contains("REV-") || courseName.contains("ETHI-")) {
+        } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-") || courseName.startsWith("ETHI-")) {
             return context.getResources().getColor(R.color.course_religion);
         } else {
             return context.getResources().getColor(R.color.spotShadowColor);
@@ -195,6 +201,8 @@ public class Resolver {
      * @return Their last name, if known, eg Fachinger
      */
     public String resolveTeacher(String shorthand) {
+        if (shorthand == null)
+            return "";
         switch (shorthand) {
             case "Adb":
                 return "Adelsberger";
@@ -442,7 +450,7 @@ public class Resolver {
      * @param context Application context to get SharedPrefs
      * @return If course is added to my plan
      */
-    boolean isFavorite(String course, Context context) {
+    public boolean isFavorite(String course, Context context) {
         List<String> myCourses = new ArrayList<>();
         SharedPreferences prefs = Objects.requireNonNull(context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE));
         try {
@@ -450,6 +458,10 @@ public class Resolver {
         } catch (NullPointerException ignored) {
         }
         // Convert to string so that the list can contain a note about the teacher (eg course (teacher))
-        return myCourses.toString().toUpperCase().contains(course.toUpperCase());
+        return course != null && myCourses.toString().toUpperCase().contains(course.toUpperCase());
+    }
+
+    float dpToPx(float dp, Context context) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 }

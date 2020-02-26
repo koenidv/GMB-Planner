@@ -61,7 +61,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         ((TextView) view.findViewById(R.id.centerTextView)).setText(((TextView) mPreview.findViewById(R.id.centerTextView)).getText());
         ((TextView) view.findViewById(R.id.bottomTextView)).setText(((TextView) mPreview.findViewById(R.id.bottomTextView)).getText());
         view.findViewById(R.id.changeCard).setOnClickListener(null);
-        view.findViewById(R.id.changeCard).setBackground(mPreview.getBackground());
+        view.findViewById(R.id.changeCard).setBackground(mPreview.findViewById(R.id.changeCard).getBackground());
 
         Button emailButton = view.findViewById(R.id.emailButton);
         if (resolver.resolveTeacherInitial(teacher).equals("unknown")) {
