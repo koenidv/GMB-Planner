@@ -111,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
+        // Post-process update
+        if (prefs.getInt("lastVersion", 123) < 124) {
+            prefs.edit().putInt("lastVersion", 124).putString("allCourses", "").apply();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);

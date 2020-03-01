@@ -3,6 +3,8 @@ package com.koenidv.gmbplanner;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,7 +29,9 @@ import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -213,7 +217,7 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             }
         });
 
-        /*Objects.requireNonNull(view.findViewById(R.id.manageAccountButton)).setOnLongClickListener(new View.OnLongClickListener() {
+        Objects.requireNonNull(view.findViewById(R.id.manageAccountButton)).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 // For debugging
@@ -224,16 +228,25 @@ public class OptionsSheet extends BottomSheetDialogFragment {
                 WorkManager.getInstance(getContext()).enqueueUniqueWork("changesRefreshWhenOnline", ExistingWorkPolicy.KEEP, workRequest);
                 return true;
             }
-        });*/
+        });
 
         Objects.requireNonNull(view.findViewById(R.id.feedbackButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get app version
+                String version;
+                try {
+                    PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+                    version = String.valueOf(pInfo.versionCode);
+                } catch (PackageManager.NameNotFoundException nme) {
+                    version = "?";
+                }
                 // Send an email
                 Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
                         .setData(Uri.parse("mailto:"))
                         .putExtra(Intent.EXTRA_EMAIL, new String[]{"sv@gmbwi.de"})
-                        .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
+                        .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject))
+                        .putExtra(Intent.EXTRA_TEXT, getString(R.string.feedback_body).replace("%app", version).replace("%android", String.valueOf(Build.VERSION.SDK_INT)));
                 // Only open if email client is installed
                 if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
                     startActivity(emailIntent);

@@ -100,7 +100,7 @@ public class Resolver {
         } else if (courseName.startsWith("POWI-")) {
             name.append(context.getString(R.string.course_politics));
         } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-")) {
-            name.append(context.getString(R.string.course_german));
+            name.append(context.getString(R.string.course_religion));
         } else if (courseName.startsWith("ETHI-")) {
             name.append(context.getString(R.string.course_ethics));
         } else if (courseName.startsWith("GBi-")) {

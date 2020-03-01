@@ -16,7 +16,7 @@
     <color name="spotShadowColor">#30000000</color>
 
     <color name="course_german">#40ff0000</color>
-    <color name="course_english">#40ffa500</color>
+    <color name="course_english">#40ff4500</color>
     <color name="course_latin">#40000000</color>
     <color name="course_french">#40000000</color>
     <color name="course_history">#40a5682a</color>

@@ -30,13 +30,11 @@
         android:background="@drawable/card_background"
         android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
-        android:elevation="64dp"
         android:focusable="true"
         android:onClick="showChangeActions"
         android:transitionName="changeCard"
         app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"
-        app:cardPreventCornerOverlap="true">
+        app:cardElevation="2dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/changeCard"

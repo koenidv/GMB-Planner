@@ -53,6 +53,7 @@
     <string name="aftertomorrow">Day after tomorrow</string>
 
     <string name="feedback_subject">[GMB Planner] Feedback</string>
+    <string name="feedback_body">\n\nApp version: %app\nAndroid version: %android</string>
 
     <string name="error_nomailclient">No email client installed</string>
     <string name="error_offline">You\'re currently offline</string>

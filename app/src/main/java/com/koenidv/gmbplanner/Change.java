@@ -1,5 +1,7 @@
 package com.koenidv.gmbplanner;
 
+import androidx.annotation.Nullable;
+
 //  Created by koenidv on 15.02.2020.
 public class Change {
 
@@ -53,11 +55,23 @@ public class Change {
         teacherChanged = !teacherNew.equals("+") && !teacherNew.equals(teacher);
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        try {
+            Change toTest = (Change) obj;
+            return toTest != null
+                    && toTest.getCourse().equals(course)
+                    && toTest.getDate().equals(date)
+                    && toTest.getTime().equals(time)
+                    && toTest.getType().equals(type);
+        } catch (NullPointerException npe) {
+            return false;
+        }
+    }
 
     public String getType() {
         return type;
     }
-
 
     public String getDate() {
         return date;

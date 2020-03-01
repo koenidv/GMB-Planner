@@ -33,7 +33,6 @@
         android:focusable="true"
         android:onClick="showChangeActions"
         android:transitionName="changeCard"
-        app:cardBackgroundColor="@color/cardBackground"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp">
 

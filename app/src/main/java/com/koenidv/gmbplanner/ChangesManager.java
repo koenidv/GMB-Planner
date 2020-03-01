@@ -138,7 +138,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 // Broadcast to show the credentials sheet
                 Intent intent = new Intent("invalidateCredentials");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-            } else {
+            } else if (result.contains("Vertretungsplan")) {
                 // Login succeeded
                 String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
                 lastChange = lastChange.substring(0, lastChange.indexOf("<"));
@@ -169,6 +169,16 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     allCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
                 } catch (NullPointerException ignored) {
                 }
+
+                for (Change change : mChangeList)
+                    if (!allCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
+                        allCourses.add(change.getCourse() + " (" + change.getTeacher() + ")");
+
+                prefsEdit.putString("allCourses", gson.toJson(allCourses))
+                        .putString("lastChange", lastChange)
+                        .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
+                prefsEdit.commit();
+
                 // Get course presets for the first time or after 2 weeks
                 if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
                     // Get course presets from koenidv.de
@@ -211,15 +221,8 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                         }
                     }.execute();
                 }
-                for (Change change : mChangeList)
-                    if (!allCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
-                        allCourses.add(change.getCourse() + " (" + change.getTeacher() + ")");
-
-                prefsEdit.putString("allCourses", gson.toJson(allCourses))
-                        .putString("lastChange", lastChange)
-                        .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
-                prefsEdit.commit();
-            }
+            } // Todo: Handle activation code
+            // else if (result.contains("Berechtigungscode")) {}
         } catch (IndexOutOfBoundsException ignored) {
         }
 
@@ -234,7 +237,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
 
             // Add all new favorite changes
             for (Change thisChange : mChangeList) {
-                if (previousChanges.contains(thisChange)) {
+                if (!previousChanges.contains(thisChange)) {
                     if (resolver.isFavorite(thisChange.getCourse(), context)) {
                         newChanges.add(thisChange);
                     }
@@ -242,7 +245,12 @@ public class ChangesManager extends AsyncTask<String, String, String> {
             }
 
             // Create notification text with new changes
+            String lastDate = "";
             for (Change thisChange : newChanges) {
+                if (!lastDate.equals(thisChange.getDate())) {
+                    lastDate = thisChange.getDate();
+                    notificationString.append(resolver.resolveDate(thisChange.getDate(), context)).append(":\n");
+                }
                 notificationString.append(new Resolver().resolveCourse(thisChange.getCourse(), context));
                 if (thisChange.isTeacherChanged()) {
                     notificationString.append(context.getString(R.string.change_connect_teacher)).append(new Resolver().resolveTeacher(thisChange.getTeacherNew()));
@@ -253,7 +261,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 if (!thisChange.getType().equals("Raum") && !thisChange.getType().equals("Vertretung")) {
                     notificationString.append(" ").append(thisChange.getType());
                 }
-                notificationString.append(" (").append(thisChange.getDate().substring(0, 2)).append("),\n");
+                notificationString.append(",\n");
             }
 
             if (!newChanges.isEmpty()) {
