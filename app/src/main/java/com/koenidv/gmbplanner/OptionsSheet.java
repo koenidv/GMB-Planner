@@ -29,9 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -217,7 +215,7 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             }
         });
 
-        Objects.requireNonNull(view.findViewById(R.id.manageAccountButton)).setOnLongClickListener(new View.OnLongClickListener() {
+        /*Objects.requireNonNull(view.findViewById(R.id.manageAccountButton)).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 // For debugging
@@ -228,7 +226,7 @@ public class OptionsSheet extends BottomSheetDialogFragment {
                 WorkManager.getInstance(getContext()).enqueueUniqueWork("changesRefreshWhenOnline", ExistingWorkPolicy.KEEP, workRequest);
                 return true;
             }
-        });
+        });*/
 
         Objects.requireNonNull(view.findViewById(R.id.feedbackButton)).setOnClickListener(new View.OnClickListener() {
             @Override

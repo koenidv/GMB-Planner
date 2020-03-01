@@ -6,9 +6,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.koenidv.gmbplanner.ChangesManager;
 import com.koenidv.gmbplanner.R;
 
 //  Created by koenidv on 24.02.2020.
@@ -20,7 +20,6 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
-            Log.d("njnjnjnjnj", "jujjjjjjjjjjjjjjjjj");
             // Create an Intent to refresh
             Intent refreshIntent = new Intent(context, WidgetProvider.class);
             refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
@@ -39,5 +38,11 @@ public class WidgetProvider extends AppWidgetProvider {
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        new ChangesManager().refreshChanges(context);
+        super.onEnabled(context);
     }
 }

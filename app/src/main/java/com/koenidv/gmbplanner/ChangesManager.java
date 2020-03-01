@@ -57,7 +57,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
      * @param mContext Application context
      */
     @SuppressLint("CommitPrefEdits")
-    void refreshChanges(Context mContext) {
+    public void refreshChanges(Context mContext) {
         context = mContext;
         prefs = mContext.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
         prefsEdit = prefs.edit();
