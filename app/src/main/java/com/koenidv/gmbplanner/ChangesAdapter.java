@@ -111,6 +111,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             holder.dateTextView.setText(resolver.resolveDate(thisChange.getDate(), context));
             if (!thisChange.getDate().equals(lastDate)) {
                 holder.dateTextView.setVisibility(View.VISIBLE);
+                holder.setIsRecyclable(false);
                 lastDate = thisChange.getDate();
             }
 
