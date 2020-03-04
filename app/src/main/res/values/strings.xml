@@ -58,6 +58,7 @@
     <string name="error_nomailclient">No email client installed</string>
     <string name="error_offline">You\'re currently offline</string>
     <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses_%grade.json</string>
+    <string name="url_timetable" translatable="false">https://koenidv.de/gmbplanner/timetable_%grade.json</string>
     <string name="widget_title">Your changes:</string>
     <string name="widget_nodata">Currently no changes</string>
 
@@ -94,4 +95,5 @@
     <string name="course_concb">Concert Band</string>
     <string name="course_intensified"> IC</string>
     <string name="course_examination"> ES</string>
+
 </resources>

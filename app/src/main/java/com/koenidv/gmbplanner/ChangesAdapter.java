@@ -21,7 +21,6 @@ import static android.content.Context.MODE_PRIVATE;
 //  Created by koenidv on 15.02.2020.
 public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {
     private List<Change> mDataset;
-    private String lastDate = "";
     private boolean isFavorite, isCompact;
 
     public ChangesAdapter(List<Change> dataset, boolean isFavorite, boolean isCompact) {
@@ -112,7 +111,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (position == 0 || !thisChange.getDate().equals(mDataset.get(position - 1).getDate())) {
                 holder.dateTextView.setVisibility(View.VISIBLE);
                 holder.setIsRecyclable(false);
-                lastDate = thisChange.getDate();
+                String lastDate = thisChange.getDate();
             } else {
                 holder.dateTextView.setVisibility(View.GONE);
             }

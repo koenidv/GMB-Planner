@@ -221,6 +221,46 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                         }
                     }.execute();
                 }
+
+                // Get timetable for the first time or after 8 weeks
+                if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastTimetableRefresh", 0) > 4838400L * 1000) {
+                    // Get timetable from koenidv.de
+                    final String finalGrade = grade;
+                    new AsyncTask<String, String, String>() {
+                        @Override
+                        protected String doInBackground(String... mStrings) {
+                            // Ignore first refresh broadcast, as this request will still be still running
+                            Intent ignoreIntent = new Intent("refreshing");
+                            ignoreIntent.putExtra("ignoreFirst", true);
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(ignoreIntent);
+
+                            // Network request needs to be async
+                            Request request = new Request.Builder()
+                                    .url(context.getString(R.string.url_timetable).replace("%grade", finalGrade.toLowerCase()))
+                                    .header("User-Agent", "GMB Planner")
+                                    .build();
+                            try (Response response = client.newCall(request).execute()) {
+                                String responseString = Objects.requireNonNull(response.body()).string();
+                                // Remove newlines so that gson can parse the data
+                                responseString = responseString.replace("\n", "");
+                                Lesson[][][] lessons = gson.fromJson(responseString, Lesson[][][].class);
+
+                                prefsEdit.putString("timetableAll", gson.toJson(lessons))
+                                        .putLong("lastTimetableRefresh", Calendar.getInstance().getTimeInMillis())
+                                        .commit();
+
+                                // Broadcast to refresh UI
+                                Intent doneIntent = new Intent("changesRefreshed");
+                                doneIntent.putExtra("dontIgnore", true);
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
+                            } catch (IOException | RuntimeException mE) {
+                                mE.printStackTrace();
+                            }
+                            return null;
+                        }
+                    }.execute();
+                }
+
             } // Todo: Handle activation code
             // else if (result.contains("Berechtigungscode")) {}
         } catch (IndexOutOfBoundsException ignored) {

@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Post-process update
-        if (prefs.getInt("lastVersion", 123) < 125) {
-            prefs.edit().putInt("lastVersion", 125).putString("coursesRefreshed", "").apply();
+        if (prefs.getInt("lastVersion", 123) < 126) {
+            prefs.edit().putInt("lastVersion", 126).putLong("lastCourseRefresh", 0).apply();
         }
 
         super.onCreate(savedInstanceState);
@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         createNotificationChannel();
-
     }
 
     @Override

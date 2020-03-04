@@ -18,6 +18,8 @@ import com.google.gson.reflect.TypeToken;
 import com.koenidv.gmbplanner.Change;
 import com.koenidv.gmbplanner.ChangesAdapter;
 import com.koenidv.gmbplanner.CoursesSheet;
+import com.koenidv.gmbplanner.Lesson;
+import com.koenidv.gmbplanner.LessonsAdapter;
 import com.koenidv.gmbplanner.R;
 import com.koenidv.gmbplanner.Resolver;
 
@@ -58,6 +60,31 @@ public class MyChangesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
         refreshList();
+
+        SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+
+        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+
+        RecyclerView mondayRecycler = view.findViewById(R.id.mondayRecycler),
+                tuesdayRecycler = view.findViewById(R.id.tuesdayRecycler),
+                wednesdayRecycler = view.findViewById(R.id.wednesdayRecycler),
+                thursdayRecycler = view.findViewById(R.id.thursdayRecycler),
+                fridayRecycler = view.findViewById(R.id.fridayRecycler);
+        mondayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        tuesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0]),
+                tuesdayAdapter = new LessonsAdapter(timetable[1]),
+                wednesdayAdapter = new LessonsAdapter(timetable[2]),
+                thursdayAdapter = new LessonsAdapter(timetable[3]),
+                fridayAdapter = new LessonsAdapter(timetable[4]);
+        mondayRecycler.setAdapter(mondayAdapter);
+        tuesdayRecycler.setAdapter(tuesdayAdapter);
+        wednesdayRecycler.setAdapter(wednesdayAdapter);
+        thursdayRecycler.setAdapter(thursdayAdapter);
+        fridayRecycler.setAdapter(fridayAdapter);
     }
 
     @Override
