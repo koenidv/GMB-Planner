@@ -19,7 +19,7 @@
     <string name="credentials_pass">Passwort</string>
     <string name="done">Fertig</string>
     <string name="save">Speichern</string>
-    <string name="start_credentials_explanation"><![CDATA[Hey!<br>Um diese Ap zu nutzen benötigst du einen Account des Gymnasiums am Mosbacher Bergs.<br>Bitte gib deine Anmeldeinformationen ein oder <a href="https://mosbacher-berg.de/user/register">erstelle einen Account mit deinem Aktivierungscode</a>.]]></string>
+    <string name="start_credentials_explanation"><![CDATA[Hey!<br>Um diese App zu nutzen benötigst du einen Account des Gymnasiums am Mosbacher Bergs.<br>Bitte gib deine Anmeldeinformationen ein oder <a href="https://mosbacher-berg.de/user/register">erstelle einen Account mit deinem Aktivierungscode</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nDeine Zugangsdaten funktionieren scheinbar nicht. Bitte versuche es noch einmal.</string>
     <string name="remove">Entfernen</string>
     <string name="change_connect_room">" in "</string>
@@ -83,5 +83,5 @@
     <string name="tomorrow">Morgen</string>
     <string name="course_examination">-PF</string>
     <string name="course_concb">Concert Band</string>
-    <string name="feedback_body">\n\nApp-Version: %app\nAndroid-Version: %android</string>
+    <string name="feedback_body">\n\n"App-Version: %app\nAndroid-Version: %android</string>
 </resources>

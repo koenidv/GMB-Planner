@@ -67,7 +67,7 @@ public class Resolver {
      */
     public String resolveCourse(String courseName, Context context) {
         StringBuilder name = new StringBuilder();
-        if (courseName == null) {
+        if (courseName == null || courseName.length() < 3) {
             return "";
         } else if (courseName.startsWith("D-")) {
             name.append(context.getString(R.string.course_german));
@@ -187,8 +187,10 @@ public class Resolver {
                 return context.getResources().getColor(R.color.type_transfer);
             case "betreuung":
                 return context.getResources().getColor(R.color.type_care);
-            case "Raum":
+            case "raum":
                 return context.getResources().getColor(R.color.type_room);
+            case "klausur":
+                return context.getResources().getColor(R.color.type_exam);
             default:
                 return context.getResources().getColor(R.color.type_other);
         }

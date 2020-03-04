@@ -46,12 +46,19 @@ public class Change {
 
         courseNew = course.substring(course.indexOf(" &rArr; ") + 8);
         course = course.substring(0, course.indexOf(" &rArr; "));
-        courseChanged = !courseNew.equals(course);
         roomNew = room.substring(room.indexOf(" &rArr; ") + 8);
         room = room.substring(0, room.indexOf(" &rArr; "));
-        roomChanged = !roomNew.equals("Sek") && !roomNew.equals(room);
         teacherNew = teacher.substring(teacher.indexOf(" &rArr; ") + 8);
         teacher = teacher.substring(0, teacher.indexOf(" &rArr; "));
+
+        if (type.equals("Klausur")) {
+            course = courseNew;
+            room = roomNew;
+            teacher = teacherNew;
+        }
+
+        courseChanged = !courseNew.equals(course);
+        roomChanged = !roomNew.equals("Sek") && !roomNew.equals(room);
         teacherChanged = !teacherNew.equals("+") && !teacherNew.equals(teacher);
     }
 

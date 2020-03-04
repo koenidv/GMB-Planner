@@ -109,10 +109,12 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             holder.typeHiddenTextView.setText(thisChange.getType());
 
             holder.dateTextView.setText(resolver.resolveDate(thisChange.getDate(), context));
-            if (!thisChange.getDate().equals(lastDate)) {
+            if (position == 0 || !thisChange.getDate().equals(mDataset.get(position - 1).getDate())) {
                 holder.dateTextView.setVisibility(View.VISIBLE);
                 holder.setIsRecyclable(false);
                 lastDate = thisChange.getDate();
+            } else {
+                holder.dateTextView.setVisibility(View.GONE);
             }
 
             int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourse(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
