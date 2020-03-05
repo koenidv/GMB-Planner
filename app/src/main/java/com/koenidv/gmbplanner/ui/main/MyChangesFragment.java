@@ -52,6 +52,7 @@ public class MyChangesFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             refreshList();
+            refreshTimetable();
         }
     };
     private BroadcastReceiver mFailedReceiver = new BroadcastReceiver() {
@@ -61,80 +62,12 @@ public class MyChangesFragment extends Fragment {
         }
     };
 
-    private LessonsCompactAdapter todayAdapter;
-    private LessonsAdapter mondayAdapter, tuesdayAdapter, wednesdayAdapter, thursdayAdapter, fridayAdapter;
-    private Lesson[][][] timetable;
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
-        SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
-
-        // Timetable
-        timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
-        view.findViewById(R.id.include).setVisibility(View.VISIBLE);
-
-        final RecyclerView todayRecycler = view.findViewById(R.id.todayRecycler);
-        LinearLayoutManager todayLayoutManager = new LinearLayoutManager(getContext());
-        todayLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        todayRecycler.setLayoutManager(todayLayoutManager);
-        int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
-        if (weekDay < 0 || weekDay > 4) weekDay = 0;
-        todayAdapter = new LessonsCompactAdapter(timetable[weekDay]);
-        todayRecycler.setAdapter(todayAdapter);
-
-        final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout), todayLayout = view.findViewById(R.id.compactLayout);
-        final TextView titleTextView = view.findViewById(R.id.titleTextView);
-        final ImageButton expandButton = view.findViewById(R.id.expandButton);
-
-        expandButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expandButton.setVisibility(View.GONE);
-                if (recyclerLayout.getVisibility() == View.GONE) {
-                    todayRecycler.setVisibility(View.GONE);
-                    titleTextView.setVisibility(View.VISIBLE);
-                    recyclerLayout.setVisibility(View.VISIBLE);
-                    expandButton.setImageResource(R.drawable.ic_less);
-                } else {
-                    recyclerLayout.setVisibility(View.GONE);
-                    titleTextView.setVisibility(View.GONE);
-                    todayRecycler.setVisibility(View.VISIBLE);
-                    expandButton.setImageResource(R.drawable.ic_more);
-                }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        expandButton.setVisibility(View.VISIBLE);
-                    }
-                }, getResources().getInteger(android.R.integer.config_shortAnimTime));
-            }
-        });
-
-        RecyclerView mondayRecycler = view.findViewById(R.id.mondayRecycler),
-                tuesdayRecycler = view.findViewById(R.id.tuesdayRecycler),
-                wednesdayRecycler = view.findViewById(R.id.wednesdayRecycler),
-                thursdayRecycler = view.findViewById(R.id.thursdayRecycler),
-                fridayRecycler = view.findViewById(R.id.fridayRecycler);
-        mondayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        tuesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mondayAdapter = new LessonsAdapter(timetable[0]);
-        tuesdayAdapter = new LessonsAdapter(timetable[1]);
-        wednesdayAdapter = new LessonsAdapter(timetable[2]);
-        thursdayAdapter = new LessonsAdapter(timetable[3]);
-        fridayAdapter = new LessonsAdapter(timetable[4]);
-        mondayRecycler.setAdapter(mondayAdapter);
-        tuesdayRecycler.setAdapter(tuesdayAdapter);
-        wednesdayRecycler.setAdapter(wednesdayAdapter);
-        thursdayRecycler.setAdapter(thursdayAdapter);
-        fridayRecycler.setAdapter(fridayAdapter);
-
-
         refreshList();
+        refreshTimetable();
     }
 
     @Override
@@ -216,21 +149,76 @@ public class MyChangesFragment extends Fragment {
             mView.findViewById(R.id.noContentTextView).setVisibility(View.GONE);
             mView.findViewById(R.id.addCoursesButton).setVisibility(View.GONE);
         }
-
-        timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
-        todayAdapter.notifyDataSetChanged();
-        mondayAdapter.notifyDataSetChanged();
-        tuesdayAdapter.notifyDataSetChanged();
-        wednesdayAdapter.notifyDataSetChanged();
-        thursdayAdapter.notifyDataSetChanged();
-        fridayAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onResume() {
+    private void refreshTimetable() {
         SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
-        timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
-        todayAdapter.notifyDataSetChanged();
-        super.onResume();
+
+        try {
+            Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
+            mView.findViewById(R.id.include).setVisibility(View.VISIBLE);
+
+            final RecyclerView todayRecycler = mView.findViewById(R.id.todayRecycler);
+            LinearLayoutManager todayLayoutManager = new LinearLayoutManager(getContext());
+            todayLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+            todayRecycler.setLayoutManager(todayLayoutManager);
+            int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
+            if (weekDay < 0 || weekDay > 4) weekDay = 0;
+            LessonsCompactAdapter todayAdapter = new LessonsCompactAdapter(timetable[weekDay]);
+            todayRecycler.setAdapter(todayAdapter);
+
+            final LinearLayout recyclerLayout = mView.findViewById(R.id.recyclerLayout);
+            final TextView titleTextView = mView.findViewById(R.id.titleTextView);
+            final ImageButton expandButton = mView.findViewById(R.id.expandButton);
+
+            expandButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    expandButton.setVisibility(View.GONE);
+                    if (recyclerLayout.getVisibility() == View.GONE) {
+                        todayRecycler.setVisibility(View.GONE);
+                        titleTextView.setVisibility(View.VISIBLE);
+                        recyclerLayout.setVisibility(View.VISIBLE);
+                        expandButton.setImageResource(R.drawable.ic_less);
+                    } else {
+                        recyclerLayout.setVisibility(View.GONE);
+                        titleTextView.setVisibility(View.GONE);
+                        todayRecycler.setVisibility(View.VISIBLE);
+                        expandButton.setImageResource(R.drawable.ic_more);
+                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            expandButton.setVisibility(View.VISIBLE);
+                        }
+                    }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+                }
+            });
+
+            RecyclerView mondayRecycler = mView.findViewById(R.id.mondayRecycler),
+                    tuesdayRecycler = mView.findViewById(R.id.tuesdayRecycler),
+                    wednesdayRecycler = mView.findViewById(R.id.wednesdayRecycler),
+                    thursdayRecycler = mView.findViewById(R.id.thursdayRecycler),
+                    fridayRecycler = mView.findViewById(R.id.fridayRecycler);
+            mondayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            tuesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0]);
+            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1]);
+            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2]);
+            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3]);
+            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4]);
+            mondayRecycler.setAdapter(mondayAdapter);
+            tuesdayRecycler.setAdapter(tuesdayAdapter);
+            wednesdayRecycler.setAdapter(wednesdayAdapter);
+            thursdayRecycler.setAdapter(thursdayAdapter);
+            fridayRecycler.setAdapter(fridayAdapter);
+        } catch (NullPointerException npe) {
+            // Somethings wrong with the timetable, maybe there's just no data or no favorite courses
+            mView.findViewById(R.id.include).setVisibility(View.GONE);
+        }
     }
 }

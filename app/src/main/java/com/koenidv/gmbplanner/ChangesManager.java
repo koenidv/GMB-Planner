@@ -215,6 +215,10 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                                 doneIntent.putExtra("dontIgnore", true);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                             } catch (IOException | RuntimeException mE) {
+                                Intent doneIntent = new Intent("changesRefreshed");
+                                doneIntent.putExtra("dontIgnore", true)
+                                        .putExtra("failed", true);
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                                 mE.printStackTrace();
                             }
                             return null;
@@ -251,9 +255,14 @@ public class ChangesManager extends AsyncTask<String, String, String> {
 
                                 // Broadcast to refresh UI
                                 Intent doneIntent = new Intent("changesRefreshed");
-                                doneIntent.putExtra("dontIgnore", true);
+                                doneIntent.putExtra("dontIgnore", true)
+                                        .putExtra("coursesChanged", true);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                             } catch (IOException | RuntimeException mE) {
+                                Intent doneIntent = new Intent("changesRefreshed");
+                                doneIntent.putExtra("dontIgnore", true)
+                                        .putExtra("failed", true);
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                                 mE.printStackTrace();
                             }
                             return null;

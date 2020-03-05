@@ -174,6 +174,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         prefsEdit.putString("myCourses", gson.toJson(myCourses)).commit();
         // Broadcast to refresh UI
         Intent intent = new Intent("changesRefreshed");
+        intent.putExtra("coursesChanged", true);
         LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext())).sendBroadcast(intent);
         super.onDismiss(dialog);
     }

@@ -108,4 +108,5 @@
     <string name="course_examination_short" />
     <string name="timetable">Dein Stundenplan</string>
     <string name="timetable_today">"Heute: "</string>
+    <string name="timetable_expand_description">Stundenplan umschalten</string>
 </resources>

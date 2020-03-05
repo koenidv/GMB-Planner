@@ -17,9 +17,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.koenidv.gmbplanner.ui.main.SectionsPagerAdapter;
 import com.koenidv.gmbplanner.widget.WidgetProvider;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
                 swiperefresh.setRefreshing(false);
             else
                 ignoreFirstRefreshed = false;
+
+            if (intent.getBooleanExtra("coursesChanged", false))
+                refreshTimetable();
 
             // Update widget
             Intent widgetIntent = new Intent(MainActivity.this, WidgetProvider.class);
@@ -249,5 +254,44 @@ public class MainActivity extends AppCompatActivity {
     public void showChangeActions(final View view) {
         ActionsSheet actionsSheet = new ActionsSheet(view);
         actionsSheet.show(getSupportFragmentManager(), "actionsSheet");
+    }
+
+    void refreshTimetable() {
+        SharedPreferences prefs = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        Resolver resolver = new Resolver();
+
+        Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        Lesson[][][] myTable = new Lesson[5][][];
+        ArrayList<Lesson[]> dayTable = new ArrayList<>();
+        ArrayList<Lesson> periodTable = new ArrayList<>();
+
+        if (allTable == null) {
+            // Probably q34 - no data yet
+            prefs.edit().putString("timetableMine", "").apply();
+            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(new Intent("changesRefreshed"));
+            return;
+        }
+
+
+        for (int day = 0; day <= 4; day++) {
+            for (int period = 0; period < allTable[day].length; period++) {
+                for (Lesson lesson : allTable[day][period]) {
+                    if (resolver.isFavorite(lesson.getCourse(), getApplicationContext())) {
+                        periodTable.add(lesson);
+                    }
+                }
+                dayTable.add(periodTable.toArray(new Lesson[0]));
+                periodTable.clear();
+            }
+            myTable[day] = dayTable.toArray(new Lesson[0][]);
+            dayTable.clear();
+        }
+
+        prefs.edit().putString("timetableMine", gson.toJson(myTable)).apply();
+
+        Intent intent = new Intent("changesRefreshed");
+        LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
+
     }
 }

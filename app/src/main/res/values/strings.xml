@@ -118,7 +118,7 @@
     <string name="course_ethics_short">Eth</string>
     <string name="course_history_bili_short">His</string>
     <string name="course_concb_short">Con</string>
-    <string name="course_intensified_short" />
-    <string name="course_examination_short" />
+    <string name="course_intensified_short" translatable="false" />
+    <string name="course_examination_short" translatable="false" />
 
 </resources>

@@ -57,37 +57,25 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                     resolver.dpToPx(8, context),
                     resolver.dpToPx(8, context)
             };
-            try {
-                if (position < mDataset.length - 1 && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())) {
-                /*cornerRadii[4] = 0;
-                cornerRadii[5] = 0;
-                cornerRadii[6] = 0;
-                cornerRadii[7] = 0;
-                holder.spacer.setVisibility(View.INVISIBLE);
-                 */
+
+            if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
+                    && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())) {
                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
                     params.height = (int) resolver.dpToPx(68, context);
                     holder.cardView.setLayoutParams(params);
-                    //holder.cardView.setMinimumHeight((int) resolver.dpToPx(128, context));
-                } else if (position > 0 && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
-                /*cornerRadii[0] = 0;
-                cornerRadii[1] = 0;
-                cornerRadii[2] = 0;
-                cornerRadii[3] = 0;
-                holder.courseTextView.setVisibility(View.INVISIBLE);
-                 */
+            } else if (position > 0 && mDataset[position - 1].length > 0
+                    && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
                     holder.rootView.setVisibility(View.GONE);
                     holder.cardView.setVisibility(View.GONE);
                     holder.spacer.setVisibility(View.GONE);
                 }
-            } catch (ArrayIndexOutOfBoundsException ignored) {
-                // Next or last period is empty
-            }
 
             gradient.setCornerRadii(cornerRadii);
             holder.cardView.setBackground(gradient);
         } else {
-            holder.cardView.setBackground(context.getDrawable(R.drawable.transparent));
+            holder.rootView.setVisibility(View.INVISIBLE);
+            holder.cardView.setVisibility(View.INVISIBLE);
+            holder.spacer.setVisibility(View.INVISIBLE);
         }
     }
 
