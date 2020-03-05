@@ -53,6 +53,7 @@
     <string name="aftertomorrow">Day after tomorrow</string>
     <string name="timetable">Your timetable</string>
     <string name="timetable_today">Today: </string>
+    <string name="timetable_expand_description">Toggle timetable</string>
 
     <string name="feedback_subject">[GMB Planner] Feedback</string>
     <string name="feedback_body">\n\nApp version: %app\nAndroid version: %android</string>

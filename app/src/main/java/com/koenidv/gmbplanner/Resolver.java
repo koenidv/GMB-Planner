@@ -180,6 +180,21 @@ public class Resolver {
         return name.toString();
     }
 
+    String resolveCourseVeryShort(String courseName, Context context) {
+        if (courseName == null) return "";
+        if (courseName.contains("-LK")
+                || courseName.contains("M-")
+                || courseName.contains("D-")
+                || courseName.contains("E-"))
+            if (courseName.contains("POWI"))
+                return "W";
+            else
+                return resolveCourse(courseName, context).substring(0, 1);
+        else if (courseName.contains("BIO"))
+            return "Bio";
+        return resolveCourse(courseName, context).substring(0, 2);
+    }
+
     /**
      * Resolves course descriptions to their according colors
      *

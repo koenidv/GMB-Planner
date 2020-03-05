@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="4dp"
+        android:fontFamily="@font/roboto_slab"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/tabTextSelected"
@@ -34,7 +35,7 @@
         android:onClick="showChangeActions"
         android:transitionName="changeCard"
         app:cardCornerRadius="10dp"
-        app:cardElevation="2dp">
+        app:cardElevation="4dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/changeCard"

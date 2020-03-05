@@ -1,5 +1,6 @@
 package com.koenidv.gmbplanner.ui.main;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,9 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -20,11 +24,13 @@ import com.koenidv.gmbplanner.ChangesAdapter;
 import com.koenidv.gmbplanner.CoursesSheet;
 import com.koenidv.gmbplanner.Lesson;
 import com.koenidv.gmbplanner.LessonsAdapter;
+import com.koenidv.gmbplanner.LessonsCompactAdapter;
 import com.koenidv.gmbplanner.R;
 import com.koenidv.gmbplanner.Resolver;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,17 +61,56 @@ public class MyChangesFragment extends Fragment {
         }
     };
 
+    private LessonsCompactAdapter todayAdapter;
+    private LessonsAdapter mondayAdapter, tuesdayAdapter, wednesdayAdapter, thursdayAdapter, fridayAdapter;
+    private Lesson[][][] timetable;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
-        refreshList();
-
         SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
 
         // Timetable
-        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
         view.findViewById(R.id.include).setVisibility(View.VISIBLE);
+
+        final RecyclerView todayRecycler = view.findViewById(R.id.todayRecycler);
+        LinearLayoutManager todayLayoutManager = new LinearLayoutManager(getContext());
+        todayLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        todayRecycler.setLayoutManager(todayLayoutManager);
+        int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+        if (weekDay < 0 || weekDay > 4) weekDay = 0;
+        todayAdapter = new LessonsCompactAdapter(timetable[weekDay]);
+        todayRecycler.setAdapter(todayAdapter);
+
+        final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout), todayLayout = view.findViewById(R.id.compactLayout);
+        final TextView titleTextView = view.findViewById(R.id.titleTextView);
+        final ImageButton expandButton = view.findViewById(R.id.expandButton);
+
+        expandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandButton.setVisibility(View.GONE);
+                if (recyclerLayout.getVisibility() == View.GONE) {
+                    todayRecycler.setVisibility(View.GONE);
+                    titleTextView.setVisibility(View.VISIBLE);
+                    recyclerLayout.setVisibility(View.VISIBLE);
+                    expandButton.setImageResource(R.drawable.ic_less);
+                } else {
+                    recyclerLayout.setVisibility(View.GONE);
+                    titleTextView.setVisibility(View.GONE);
+                    todayRecycler.setVisibility(View.VISIBLE);
+                    expandButton.setImageResource(R.drawable.ic_more);
+                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        expandButton.setVisibility(View.VISIBLE);
+                    }
+                }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+            }
+        });
 
         RecyclerView mondayRecycler = view.findViewById(R.id.mondayRecycler),
                 tuesdayRecycler = view.findViewById(R.id.tuesdayRecycler),
@@ -77,11 +122,19 @@ public class MyChangesFragment extends Fragment {
         wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mondayRecycler.setAdapter(new LessonsAdapter(timetable[0]));
-        tuesdayRecycler.setAdapter(new LessonsAdapter(timetable[1]));
-        wednesdayRecycler.setAdapter(new LessonsAdapter(timetable[2]));
-        thursdayRecycler.setAdapter(new LessonsAdapter(timetable[3]));
-        fridayRecycler.setAdapter(new LessonsAdapter(timetable[4]));
+        mondayAdapter = new LessonsAdapter(timetable[0]);
+        tuesdayAdapter = new LessonsAdapter(timetable[1]);
+        wednesdayAdapter = new LessonsAdapter(timetable[2]);
+        thursdayAdapter = new LessonsAdapter(timetable[3]);
+        fridayAdapter = new LessonsAdapter(timetable[4]);
+        mondayRecycler.setAdapter(mondayAdapter);
+        tuesdayRecycler.setAdapter(tuesdayAdapter);
+        wednesdayRecycler.setAdapter(wednesdayAdapter);
+        thursdayRecycler.setAdapter(thursdayAdapter);
+        fridayRecycler.setAdapter(fridayAdapter);
+
+
+        refreshList();
     }
 
     @Override
@@ -133,6 +186,9 @@ public class MyChangesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
+        ((ViewGroup) myChangesRecycler.getParent()).getLayoutTransition()
+                .enableTransitionType(LayoutTransition.CHANGING);
+
         ChangesAdapter mAdapter = new ChangesAdapter(myChangeList, true, prefs.getBoolean("compactModeFavorite", false));
         myChangesRecycler.setAdapter(mAdapter);
 
@@ -160,6 +216,21 @@ public class MyChangesFragment extends Fragment {
             mView.findViewById(R.id.noContentTextView).setVisibility(View.GONE);
             mView.findViewById(R.id.addCoursesButton).setVisibility(View.GONE);
         }
+
+        timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        todayAdapter.notifyDataSetChanged();
+        mondayAdapter.notifyDataSetChanged();
+        tuesdayAdapter.notifyDataSetChanged();
+        wednesdayAdapter.notifyDataSetChanged();
+        thursdayAdapter.notifyDataSetChanged();
+        fridayAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        todayAdapter.notifyDataSetChanged();
+        super.onResume();
+    }
 }
