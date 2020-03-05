@@ -6,6 +6,7 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,12 +36,12 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
-        if (mDataset[position].length > 1) { // Todo breaks on friday 7 q12
+        Context context = holder.courseTextView.getContext();
+        if (mDataset[position].length > 0) {
             Lesson thisLesson = mDataset[position][0];
-            Context context = holder.courseTextView.getContext();
             Resolver resolver = new Resolver();
 
-            holder.courseTextView.setText(thisLesson.getCourse());
+            holder.courseTextView.setText(resolver.resolveCourseShort(thisLesson.getCourse(), context));
 
             // ColorDrawable doesn't support corner radii
             int[] gradientColors = {resolver.resolveCourseColor(thisLesson.getCourse(), context), resolver.resolveCourseColor(thisLesson.getCourse(), context)};
@@ -56,23 +57,37 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                     resolver.dpToPx(8, context),
                     resolver.dpToPx(8, context)
             };
-            if (position < mDataset.length - 1 && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())) {
-                cornerRadii[4] = 0;
+            try {
+                if (position < mDataset.length - 1 && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())) {
+                /*cornerRadii[4] = 0;
                 cornerRadii[5] = 0;
                 cornerRadii[6] = 0;
                 cornerRadii[7] = 0;
-                holder.spacer.setVisibility(View.GONE);
-            } else if (position > 0 && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
-                cornerRadii[0] = 0;
+                holder.spacer.setVisibility(View.INVISIBLE);
+                 */
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
+                    params.height = (int) resolver.dpToPx(68, context);
+                    holder.cardView.setLayoutParams(params);
+                    //holder.cardView.setMinimumHeight((int) resolver.dpToPx(128, context));
+                } else if (position > 0 && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
+                /*cornerRadii[0] = 0;
                 cornerRadii[1] = 0;
                 cornerRadii[2] = 0;
                 cornerRadii[3] = 0;
                 holder.courseTextView.setVisibility(View.INVISIBLE);
+                 */
+                    holder.rootView.setVisibility(View.GONE);
+                    holder.cardView.setVisibility(View.GONE);
+                    holder.spacer.setVisibility(View.GONE);
+                }
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+                // Next or last period is empty
             }
 
             gradient.setCornerRadii(cornerRadii);
-
-            holder.rootView.setBackground(gradient);
+            holder.cardView.setBackground(gradient);
+        } else {
+            holder.cardView.setBackground(context.getDrawable(R.drawable.transparent));
         }
     }
 
@@ -91,11 +106,12 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView courseTextView;
-        View rootView, spacer;
+        View cardView, rootView, spacer;
 
         ViewHolder(View view) {
             super(view);
             courseTextView = view.findViewById(R.id.courseTextView);
+            cardView = view.findViewById(R.id.cardView);
             rootView = view.findViewById(R.id.rootView);
             spacer = view.findViewById(R.id.spacer);
         }

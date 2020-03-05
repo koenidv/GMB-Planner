@@ -78,8 +78,8 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             @SuppressLint("ApplySharedPref")
             @Override
             public void onClick(View v) {
-                // Refresh all changes
-                prefs.edit().putLong("lastCourseRefresh", 0).commit();
+                // Force refresh all changes, courses and lessons
+                prefs.edit().putLong("lastCourseRefresh", 0).putLong("lastTimetableRefresh", 0).commit();
                 new ChangesManager().refreshChanges(getContext());
                 dismiss();
             }

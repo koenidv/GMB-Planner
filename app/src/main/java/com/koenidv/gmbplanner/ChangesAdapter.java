@@ -118,7 +118,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
 
             int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourse(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
             GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
-            gradient.setCornerRadius(resolver.dpToPx(8, context));
+            gradient.setCornerRadius(resolver.dpToPx(10, context));
             holder.card.setBackground(gradient);
 
             SharedPreferences prefs = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);

@@ -84,4 +84,28 @@
     <string name="course_examination">-PF</string>
     <string name="course_concb">Concert Band</string>
     <string name="feedback_body">\n\n"App-Version: %app\nAndroid-Version: %android</string>
+
+    <string name="course_german_short">Deutsch</string>
+    <string name="course_english_short">Englisch</string>
+    <string name="course_latin_short">Latein</string>
+    <string name="course_french_short">Franz</string>
+    <string name="course_history_short">Geschi</string>
+    <string name="course_it_short">Info</string>
+    <string name="course_arts_short">Kunst</string>
+    <string name="course_music_short">Musik</string>
+    <string name="course_maths_short">Mathe</string>
+    <string name="course_physics_short">Physik</string>
+    <string name="course_biology_short">Bio</string>
+    <string name="course_chemistry_short">Chemie</string>
+    <string name="course_geography_short">Erdkunde</string>
+    <string name="course_politics_short">PoWi</string>
+    <string name="course_sports_short">Sport</string>
+    <string name="course_religion_short">Reli</string>
+    <string name="course_ethics_short">Ethik</string>
+    <string name="course_history_bili_short">@string/course_history_short</string>
+    <string name="course_concb_short">Concert</string>
+    <string name="course_intensified_short" />
+    <string name="course_examination_short" />
+    <string name="timetable">Dein Stundenplan</string>
+    <string name="timetable_today">"Heute: "</string>
 </resources>

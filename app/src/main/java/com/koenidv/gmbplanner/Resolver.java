@@ -120,6 +120,67 @@ public class Resolver {
     }
 
     /**
+     * Resolves course descriptions to short subject names
+     *
+     * @param courseName The description of a course, eg "PH-LK-1"
+     * @param context    Context to get resources
+     * @return The short subject name as String, eg "Phy"
+     */
+    String resolveCourseShort(String courseName, Context context) {
+        StringBuilder name = new StringBuilder();
+        if (courseName == null || courseName.length() < 3) {
+            return "";
+        } else if (courseName.startsWith("D-")) {
+            name.append(context.getString(R.string.course_german_short));
+        } else if (courseName.startsWith("E-")) {
+            name.append(context.getString(R.string.course_english_short));
+        } else if (courseName.startsWith("L-")) {
+            name.append(context.getString(R.string.course_latin_short));
+        } else if (courseName.startsWith("SPO-")) {
+            name.append(context.getString(R.string.course_sports_short));
+        } else if (courseName.startsWith("F-")) {
+            name.append(context.getString(R.string.course_french_short));
+        } else if (courseName.startsWith("G-")) {
+            name.append(context.getString(R.string.course_history_short));
+        } else if (courseName.startsWith("INFO-")) {
+            name.append(context.getString(R.string.course_it_short));
+        } else if (courseName.startsWith("KU-")) {
+            name.append(context.getString(R.string.course_arts_short));
+        } else if (courseName.startsWith("MU-")) {
+            name.append(context.getString(R.string.course_music_short));
+        } else if (courseName.startsWith("M-")) {
+            name.append(context.getString(R.string.course_maths_short));
+        } else if (courseName.startsWith("PH-")) {
+            name.append(context.getString(R.string.course_physics_short));
+        } else if (courseName.startsWith("BIO-")) {
+            name.append(context.getString(R.string.course_biology_short));
+        } else if (courseName.startsWith("CH-")) {
+            name.append(context.getString(R.string.course_chemistry_short));
+        } else if (courseName.startsWith("EK-")) {
+            name.append(context.getString(R.string.course_geography_short));
+        } else if (courseName.startsWith("POWI-")) {
+            name.append(context.getString(R.string.course_politics_short));
+        } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-")) {
+            name.append(context.getString(R.string.course_religion_short));
+        } else if (courseName.startsWith("ETHI-")) {
+            name.append(context.getString(R.string.course_ethics_short));
+        } else if (courseName.startsWith("GBi-")) {
+            name.append(context.getString(R.string.course_history_bili_short));
+        } else if (courseName.startsWith("AG-ConcB")) {
+            name.append(context.getString(R.string.course_concb_short));
+        } else {
+            name.append(courseName.substring(0, courseName.indexOf('-')));
+        }
+
+        if (courseName.contains("-LK")) {
+            name.append(context.getString(R.string.course_intensified_short));
+        } else if (courseName.contains("-PF")) {
+            name.append(context.getString(R.string.course_examination_short));
+        }
+        return name.toString();
+    }
+
+    /**
      * Resolves course descriptions to their according colors
      *
      * @param courseName The description of a course

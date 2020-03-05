@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/cardBackground"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="10dp">
 
     <LinearLayout
+        android:id="@+id/recyclerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

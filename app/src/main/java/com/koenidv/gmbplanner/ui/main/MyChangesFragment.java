@@ -63,7 +63,9 @@ public class MyChangesFragment extends Fragment {
 
         SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
 
+        // Timetable
         Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        view.findViewById(R.id.include).setVisibility(View.VISIBLE);
 
         RecyclerView mondayRecycler = view.findViewById(R.id.mondayRecycler),
                 tuesdayRecycler = view.findViewById(R.id.tuesdayRecycler),
@@ -75,16 +77,11 @@ public class MyChangesFragment extends Fragment {
         wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0]),
-                tuesdayAdapter = new LessonsAdapter(timetable[1]),
-                wednesdayAdapter = new LessonsAdapter(timetable[2]),
-                thursdayAdapter = new LessonsAdapter(timetable[3]),
-                fridayAdapter = new LessonsAdapter(timetable[4]);
-        mondayRecycler.setAdapter(mondayAdapter);
-        tuesdayRecycler.setAdapter(tuesdayAdapter);
-        wednesdayRecycler.setAdapter(wednesdayAdapter);
-        thursdayRecycler.setAdapter(thursdayAdapter);
-        fridayRecycler.setAdapter(fridayAdapter);
+        mondayRecycler.setAdapter(new LessonsAdapter(timetable[0]));
+        tuesdayRecycler.setAdapter(new LessonsAdapter(timetable[1]));
+        wednesdayRecycler.setAdapter(new LessonsAdapter(timetable[2]));
+        thursdayRecycler.setAdapter(new LessonsAdapter(timetable[3]));
+        fridayRecycler.setAdapter(new LessonsAdapter(timetable[4]));
     }
 
     @Override
