@@ -30,6 +30,7 @@ import com.koenidv.gmbplanner.Resolver;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -89,7 +90,7 @@ public class MyChangesFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        // Unregister since the activity is about to be closed.
+        // Unregister since the activity is about to be closed
         LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(mMessageReceiver);
         LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(mFailedReceiver);
         super.onDestroy();
@@ -103,10 +104,12 @@ public class MyChangesFragment extends Fragment {
         List<Change> everyChangeList;
         ArrayList<Change> myChangeList = new ArrayList<>();
 
+        // Get all changes from sharedPrefs
         Type listType = new TypeToken<ArrayList<Change>>() {
         }.getType();
         everyChangeList = gson.fromJson(prefs.getString("changes", ""), listType);
 
+        // Filter favorite courses
         if (everyChangeList != null) {
             for (Change change : everyChangeList) {
                 // Convert to string so that the list can contain a note about the teacher (eg course (teacher))
@@ -115,10 +118,12 @@ public class MyChangesFragment extends Fragment {
             }
         }
 
+        // Set up changes recycler
         RecyclerView myChangesRecycler = mView.findViewById(R.id.myChangesRecycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
+        // Enable transition for expanding the timetable
         ((ViewGroup) myChangesRecycler.getParent()).getLayoutTransition()
                 .enableTransitionType(LayoutTransition.CHANGING);
 
@@ -126,12 +131,20 @@ public class MyChangesFragment extends Fragment {
         myChangesRecycler.setAdapter(mAdapter);
 
         if (myChangeList.isEmpty()) {
+            // Show no changes info
             TextView emptyTextView = mView.findViewById(R.id.noContentTextView);
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.nocontent_mine);
             if (prefs.getBoolean("sveaEE", false))
                 emptyTextView.append(" :(");
 
+            // Show timetable
+            mView.findViewById(R.id.expandButton).setVisibility(View.GONE);
+            mView.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
+            mView.findViewById(R.id.titleTextView).setVisibility(View.VISIBLE);
+            mView.findViewById(R.id.recyclerLayout).setVisibility(View.VISIBLE);
+
+            // Show option to add courses if none are added yet
             if (prefs.getString("myCourses", "").length() <= 2) {
                 emptyTextView.setText(R.string.nocontent_mine_nocourses);
                 mView.findViewById(R.id.addCoursesButton).setVisibility(View.VISIBLE);
@@ -155,9 +168,22 @@ public class MyChangesFragment extends Fragment {
         SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
 
         try {
+            // Get filtered timetable
             Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
             mView.findViewById(R.id.include).setVisibility(View.VISIBLE);
 
+            // Hide card if timetable is empty
+            // Manual check as timetable might include empty entries
+            if (Arrays.deepToString(timetable)
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace(",", "")
+                    .replace(" ", "")
+                    .length() == 0)
+                mView.findViewById(R.id.include).setVisibility(View.GONE);
+
+            // Set up today overview
+            // Show today's classes, tomorrows if after 5pm or monday's on weekends
             final RecyclerView todayRecycler = mView.findViewById(R.id.todayRecycler);
             LinearLayoutManager todayLayoutManager = new LinearLayoutManager(getContext());
             todayLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
@@ -172,6 +198,17 @@ public class MyChangesFragment extends Fragment {
             final TextView titleTextView = mView.findViewById(R.id.titleTextView);
             final ImageButton expandButton = mView.findViewById(R.id.expandButton);
 
+            // Show title if today overview is empty
+            final boolean todayEmpty = Arrays.deepToString(timetable[weekDay])
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace(",", "")
+                    .replace(" ", "")
+                    .length() == 0;
+            if (todayEmpty)
+                titleTextView.setVisibility(View.VISIBLE);
+
+            // Expand button to show the entire timetable
             expandButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -183,7 +220,8 @@ public class MyChangesFragment extends Fragment {
                         expandButton.setImageResource(R.drawable.ic_less);
                     } else {
                         recyclerLayout.setVisibility(View.GONE);
-                        titleTextView.setVisibility(View.GONE);
+                        if (!todayEmpty)
+                            titleTextView.setVisibility(View.GONE);
                         todayRecycler.setVisibility(View.VISIBLE);
                         expandButton.setImageResource(R.drawable.ic_more);
                     }
@@ -196,6 +234,7 @@ public class MyChangesFragment extends Fragment {
                 }
             });
 
+            // Set up 5 recyclerviews, one for each day
             RecyclerView mondayRecycler = mView.findViewById(R.id.mondayRecycler),
                     tuesdayRecycler = mView.findViewById(R.id.tuesdayRecycler),
                     wednesdayRecycler = mView.findViewById(R.id.wednesdayRecycler),
