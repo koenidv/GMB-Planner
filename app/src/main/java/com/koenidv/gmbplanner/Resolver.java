@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.util.TypedValue;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -519,6 +521,23 @@ public class Resolver {
             default:
                 return "unknown";
         }
+    }
+
+    Course getCourse(String courseName, Context context) {
+        // Get all changes from sharedPrefs
+        Type listType = new TypeToken<ArrayList<Course>>() {
+        }.getType();
+        List<Course> courses = (new Gson()).fromJson(context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE).getString("courses", ""), listType);
+
+        // Return first change with the specified name
+        if (courses != null) {
+            for (Course course : courses) {
+                if (course.getCourse().equals(courseName))
+                    return course;
+            }
+        }
+
+        return null;
     }
 
     /**

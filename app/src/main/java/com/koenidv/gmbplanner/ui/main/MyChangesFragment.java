@@ -113,7 +113,7 @@ public class MyChangesFragment extends Fragment {
         if (everyChangeList != null) {
             for (Change change : everyChangeList) {
                 // Convert to string so that the list can contain a note about the teacher (eg course (teacher))
-                if ((new Resolver()).isFavorite(change.getCourse(), getActivity()))
+                if ((new Resolver()).isFavorite(change.getCourseString(), getActivity()))
                     myChangeList.add(change);
             }
         }

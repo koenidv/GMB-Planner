@@ -68,6 +68,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
 
         // Set up suggestion chips
         String[] allCourses = gson.fromJson(prefs.getString("allCourses", ""), String[].class);
+        List<Course> courses = gson.fromJson(prefs.getString("courses", ""), ListType.COURSE);
         final ChipGroup chipgroup = view.findViewById(R.id.chipgroup);
         final TextInputEditText editText = view.findViewById(R.id.addCourseEditText);
 
@@ -92,14 +93,16 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         };
 
         if (allCourses != null) {
-            for (String thisCourse : allCourses) {
+            for (Course thisCourse : courses) {
                 // Only show courses that are not yet added
-                if (!myCourses.contains(thisCourse)) {
+                if (!myCourses.contains(thisCourse.getCourse())) {
                     final Chip chip = new Chip(chipgroup.getContext());
                     chip.setClickable(true);
                     chip.setOnClickListener(chipListener);
                     chip.setOnLongClickListener(chipLongListener);
-                    chip.setText(thisCourse);
+                    chip.setText(getString(R.string.course_chip)
+                            .replace("%course", thisCourse.getCourse())
+                            .replace("%teacher", (new Resolver()).resolveTeacher(thisCourse.getTeacher())));
                     chip.setMinHeight(32);
                     chipgroup.addView(chip);
                 }

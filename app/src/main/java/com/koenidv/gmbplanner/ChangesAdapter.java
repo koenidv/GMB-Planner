@@ -56,9 +56,9 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             StringBuilder bottomString = new StringBuilder();
 
             if (isFavorite)
-                centerString.append(resolver.resolveCourse(thisChange.getCourse(), context));
+                centerString.append(resolver.resolveCourse(thisChange.getCourseString(), context));
             else
-                centerString.append(resolver.resolveCourse(thisChange.getCourse(), context)).append(" (").append(resolver.resolveTeacher(thisChange.getTeacher())).append(")");
+                centerString.append(resolver.resolveCourse(thisChange.getCourseString(), context)).append(" (").append(resolver.resolveTeacher(thisChange.getTeacher())).append(")");
 
             if (thisChange.getType().equals("EVA") || thisChange.getType().equals("Entfall") || thisChange.getType().equals("Freistellung")) {
                 if (thisChange.getRoomNew().equals("Sek"))
@@ -69,10 +69,10 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (isFavorite)
                 bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
             else
-                bottomString.append(thisChange.getCourse());
+                bottomString.append(thisChange.getCourseString());
             } else {
                 if (thisChange.isCourseChanged()) {
-                    centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourse()).append("</strike> ").append(thisChange.getCourseNew());
+                    centerString.delete(0, centerString.length()).append("<strike>").append(thisChange.getCourseString()).append("</strike> ").append(thisChange.getCourseStringNew());
                 }
                 if (thisChange.isRoomChanged()) {
                     centerString.append(context.getString(R.string.change_connect_room)).append(thisChange.getRoomNew());
@@ -88,9 +88,9 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
                     bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
                 }
                 if (thisChange.isCourseChanged()) {
-                    bottomString.append("<strike>").append(thisChange.getCourse()).append("</strike>");
+                    bottomString.append("<strike>").append(thisChange.getCourseString()).append("</strike>");
                 } else if (!isFavorite) {
-                    bottomString.append(thisChange.getCourse());
+                    bottomString.append(thisChange.getCourseString());
                 }
                 if (!thisChange.isRoomChanged() && !thisChange.isTeacherChanged() && !thisChange.isCourseChanged()) {
                     // Probably an exam
@@ -103,7 +103,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             holder.topTextView.setText(Html.fromHtml(topString.toString()));
             holder.centerTextView.setText(Html.fromHtml(centerString.toString()));
             holder.bottomTextView.setText(Html.fromHtml(bottomString.toString()));
-            holder.courseHiddenTextView.setText(thisChange.getCourse());
+            holder.courseHiddenTextView.setText(thisChange.getCourseString());
             holder.teacherHiddenTextView.setText(thisChange.getTeacher());
             holder.typeHiddenTextView.setText(thisChange.getType());
 
@@ -116,7 +116,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
                 holder.dateTextView.setVisibility(View.GONE);
             }
 
-            int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourse(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
+            int[] gradientColors = {resolver.resolveCourseColor(thisChange.getCourseString(), context), resolver.resolveTypeColor(thisChange.getType(), context)};
             GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
             gradient.setCornerRadius(resolver.dpToPx(10, context));
             holder.card.setBackground(gradient);

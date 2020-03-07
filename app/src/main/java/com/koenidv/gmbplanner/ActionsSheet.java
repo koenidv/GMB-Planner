@@ -45,14 +45,14 @@ public class ActionsSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.sheet_actions, container, false);
 
-
         final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
         @SuppressLint("CommitPrefEdits") final SharedPreferences.Editor prefsEdit = prefs.edit();
         final Resolver resolver = new Resolver();
         final Gson gson = new Gson();
 
-        final String course = ((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString();
-        final String teacher = ((TextView) mPreview.findViewById(R.id.teacherHiddenTextView)).getText().toString();
+        final Course course = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
+
+        // Actions for changes
         final String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString();
         final String date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
 
@@ -63,8 +63,9 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.changeCard).setOnClickListener(null);
         view.findViewById(R.id.changeCard).setBackground(mPreview.findViewById(R.id.changeCard).getBackground());
 
+
         Button emailButton = view.findViewById(R.id.emailButton);
-        if (resolver.resolveTeacherInitial(teacher).equals("unknown")) {
+        if (resolver.resolveTeacherInitial(course.getTeacher()).equals("unknown")) {
             emailButton.setVisibility(View.GONE);
         }
         emailButton.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +80,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                 Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
                         .setData(Uri.parse("mailto:"))
                         .putExtra(Intent.EXTRA_EMAIL, new String[]{
-                                resolver.resolveTeacherInitial(teacher) + "." + resolver.resolveTeacher(teacher).toLowerCase() + "@mosbacher-berg.de"})
+                                resolver.resolveTeacherInitial(course.getTeacher()) + "." + resolver.resolveTeacher(course.getTeacher()).toLowerCase() + "@mosbacher-berg.de"})
                         .putExtra(Intent.EXTRA_SUBJECT, subject);
                 // Only open if email client is installed
                 if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
@@ -89,7 +90,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         });
 
         MaterialButton favButton = view.findViewById(R.id.favoritesButton);
-        if (resolver.isFavorite(course, getContext())) {
+        if (resolver.isFavorite(course.getCourse(), getContext())) {
             // Already added to favorites
             favButton.setText(R.string.action_favorites_remove);
             favButton.setIcon(getResources().getDrawable(R.drawable.ic_star));
@@ -108,19 +109,19 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                     // No courses added yet
                 }
 
-                if (resolver.isFavorite(course, getContext())) {
+                if (resolver.isFavorite(course.getCourse(), getContext())) {
                     // Is already favorite -> remove
                     // Check every entry if it contains this course and remove it if it does
                     String courseToRemove = "";
                     for (String thisCourse : myCourses) {
-                        if (thisCourse.toUpperCase().contains(course.toUpperCase())) {
+                        if (thisCourse.toUpperCase().contains(course.getCourse().toUpperCase())) {
                             courseToRemove = thisCourse;
                         }
                     }
                     myCourses.remove(courseToRemove);
                 } else {
                     // Not already favorite, add to myCourses
-                    myCourses.add(course + " (" + teacher + ")");
+                    myCourses.add(course.getCourse() + " (" + course.getTeacher() + ")");
                 }
 
                 // Save changes

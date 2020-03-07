@@ -67,7 +67,7 @@ public class Change {
         try {
             Change toTest = (Change) obj;
             return toTest != null
-                    && toTest.getCourse().equals(course)
+                    && toTest.getCourseString().equals(course)
                     && toTest.getDate().equals(date)
                     && toTest.getTime().equals(time)
                     && toTest.getType().equals(type);
@@ -92,12 +92,16 @@ public class Change {
         return schoolclass;
     }
 
-    public String getCourse() {
+    public String getCourseString() {
         return course;
     }
 
-    public String getCourseNew() {
+    public String getCourseStringNew() {
         return courseNew;
+    }
+
+    public Course getCourse() {
+        return new Course(getCourseString(), getTeacher());
     }
 
     public String getRoom() {

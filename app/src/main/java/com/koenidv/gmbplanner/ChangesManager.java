@@ -10,12 +10,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -126,9 +124,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
 
-        Type listType = new TypeToken<ArrayList<Change>>() {
-        }.getType();
-        List<Change> previousChanges = gson.fromJson(prefs.getString("changes", ""), listType);
+        List<Change> previousChanges = gson.fromJson(prefs.getString("changes", ""), ListType.CHANGE);
         Resolver resolver = new Resolver();
 
         try {
@@ -165,22 +161,30 @@ public class ChangesManager extends AsyncTask<String, String, String> {
 
                 // Add all courses that have not yet been seen
                 List<String> allCourses = new ArrayList<>();
+                List<Course> allCourseObjects = new ArrayList<>();
                 try {
                     allCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
-                } catch (NullPointerException ignored) {
+                    allCourseObjects = gson.fromJson(prefs.getString("courses", ""), ListType.COURSE);
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
                 }
 
-                for (Change change : mChangeList)
-                    if (!allCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
-                        allCourses.add(change.getCourse() + " (" + change.getTeacher() + ")");
+                for (Change change : mChangeList) {
+                    if (!allCourses.toString().toUpperCase().contains(change.getCourseString().toUpperCase()))
+                        allCourses.add(change.getCourseString() + " (" + change.getTeacher() + ")");
+                    if (!allCourseObjects.contains(change.getCourse()))
+                        allCourseObjects.add(change.getCourse());
+                }
 
                 prefsEdit.putString("allCourses", gson.toJson(allCourses))
+                        .putString("courses", gson.toJson(allCourseObjects))
                         .putString("lastChange", lastChange)
                         .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
                 prefsEdit.commit();
 
                 // Get course presets for the first time or after 2 weeks
-                if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
+                if (prefs.getString("courses", "").length() == 0
+                        || Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
                     // Get course presets from koenidv.de
                     final String finalGrade = grade;
                     new AsyncTask<String, String, String>() {
@@ -200,13 +204,25 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                                 String responseString = Objects.requireNonNull(response.body()).string();
                                 // Remove newlines so that gson can parse the data
                                 responseString = responseString.replace("\n", "");
-                                String[] presets = gson.fromJson(responseString, String[].class);
+                                // Parse
+                                ArrayList<Course> presets = new ArrayList<>();
+                                try {
+                                    presets = gson.fromJson(responseString, ListType.COURSE);
+                                } catch (NullPointerException npe) {
+                                    // Not well formatted json or network error
+                                    npe.printStackTrace();
+                                }
                                 // Add all loaded courses if they aren't already in the list
-                                List<String> allCoursesAsync = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
-                                for (String preset : presets)
-                                    if (!allCoursesAsync.contains(preset))
-                                        allCoursesAsync.add(preset);
-                                prefsEdit.putString("allCourses", gson.toJson(allCoursesAsync))
+                                List<Course> allCourseObjectsAsync = new ArrayList<>();
+
+                                List<Course> allCourseObjectsAsyncPrefs = gson.fromJson(prefs.getString("courses", ""), ListType.COURSE);
+                                if (allCourseObjectsAsyncPrefs != null)
+                                    allCourseObjectsAsync = allCourseObjectsAsyncPrefs;
+
+                                for (Course preset : presets)
+                                    if (!allCourseObjectsAsync.contains(preset))
+                                        allCourseObjectsAsync.add(preset);
+                                prefsEdit.putString("courses", gson.toJson(allCourseObjectsAsync))
                                         .putLong("lastCourseRefresh", Calendar.getInstance().getTimeInMillis())
                                         .commit();
 
@@ -287,7 +303,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
             // Add all new favorite changes
             for (Change thisChange : mChangeList) {
                 if (!previousChanges.contains(thisChange)) {
-                    if (resolver.isFavorite(thisChange.getCourse(), context)) {
+                    if (resolver.isFavorite(thisChange.getCourseString(), context)) {
                         newChanges.add(thisChange);
                     }
                 }
@@ -300,7 +316,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     lastDate = thisChange.getDate();
                     notificationString.append(resolver.resolveDate(thisChange.getDate(), context)).append(":\n");
                 }
-                notificationString.append(new Resolver().resolveCourse(thisChange.getCourse(), context));
+                notificationString.append(new Resolver().resolveCourse(thisChange.getCourseString(), context));
                 if (thisChange.isTeacherChanged()) {
                     notificationString.append(context.getString(R.string.change_connect_teacher)).append(new Resolver().resolveTeacher(thisChange.getTeacherNew()));
                 }

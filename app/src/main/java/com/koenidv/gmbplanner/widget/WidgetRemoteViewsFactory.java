@@ -54,7 +54,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         if (everyChangeList != null) {
             for (Change change : everyChangeList) {
                 // Convert to string so that the list can contain a note about the teacher (eg course (teacher))
-                if (myCourses.toString().toUpperCase().contains(change.getCourse().toUpperCase()))
+                if (myCourses.toString().toUpperCase().contains(change.getCourseString().toUpperCase()))
                     dataset.add(change);
             }
         }
@@ -77,7 +77,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         Change change = dataset.get(position);
         Resolver resolver = new Resolver();
 
-        StringBuilder mainString = new StringBuilder(resolver.resolveCourse(change.getCourse(), mContext));
+        StringBuilder mainString = new StringBuilder(resolver.resolveCourse(change.getCourseString(), mContext));
         StringBuilder infoString = new StringBuilder(change.getTime() + " " + mContext.getString(R.string.change_hours) + " • ");
 
         if (change.getType().equals("EVA") || change.getType().equals("Entfall") || change.getType().equals("Freistellung")) {
@@ -88,7 +88,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
         } else {
             infoString.append(change.getType()).append(" • ");
             if (change.isCourseChanged()) {
-                mainString.delete(0, mainString.length()).append("<strike>").append(change.getCourse()).append("</strike> ").append(change.getCourseNew());
+                mainString.delete(0, mainString.length()).append("<strike>").append(change.getCourseString()).append("</strike> ").append(change.getCourseStringNew());
             }
             if (change.isRoomChanged()) {
                 mainString.append(mContext.getString(R.string.change_connect_room)).append(change.getRoomNew());
@@ -103,7 +103,7 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
                 infoString.append(change.getTeacher());
             }
             if (change.isCourseChanged()) {
-                infoString.append(" • ").append("<strike>").append(change.getCourse()).append("</strike>");
+                infoString.append(" • ").append("<strike>").append(change.getCourseString()).append("</strike>");
             }
             if (!change.isRoomChanged() && !change.isTeacherChanged() && !change.isCourseChanged()) {
                 // Probably an exam

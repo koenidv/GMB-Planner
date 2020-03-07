@@ -29,4 +29,23 @@
         android:id="@+id/spacer"
         android:layout_width="match_parent"
         android:layout_height="4dp" />
+
+    <TextView
+        android:id="@+id/courseHiddenTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/teacherHiddenTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/typeHiddenTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
 </LinearLayout>
