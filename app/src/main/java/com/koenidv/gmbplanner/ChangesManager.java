@@ -159,8 +159,10 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     // Currently no changes
                 }
 
+                // Add all courses that have not yet been seen and add changes to courses
                 // Get all courses
                 Map<String, Course> courses = gson.fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
+
                 if (courses != null) {
                     // Clear changes from all courses
                     for (Map.Entry<String, Course> map : courses.entrySet()) {
@@ -168,29 +170,20 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     }
                     // Add each change to the according course
                     for (Change change : mChangeList) {
+                        // Add course if it's not already added
+                        if (courses.get(change.getCourseString()) == null)
+                            courses.put(change.getCourseString(), change.getCourse());
+
                         Objects.requireNonNull(courses.get(change.getCourseString())).addChange(change);
                     }
                 }
 
-                prefsEdit.putString("changes", gson.toJson(mChangeList));
-
-                // Add all courses that have not yet been seen
-                Map<String, Course> allCourseObjects = new HashMap<>();
-                try {
-                    allCourseObjects = gson.fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
-                } catch (NullPointerException npe) {
-                    npe.printStackTrace();
-                }
-
-                for (Change change : mChangeList) {
-                    if (allCourseObjects.get(change.getCourseString()) == null)
-                        allCourseObjects.put(change.getCourseString(), change.getCourse());
-                }
-
-                prefsEdit.putString("courses", gson.toJson(allCourseObjects))
+                prefsEdit
+                        .putString("changes", gson.toJson(mChangeList))
+                        .putString("courses", gson.toJson(courses))
                         .putString("lastChange", lastChange)
                         .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
-                prefsEdit.commit();
+                prefsEdit.apply();
 
                 // Get course presets for the first time or after 2 weeks
                 if (prefs.getString("courses", "").length() == 0

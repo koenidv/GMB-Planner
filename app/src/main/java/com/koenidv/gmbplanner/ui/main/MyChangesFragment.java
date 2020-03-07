@@ -245,11 +245,11 @@ public class MyChangesFragment extends Fragment {
             wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
             thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
             fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0]);
-            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1]);
-            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2]);
-            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3]);
-            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4]);
+            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0], 0);
+            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1], 1);
+            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2], 2);
+            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3], 3);
+            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4], 4);
             mondayRecycler.setAdapter(mondayAdapter);
             tuesdayRecycler.setAdapter(tuesdayAdapter);
             wednesdayRecycler.setAdapter(wednesdayAdapter);

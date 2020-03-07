@@ -28,7 +28,6 @@ public class Resolver {
      */
     public String resolveDate(String dateString, Context context) {
         Calendar date = null;
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd.MM.", Locale.GERMAN);
         try {
             date = Calendar.getInstance();
@@ -57,6 +56,41 @@ public class Resolver {
             return returnFormat.format(date.getTimeInMillis());
         }
 
+    }
+
+    /**
+     * @param dateString The change's date: EE dd.MM.
+     * @param timeString The change's period(s): p1( - p2)
+     * @return [day: 0-6, mo-sun][startperiod][endperiod]
+     */
+    int[] resolvePeriod(String dateString, String timeString) {
+        int[] result = new int[3];
+        // Parse date
+        Calendar date = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd.MM.", Locale.GERMAN);
+        try {
+            date = Calendar.getInstance();
+            date.setTime(Objects.requireNonNull(dateFormat.parse(dateString)));
+            date.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+        } catch (ParseException mE) {
+            mE.printStackTrace();
+        }
+
+        // Weekday
+        int weekDay = date.get(Calendar.DAY_OF_WEEK) - 2;
+        if (weekDay < 0) weekDay += 7;
+        result[0] = weekDay;
+
+        //Periods
+        if (!timeString.contains("-")) {
+            result[1] = Integer.parseInt(timeString) - 1;
+            result[2] = Integer.parseInt(timeString) - 1;
+        } else {
+            result[1] = Integer.parseInt(timeString.substring(0, timeString.indexOf(" - "))) - 1;
+            result[2] = Integer.parseInt(timeString.substring(timeString.indexOf(" - ") + 3)) - 1;
+        }
+
+        return result;
     }
 
     /**
@@ -527,19 +561,6 @@ public class Resolver {
         Map<String, Course> courses = (new Gson()).fromJson(context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE).getString("courses", ""), ListType.COURSEMAP);
         if (courses == null) return null;
         return courses.get(courseName);
-
-        /*
-        // Return first change with the specified name
-        if (courses != null) {
-            for (Course course : courses) {
-                if (course.getCourse().equals(courseName))
-                    return course;
-            }
-        }
-
-        return null;
-
-         */
     }
 
     /**

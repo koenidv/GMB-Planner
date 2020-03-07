@@ -24,7 +24,7 @@
     <string name="remove">Entfernen</string>
     <string name="change_connect_room">" in "</string>
     <string name="change_connect_teacher">" bei "</string>
-    <string name="change_workorders">Arbeitsaufträge liegen aus</string>
+    <string name="change_workorders">" Arbeitsaufträge liegen aus"</string>
     <string name="change_hours">" Std."</string>
     <string name="course_intensified">-LK</string>
     <string name="course_it">Informatik</string>

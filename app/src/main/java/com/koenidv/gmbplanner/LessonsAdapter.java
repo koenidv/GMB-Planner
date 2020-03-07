@@ -20,14 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHolder> {
     private Lesson[][] mDataset;
     private String mFilter;
+    private int mDay;
 
-    public LessonsAdapter(Lesson[][] dataset) {
+    public LessonsAdapter(Lesson[][] dataset, int day) {
         mDataset = dataset;
+        mDay = day;
     }
 
-    LessonsAdapter(Lesson[][] dataset, String filter) {
+    LessonsAdapter(Lesson[][] dataset, String filter, int day) {
         mDataset = dataset;
         mFilter = filter;
+        mDay = day;
     }
 
     // Create new views (invoked by the layout manager)
@@ -87,6 +90,36 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             }
             if (mFilter != null) {
                 holder.cardView.setOnClickListener(null);
+            }
+
+            // Show changes
+            Course course = resolver.getCourse(thisLesson.getCourse(), context);
+            if (course != null) {
+                for (Change change : course.getChanges()) {
+                    int[] period = resolver.resolvePeriod(change.getDate(), change.getTime());
+                    if (period[0] == mDay && period[1] <= position && period[2] >= position) {
+                        // Handle changes
+                        holder.cardView.getBackground().setAlpha(65);
+                        holder.courseTextView.setAlpha(0.5f);
+
+                    }
+                    // If only one of multiple lessons is changed
+                    if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
+                            && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())
+                            && period[0] == mDay && (period[2] < position + 1 || period[1] > position)) {
+                        // Same course as next one, but different change
+                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
+                        params.height = (int) resolver.dpToPx(32, context);
+                        holder.cardView.setLayoutParams(params);
+                    } else if (position > 0 && mDataset[position - 1].length > 0
+                            && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())
+                            && period[0] == mDay && (period[1] > position - 1 || period[2] < position)) {
+                        // Same course as last one, but different change
+                        holder.rootView.setVisibility(View.VISIBLE);
+                        holder.cardView.setVisibility(View.VISIBLE);
+                        holder.spacer.setVisibility(View.VISIBLE);
+                    }
+                }
             }
 
         } else {

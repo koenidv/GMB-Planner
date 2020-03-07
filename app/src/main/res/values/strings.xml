@@ -44,7 +44,7 @@
     <string name="course_chip">%course (%teacher)</string>
 
     <string name="change_hours">h</string>
-    <string name="change_workorders">Note work orders</string>
+    <string name="change_workorders">" Note work orders"</string>
     <string name="change_exam">Exam</string>
     <string name="change_connect_teacher">" with "</string>
     <string name="change_connect_room">" in "</string>

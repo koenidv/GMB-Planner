@@ -48,7 +48,7 @@ public class Course {
     }
 
     Change[] getChanges() {
-        return (Change[]) changes.toArray();
+        return changes.toArray(new Change[0]);
     }
 
     @Override

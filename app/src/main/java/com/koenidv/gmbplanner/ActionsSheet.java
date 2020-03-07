@@ -87,7 +87,8 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         final ImageButton expandButton = view.findViewById(R.id.expandButton);
 
         if (timetable != null && !course.getCourse().equals("")) {
-            recyclerLayout.setVisibility(View.VISIBLE);
+            if (!isChange)
+                recyclerLayout.setVisibility(View.VISIBLE);
             titleTextView.setText(resolver.resolveCourse(course.getCourse(), getContext()));
             titleTextView.setVisibility(View.VISIBLE);
             view.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
@@ -102,18 +103,18 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
             thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
             fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0], course.getCourse());
-            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1], course.getCourse());
-            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2], course.getCourse());
-            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3], course.getCourse());
-            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4], course.getCourse());
+            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0], course.getCourse(), 0);
+            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1], course.getCourse(), 1);
+            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2], course.getCourse(), 2);
+            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3], course.getCourse(), 3);
+            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4], course.getCourse(), 4);
             mondayRecycler.setAdapter(mondayAdapter);
             tuesdayRecycler.setAdapter(tuesdayAdapter);
             wednesdayRecycler.setAdapter(wednesdayAdapter);
             thursdayRecycler.setAdapter(thursdayAdapter);
             fridayRecycler.setAdapter(fridayAdapter);
         } else {
-            recyclerLayout.setVisibility(View.GONE);
+            view.findViewById(R.id.card_timetable).setVisibility(View.GONE);
         }
 
         // Expand button to show the entire timetable
@@ -240,37 +241,5 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
 
         return view;
-    }
-
-    private Lesson[][][] filterTimetable(String filter) {
-        SharedPreferences prefs = Objects.requireNonNull(getContext()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        Gson gson = new Gson();
-        Resolver resolver = new Resolver();
-
-        Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
-        Lesson[][][] myTable = new Lesson[5][][];
-        ArrayList<Lesson[]> dayTable = new ArrayList<>();
-        ArrayList<Lesson> periodTable = new ArrayList<>();
-
-        if (allTable == null) {
-            // Probably q34 - no data yet
-            return null;
-        }
-
-        for (int day = 0; day <= 4; day++) {
-            for (int period = 0; period < allTable[day].length; period++) {
-                for (Lesson lesson : allTable[day][period]) {
-                    if (lesson.getCourse().equals(filter)) {
-                        periodTable.add(lesson);
-                    }
-                }
-                dayTable.add(periodTable.toArray(new Lesson[0]));
-                periodTable.clear();
-            }
-            myTable[day] = dayTable.toArray(new Lesson[0][]);
-            dayTable.clear();
-        }
-
-        return myTable;
     }
 }

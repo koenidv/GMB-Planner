@@ -117,10 +117,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Post-process update
-        prefs.edit().putInt("lastVersion", 126).putString("courses", "").putLong("lastCourseRefresh", 0).putLong("lastTimetableRefresh", 0).apply();
-        new ChangesManager().refreshChanges(getApplicationContext());
-        if (prefs.getInt("lastVersion", 123) < 126) {
-            prefs.edit().putInt("lastVersion", 126).putString("courses", "").putLong("lastCourseRefresh", 0).apply();
+        if (prefs.getInt("lastVersion", 123) < 127) {
+            prefs.edit().putInt("lastVersion", 127)
+                    .putString("changes", "")
+                    .putString("courses", "")
+                    .putLong("lastCourseRefresh", 0)
+                    .putLong("lastTimetableRefresh", 0).apply();
+            new ChangesManager().refreshChanges(getApplicationContext());
         }
 
         super.onCreate(savedInstanceState);
