@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHolder> {
     private Lesson[][] mDataset;
     private String mFilter;
-    private int mDay;
+    private final int mDay;
 
     public LessonsAdapter(Lesson[][] dataset, int day) {
         mDataset = dataset;
@@ -53,44 +53,23 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             holder.courseTextView.setText(resolver.resolveCourseShort(thisLesson.getCourse(), context));
             holder.courseHiddenTextView.setText(thisLesson.getCourse());
 
+            if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
+                    && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
+                params.height = (int) resolver.dpToPx(68, context);
+                holder.cardView.setLayoutParams(params);
+            } else if (position > 0 && mDataset[position - 1].length > 0
+                    && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
+                holder.rootView.setVisibility(View.GONE);
+                holder.cardView.setVisibility(View.GONE);
+                holder.spacer.setVisibility(View.GONE);
+            }
+
             // ColorDrawable doesn't support corner radii
             int[] gradientColors = {resolver.resolveCourseColor(thisLesson.getCourse(), context), resolver.resolveCourseColor(thisLesson.getCourse(), context)};
             GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
-
-            float[] cornerRadii = {
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context),
-                    resolver.dpToPx(8, context)
-            };
-
-            if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
-                    && mDataset[position][0].getCourse().equals(mDataset[position + 1][0].getCourse())) {
-                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
-                    params.height = (int) resolver.dpToPx(68, context);
-                    holder.cardView.setLayoutParams(params);
-            } else if (position > 0 && mDataset[position - 1].length > 0
-                    && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
-                    holder.rootView.setVisibility(View.GONE);
-                    holder.cardView.setVisibility(View.GONE);
-                    holder.spacer.setVisibility(View.GONE);
-                }
-
-            gradient.setCornerRadii(cornerRadii);
+            gradient.setCornerRadius(resolver.dpToPx(8, context));
             holder.cardView.setBackground(gradient);
-
-            // Make cards opaque that don't match the filter
-            if (mFilter != null && !mFilter.equals(thisLesson.getCourse())) {
-                holder.cardView.getBackground().setAlpha(65);
-                holder.courseTextView.setAlpha(0.5f);
-            }
-            if (mFilter != null) {
-                holder.cardView.setOnClickListener(null);
-            }
 
             // Show changes
             Course course = resolver.getCourse(thisLesson.getCourse(), context);
@@ -98,10 +77,27 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                 for (Change change : course.getChanges()) {
                     int[] period = resolver.resolvePeriod(change.getDate(), change.getTime());
                     if (period[0] == mDay && period[1] <= position && period[2] >= position) {
-                        // Handle changes
-                        holder.cardView.getBackground().setAlpha(65);
-                        holder.courseTextView.setAlpha(0.5f);
+                        int[] changeGradientColors = {
+                                resolver.resolveCourseColor(thisLesson.getCourse(), context),
+                                resolver.resolveTypeColor(change.getType(), context)
+                        };
 
+                        if (change.getType().equals("EVA") && !change.getRoomNew().equals("Sek"))
+                            changeGradientColors[1] = context.getColor(R.color.background);
+
+                        GradientDrawable changeGradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, changeGradientColors);
+                        changeGradient.setCornerRadius(resolver.dpToPx(8, context));
+                        holder.cardView.setBackground(changeGradient);
+
+                        holder.courseTextView.setText(resolver.resolveCourseVeryShort(course.getCourse(), context));
+                        StringBuilder append = new StringBuilder(".");
+                        if (change.isRoomChanged())
+                            append.append(context.getString(R.string.change_connect_room)).append(change.getRoomNew());
+                        if (change.isTeacherChanged())
+                            append.append(context.getString(R.string.change_connect_teacher)).append(resolver.resolveTeacher(change.getTeacherNew()));
+                        if (!change.isRoomChanged() && !change.isTeacherChanged())
+                            append.append(" ").append(change.getType());
+                        holder.courseTextView.append(append);
                     }
                     // If only one of multiple lessons is changed
                     if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
@@ -122,10 +118,20 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                 }
             }
 
+            // Make cards opaque that don't match the filter
+            if (mFilter != null && !mFilter.equals(thisLesson.getCourse())) {
+                holder.cardView.getBackground().setAlpha(65);
+                holder.courseTextView.setAlpha(0.5f);
+            }
+            if (mFilter != null) {
+                holder.cardView.setOnClickListener(null);
+            }
+
         } else {
             holder.rootView.setVisibility(View.INVISIBLE);
             holder.cardView.setVisibility(View.INVISIBLE);
             holder.cardView.setOnClickListener(null);
+            holder.cardView.setClickable(false);
             holder.spacer.setVisibility(View.INVISIBLE);
         }
     }

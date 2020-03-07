@@ -191,7 +191,7 @@ public class MyChangesFragment extends Fragment {
             int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
             if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
             if (weekDay < 0 || weekDay > 4) weekDay = 0;
-            LessonsCompactAdapter todayAdapter = new LessonsCompactAdapter(timetable[weekDay]);
+            LessonsCompactAdapter todayAdapter = new LessonsCompactAdapter(timetable[weekDay], weekDay);
             todayRecycler.setAdapter(todayAdapter);
 
             final LinearLayout recyclerLayout = mView.findViewById(R.id.recyclerLayout);

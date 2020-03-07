@@ -71,7 +71,7 @@ public class Change {
         this.teacher = teacher;
 
         this.courseChanged = false;
-        this.roomChanged = false;
+        this.roomChanged = room.equals("M120");
         this.teacherChanged = false;
 
         this.courseNew = course;

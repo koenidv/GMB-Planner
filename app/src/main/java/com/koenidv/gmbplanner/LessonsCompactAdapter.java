@@ -18,9 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 // Lesson adapter for one day
 public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAdapter.ViewHolder> {
     private Lesson[][] mDataset;
+    private final int mDay;
 
-    public LessonsCompactAdapter(Lesson[][] dataset) {
+    public LessonsCompactAdapter(Lesson[][] dataset, int day) {
         mDataset = dataset;
+        mDay = day;
     }
 
     // Create new views (invoked by the layout manager)
@@ -57,6 +59,39 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
 
             gradient.setCornerRadius(100f);
             holder.cardView.setBackground(gradient);
+
+
+            // Show changes
+            Course course = resolver.getCourse(thisLesson.getCourse(), context);
+            if (course != null) {
+                for (Change change : course.getChanges()) {
+                    int[] period = resolver.resolvePeriod(change.getDate(), change.getTime());
+                    if (period[0] == mDay && period[1] <= position && period[2] >= position) {
+                        int[] changeGradientColors = {
+                                resolver.resolveCourseColor(thisLesson.getCourse(), context),
+                                resolver.resolveTypeColor(change.getType(), context),
+                                resolver.resolveTypeColor(change.getType(), context)
+                        };
+
+                        if (change.getType().equals("EVA") && !change.getRoomNew().equals("Sek"))
+                            changeGradientColors[1] = context.getColor(R.color.background);
+
+                        GradientDrawable changeGradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, changeGradientColors);
+                        changeGradient.setCornerRadius(100f);
+                        holder.cardView.setBackground(changeGradient);
+                    }
+                    // If only one of multiple lessons is changed
+                    if (position > 0 && mDataset[position - 1].length > 0
+                            && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())
+                            && period[0] == mDay && (period[1] > position - 1 || period[2] < position)) {
+                        // Same course as last one, but different change
+                        holder.rootView.setVisibility(View.VISIBLE);
+                        holder.cardView.setVisibility(View.VISIBLE);
+                        holder.spacer.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
         } else {
             holder.rootView.setVisibility(View.GONE);
             holder.cardView.setVisibility(View.GONE);

@@ -10,7 +10,9 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:onClick="showChangeActions">
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:onClick="showChangeActions"
+        tools:ignore="UnusedAttribute">
 
         <TextView
             android:id="@+id/courseTextView"
