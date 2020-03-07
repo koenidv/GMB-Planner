@@ -117,8 +117,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Post-process update
+        prefs.edit().putInt("lastVersion", 126).putString("courses", "").putLong("lastCourseRefresh", 0).putLong("lastTimetableRefresh", 0).apply();
+        new ChangesManager().refreshChanges(getApplicationContext());
         if (prefs.getInt("lastVersion", 123) < 126) {
-            prefs.edit().putInt("lastVersion", 126).putLong("lastCourseRefresh", 0).apply();
+            prefs.edit().putInt("lastVersion", 126).putString("courses", "").putLong("lastCourseRefresh", 0).apply();
         }
 
         super.onCreate(savedInstanceState);
@@ -272,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(new Intent("changesRefreshed"));
             return;
         }
-
 
         for (int day = 0; day <= 4; day++) {
             for (int period = 0; period < allTable[day].length; period++) {

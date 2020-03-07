@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/include_timetable" />
+    <include layout="@layout/card_timetable" />
 
     <include
+        android:id="@+id/include_change"
         layout="@layout/item_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

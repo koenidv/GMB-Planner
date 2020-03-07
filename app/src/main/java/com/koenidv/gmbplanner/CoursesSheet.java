@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -68,7 +69,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
 
         // Set up suggestion chips
         String[] allCourses = gson.fromJson(prefs.getString("allCourses", ""), String[].class);
-        List<Course> courses = gson.fromJson(prefs.getString("courses", ""), ListType.COURSE);
+        Map<String, Course> courses = gson.fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
         final ChipGroup chipgroup = view.findViewById(R.id.chipgroup);
         final TextInputEditText editText = view.findViewById(R.id.addCourseEditText);
 
@@ -92,17 +93,17 @@ public class CoursesSheet extends BottomSheetDialogFragment {
             }
         };
 
-        if (allCourses != null) {
-            for (Course thisCourse : courses) {
+        if (courses != null) {
+            for (Map.Entry<String, Course> thisMap : courses.entrySet()) {
                 // Only show courses that are not yet added
-                if (!myCourses.contains(thisCourse.getCourse())) {
+                if (!myCourses.contains(thisMap.getValue().getCourse())) {
                     final Chip chip = new Chip(chipgroup.getContext());
                     chip.setClickable(true);
                     chip.setOnClickListener(chipListener);
                     chip.setOnLongClickListener(chipLongListener);
                     chip.setText(getString(R.string.course_chip)
-                            .replace("%course", thisCourse.getCourse())
-                            .replace("%teacher", (new Resolver()).resolveTeacher(thisCourse.getTeacher())));
+                            .replace("%course", thisMap.getValue().getCourse())
+                            .replace("%teacher", (new Resolver()).resolveTeacher(thisMap.getValue().getTeacher())));
                     chip.setMinHeight(32);
                     chipgroup.addView(chip);
                 }

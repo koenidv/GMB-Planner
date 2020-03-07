@@ -1,15 +1,17 @@
 package com.koenidv.gmbplanner;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -24,6 +26,10 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 //  Created by koenidv on 16.02.2020.
 public class ActionsSheet extends BottomSheetDialogFragment {
@@ -45,24 +51,91 @@ public class ActionsSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.sheet_actions, container, false);
 
-        final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         @SuppressLint("CommitPrefEdits") final SharedPreferences.Editor prefsEdit = prefs.edit();
         final Resolver resolver = new Resolver();
         final Gson gson = new Gson();
 
-        final Course course = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
+        // Get course
+        Course courseInherited = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
+        if (courseInherited == null) courseInherited = new Course();
+        final Course course = courseInherited;
 
-        // Actions for changes
-        final String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString();
-        final String date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
+        // Only when started from change
+        final String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString(),
+                date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
 
-        // Copy values
-        ((TextView) view.findViewById(R.id.topTextView)).setText(((TextView) mPreview.findViewById(R.id.topTextView)).getText());
-        ((TextView) view.findViewById(R.id.centerTextView)).setText(((TextView) mPreview.findViewById(R.id.centerTextView)).getText());
-        ((TextView) view.findViewById(R.id.bottomTextView)).setText(((TextView) mPreview.findViewById(R.id.bottomTextView)).getText());
-        view.findViewById(R.id.changeCard).setOnClickListener(null);
-        view.findViewById(R.id.changeCard).setBackground(mPreview.findViewById(R.id.changeCard).getBackground());
+        final boolean isChange = mPreview.getId() == R.id.outerCard;
+        if (isChange) {
+            // Copy values
+            ((TextView) view.findViewById(R.id.topTextView)).setText(((TextView) mPreview.findViewById(R.id.topTextView)).getText());
+            ((TextView) view.findViewById(R.id.centerTextView)).setText(((TextView) mPreview.findViewById(R.id.centerTextView)).getText());
+            ((TextView) view.findViewById(R.id.bottomTextView)).setText(((TextView) mPreview.findViewById(R.id.bottomTextView)).getText());
+            view.findViewById(R.id.changeCard).setOnClickListener(null);
+            view.findViewById(R.id.changeCard).setBackground(mPreview.findViewById(R.id.changeCard).getBackground());
+        } else {
+            view.findViewById(R.id.shareButton).setVisibility(View.GONE);
+            view.findViewById(R.id.include_change).setVisibility(View.GONE);
+        }
 
+        // Timetable
+        //Lesson[][][] timetable = filterTimetable(course.getCourse());
+        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
+
+        final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout);
+        final TextView titleTextView = view.findViewById(R.id.titleTextView);
+        final ImageButton expandButton = view.findViewById(R.id.expandButton);
+
+        if (timetable != null && !course.getCourse().equals("")) {
+            recyclerLayout.setVisibility(View.VISIBLE);
+            titleTextView.setText(resolver.resolveCourse(course.getCourse(), getContext()));
+            titleTextView.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
+            // Set up 5 recyclerviews, one for each day
+            RecyclerView mondayRecycler = view.findViewById(R.id.mondayRecycler),
+                    tuesdayRecycler = view.findViewById(R.id.tuesdayRecycler),
+                    wednesdayRecycler = view.findViewById(R.id.wednesdayRecycler),
+                    thursdayRecycler = view.findViewById(R.id.thursdayRecycler),
+                    fridayRecycler = view.findViewById(R.id.fridayRecycler);
+            mondayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            tuesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0], course.getCourse());
+            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1], course.getCourse());
+            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2], course.getCourse());
+            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3], course.getCourse());
+            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4], course.getCourse());
+            mondayRecycler.setAdapter(mondayAdapter);
+            tuesdayRecycler.setAdapter(tuesdayAdapter);
+            wednesdayRecycler.setAdapter(wednesdayAdapter);
+            thursdayRecycler.setAdapter(thursdayAdapter);
+            fridayRecycler.setAdapter(fridayAdapter);
+        } else {
+            recyclerLayout.setVisibility(View.GONE);
+        }
+
+        // Expand button to show the entire timetable
+        expandButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandButton.setVisibility(View.GONE);
+                if (recyclerLayout.getVisibility() == View.GONE) {
+                    recyclerLayout.setVisibility(View.VISIBLE);
+                    expandButton.setImageResource(R.drawable.ic_less);
+                } else {
+                    recyclerLayout.setVisibility(View.GONE);
+                    expandButton.setImageResource(R.drawable.ic_more);
+                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        expandButton.setVisibility(View.VISIBLE);
+                    }
+                }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+            }
+        });
 
         Button emailButton = view.findViewById(R.id.emailButton);
         if (resolver.resolveTeacherInitial(course.getTeacher()).equals("unknown")) {
@@ -72,10 +145,14 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 String subject;
-                if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
-                    subject = type + " " + date.toLowerCase();
+                if (isChange) {
+                    if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
+                        subject = type + " " + date.toLowerCase();
+                    } else {
+                        subject = type + getString(R.string.change_connect_date) + date;
+                    }
                 } else {
-                    subject = type + getString(R.string.change_connect_date) + date;
+                    subject = resolver.resolveCourse(course.getCourse(), getContext());
                 }
                 Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
                         .setData(Uri.parse("mailto:"))
@@ -163,5 +240,37 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
 
         return view;
+    }
+
+    private Lesson[][][] filterTimetable(String filter) {
+        SharedPreferences prefs = Objects.requireNonNull(getContext()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        Resolver resolver = new Resolver();
+
+        Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        Lesson[][][] myTable = new Lesson[5][][];
+        ArrayList<Lesson[]> dayTable = new ArrayList<>();
+        ArrayList<Lesson> periodTable = new ArrayList<>();
+
+        if (allTable == null) {
+            // Probably q34 - no data yet
+            return null;
+        }
+
+        for (int day = 0; day <= 4; day++) {
+            for (int period = 0; period < allTable[day].length; period++) {
+                for (Lesson lesson : allTable[day][period]) {
+                    if (lesson.getCourse().equals(filter)) {
+                        periodTable.add(lesson);
+                    }
+                }
+                dayTable.add(periodTable.toArray(new Lesson[0]));
+                periodTable.clear();
+            }
+            myTable[day] = dayTable.toArray(new Lesson[0][]);
+            dayTable.clear();
+        }
+
+        return myTable;
     }
 }

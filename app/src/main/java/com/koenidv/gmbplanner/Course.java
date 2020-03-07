@@ -9,19 +9,34 @@ public class Course {
 
     private String course;
     private String teacher;
-    private ArrayList<Change> changes;
+    private String type;
+    private ArrayList<Change> changes = new ArrayList<>();
 
     Course(String course, String teacher) {
         this.course = course;
         this.teacher = teacher;
+        try {
+            this.type = course.substring(0, course.indexOf('-'));
+        } catch (NullPointerException ignored) {
+            // Malformed course name
+        }
+    }
+
+    Course() {
+        course = "";
+        teacher = "";
     }
 
     String getCourse() {
         return course;
     }
 
-    public String getTeacher() {
+    String getTeacher() {
         return teacher;
+    }
+
+    public String getType() {
+        return type;
     }
 
     void addChange(Change change) {
@@ -38,9 +53,11 @@ public class Course {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj != null) {
+        try {
+            if (obj == null) return course == null;
             return ((Course) obj).getCourse().equals(course);
+        } catch (NullPointerException wrongType) {
+            return false;
         }
-        return false;
     }
 }

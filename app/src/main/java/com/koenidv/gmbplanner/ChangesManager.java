@@ -15,9 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import androidx.core.app.NotificationManagerCompat;
@@ -124,7 +125,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
 
-        List<Change> previousChanges = gson.fromJson(prefs.getString("changes", ""), ListType.CHANGE);
+        List<Change> previousChanges = gson.fromJson(prefs.getString("changes", ""), ListType.CHANGES);
         Resolver resolver = new Resolver();
 
         try {
@@ -145,6 +146,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     grade = grade.substring(0, grade.indexOf("<"));
                 }
 
+                // Parse website to changes
                 try {
                     result = result.substring(result.indexOf("<div class=\"view-content\">"));
                     result = result.substring(result.indexOf("<tbody>") + 7, result.indexOf("</tbody>"));
@@ -157,27 +159,35 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     // Currently no changes
                 }
 
+                // Get all courses
+                Map<String, Course> courses = gson.fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
+                if (courses != null) {
+                    // Clear changes from all courses
+                    for (Map.Entry<String, Course> map : courses.entrySet()) {
+                        map.getValue().clearChanges();
+                    }
+                    // Add each change to the according course
+                    for (Change change : mChangeList) {
+                        Objects.requireNonNull(courses.get(change.getCourseString())).addChange(change);
+                    }
+                }
+
                 prefsEdit.putString("changes", gson.toJson(mChangeList));
 
                 // Add all courses that have not yet been seen
-                List<String> allCourses = new ArrayList<>();
-                List<Course> allCourseObjects = new ArrayList<>();
+                Map<String, Course> allCourseObjects = new HashMap<>();
                 try {
-                    allCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("allCourses", ""), String[].class)));
-                    allCourseObjects = gson.fromJson(prefs.getString("courses", ""), ListType.COURSE);
+                    allCourseObjects = gson.fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
                 }
 
                 for (Change change : mChangeList) {
-                    if (!allCourses.toString().toUpperCase().contains(change.getCourseString().toUpperCase()))
-                        allCourses.add(change.getCourseString() + " (" + change.getTeacher() + ")");
-                    if (!allCourseObjects.contains(change.getCourse()))
-                        allCourseObjects.add(change.getCourse());
+                    if (allCourseObjects.get(change.getCourseString()) == null)
+                        allCourseObjects.put(change.getCourseString(), change.getCourse());
                 }
 
-                prefsEdit.putString("allCourses", gson.toJson(allCourses))
-                        .putString("courses", gson.toJson(allCourseObjects))
+                prefsEdit.putString("courses", gson.toJson(allCourseObjects))
                         .putString("lastChange", lastChange)
                         .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
                 prefsEdit.commit();
@@ -207,21 +217,21 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                                 // Parse
                                 ArrayList<Course> presets = new ArrayList<>();
                                 try {
-                                    presets = gson.fromJson(responseString, ListType.COURSE);
+                                    presets = gson.fromJson(responseString, ListType.COURSES);
                                 } catch (NullPointerException npe) {
                                     // Not well formatted json or network error
                                     npe.printStackTrace();
                                 }
                                 // Add all loaded courses if they aren't already in the list
-                                List<Course> allCourseObjectsAsync = new ArrayList<>();
+                                Map<String, Course> allCourseObjectsAsync = new HashMap<>();
 
-                                List<Course> allCourseObjectsAsyncPrefs = gson.fromJson(prefs.getString("courses", ""), ListType.COURSE);
+                                Map<String, Course> allCourseObjectsAsyncPrefs = gson.fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
                                 if (allCourseObjectsAsyncPrefs != null)
                                     allCourseObjectsAsync = allCourseObjectsAsyncPrefs;
 
                                 for (Course preset : presets)
-                                    if (!allCourseObjectsAsync.contains(preset))
-                                        allCourseObjectsAsync.add(preset);
+                                    if (allCourseObjectsAsync.get(preset.getCourse()) == null)
+                                        allCourseObjectsAsync.put(preset.getCourse(), preset);
                                 prefsEdit.putString("courses", gson.toJson(allCourseObjectsAsync))
                                         .putLong("lastCourseRefresh", Calendar.getInstance().getTimeInMillis())
                                         .commit();

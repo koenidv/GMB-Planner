@@ -19,9 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 // Lesson adapter for one day
 public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHolder> {
     private Lesson[][] mDataset;
+    private String mFilter;
 
     public LessonsAdapter(Lesson[][] dataset) {
         mDataset = dataset;
+    }
+
+    LessonsAdapter(Lesson[][] dataset, String filter) {
+        mDataset = dataset;
+        mFilter = filter;
     }
 
     // Create new views (invoked by the layout manager)
@@ -42,6 +48,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             Resolver resolver = new Resolver();
 
             holder.courseTextView.setText(resolver.resolveCourseShort(thisLesson.getCourse(), context));
+            holder.courseHiddenTextView.setText(thisLesson.getCourse());
 
             // ColorDrawable doesn't support corner radii
             int[] gradientColors = {resolver.resolveCourseColor(thisLesson.getCourse(), context), resolver.resolveCourseColor(thisLesson.getCourse(), context)};
@@ -72,9 +79,20 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
 
             gradient.setCornerRadii(cornerRadii);
             holder.cardView.setBackground(gradient);
+
+            // Make cards opaque that don't match the filter
+            if (mFilter != null && !mFilter.equals(thisLesson.getCourse())) {
+                holder.cardView.getBackground().setAlpha(65);
+                holder.courseTextView.setAlpha(0.5f);
+            }
+            if (mFilter != null) {
+                holder.cardView.setOnClickListener(null);
+            }
+
         } else {
             holder.rootView.setVisibility(View.INVISIBLE);
             holder.cardView.setVisibility(View.INVISIBLE);
+            holder.cardView.setOnClickListener(null);
             holder.spacer.setVisibility(View.INVISIBLE);
         }
     }
@@ -93,12 +111,13 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView courseTextView;
+        TextView courseTextView, courseHiddenTextView;
         View cardView, rootView, spacer;
 
         ViewHolder(View view) {
             super(view);
             courseTextView = view.findViewById(R.id.courseTextView);
+            courseHiddenTextView = view.findViewById(R.id.courseHiddenTextView);
             cardView = view.findViewById(R.id.cardView);
             rootView = view.findViewById(R.id.rootView);
             spacer = view.findViewById(R.id.spacer);

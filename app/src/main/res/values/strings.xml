@@ -40,7 +40,7 @@
 
     <string name="credentials_name">Username or email</string>
     <string name="credentials_pass">Password</string>
-    <string name="courses_add">Add a course</string>
+    <string name="courses_add">Find or add a course</string>
     <string name="course_chip">%course (%teacher)</string>
 
     <string name="change_hours">h</string>
