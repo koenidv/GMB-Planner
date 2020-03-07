@@ -62,6 +62,16 @@ public class Change {
         teacherChanged = !teacherNew.equals("+") && !teacherNew.equals(teacher);
     }
 
+    /**
+     * Should only be used for comparisons
+     */
+    Change(String course, String date, String time, String type) {
+        this.course = course;
+        this.date = date;
+        this.time = time;
+        this.type = type;
+    }
+
     Change(String type, String date, String time, String course, String room, String teacher) {
         this.type = type;
         this.date = date;

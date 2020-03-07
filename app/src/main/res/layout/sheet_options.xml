@@ -1,204 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:paddingTop="16dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/titleTextView"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:paddingTop="16dp">
 
-    <TextView
-        android:id="@+id/authorTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/info_author"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <TextView
-        android:id="@+id/lastRefreshedTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="?attr/selectableItemBackground"
-        android:drawableEnd="@drawable/ic_refresh"
-        android:drawablePadding="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/last_refreshed"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:drawableTint="@color/titleText" />
+        <TextView
+            android:id="@+id/authorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/info_author"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="4dp"
-        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/lastRefreshedTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:drawableEnd="@drawable/ic_refresh"
+            android:drawablePadding="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/last_refreshed"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:drawableTint="@color/titleText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/coursesButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:text="@string/menu_option_courses"
+                android:textColor="@color/tabText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/credentialsButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:text="@string/menu_option_credentials"
+                android:textColor="@color/tabText" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/darkmodeToggleGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            tools:visibility="visible">
+
+            <Button
+                android:id="@+id/darkButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/option_theme_dark" />
+
+            <Button
+                android:id="@+id/lightButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/option_theme_light" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/compactToggleGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <Button
+                android:id="@+id/comfortableButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/option_compact_off" />
+
+            <Button
+                android:id="@+id/autoCompactButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/option_compact_auto" />
+
+            <Button
+                android:id="@+id/compactButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/option_compact_on" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/backgroundToggleGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <Button
+                android:id="@+id/backgroundOnButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxWidth="288dp"
+                android:text="@string/option_background_on" />
+
+            <Button
+                android:id="@+id/backgroundOffButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/option_background_off" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/coursesButton"
+            android:id="@+id/manageAccountButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/menu_option_courses"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/menu_manage_account"
             android:textColor="@color/tabText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/feedbackButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:text="@string/menu_feedback"
+                android:textColor="@color/tabText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/rateButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:text="@string/menu_rate"
+                android:textColor="@color/tabText" />
+
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/credentialsButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/doneButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:text="@string/menu_option_credentials"
+            android:layout_height="wrap_content"
+            android:text="@string/done"
             android:textColor="@color/tabText" />
-
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/darkmodeToggleGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:selectionRequired="true"
-        app:singleSelection="true"
-        tools:visibility="visible">
-
-        <Button
-            android:id="@+id/darkButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/option_theme_dark" />
-
-        <Button
-            android:id="@+id/lightButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/option_theme_light" />
-
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/compactToggleGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:selectionRequired="true"
-        app:singleSelection="true">
-
-        <Button
-            android:id="@+id/comfortableButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/option_compact_off" />
-
-        <Button
-            android:id="@+id/autoCompactButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:text="@string/option_compact_auto" />
-
-        <Button
-            android:id="@+id/compactButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/option_compact_on" />
-
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/backgroundToggleGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:selectionRequired="true"
-        app:singleSelection="true">
-
-        <Button
-            android:id="@+id/backgroundOnButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxWidth="288dp"
-            android:text="@string/option_background_on" />
-
-        <Button
-            android:id="@+id/backgroundOffButton"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/option_background_off" />
-
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/manageAccountButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/menu_manage_account"
-        android:textColor="@color/tabText" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/feedbackButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/menu_feedback"
-            android:textColor="@color/tabText" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/rateButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:text="@string/menu_rate"
-            android:textColor="@color/tabText" />
-
-    </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/doneButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/done"
-        android:textColor="@color/tabText" />
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

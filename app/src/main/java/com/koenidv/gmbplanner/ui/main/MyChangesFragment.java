@@ -209,7 +209,7 @@ public class MyChangesFragment extends Fragment {
                 titleTextView.setVisibility(View.VISIBLE);
 
             // Expand button to show the entire timetable
-            expandButton.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener expandListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     expandButton.setVisibility(View.GONE);
@@ -232,7 +232,9 @@ public class MyChangesFragment extends Fragment {
                         }
                     }, getResources().getInteger(android.R.integer.config_shortAnimTime));
                 }
-            });
+            };
+            mView.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
+            expandButton.setOnClickListener(expandListener);
 
             // Set up 5 recyclerviews, one for each day
             RecyclerView mondayRecycler = mView.findViewById(R.id.mondayRecycler),

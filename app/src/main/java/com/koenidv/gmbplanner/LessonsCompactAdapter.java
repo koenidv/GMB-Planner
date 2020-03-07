@@ -43,6 +43,7 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
             Resolver resolver = new Resolver();
 
             holder.courseTextView.setText(resolver.resolveCourseVeryShort(thisLesson.getCourse(), context));
+            holder.courseHiddenTextView.setText(thisLesson.getCourse());
 
             // ColorDrawable doesn't support corner radii
             int[] gradientColors = {resolver.resolveCourseColor(thisLesson.getCourse(), context), resolver.resolveCourseColor(thisLesson.getCourse(), context)};
@@ -56,10 +57,8 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
             } catch (ArrayIndexOutOfBoundsException ignored) {
                 // Next or last period is empty
             }
-
             gradient.setCornerRadius(100f);
             holder.cardView.setBackground(gradient);
-
 
             // Show changes
             Course course = resolver.getCourse(thisLesson.getCourse(), context);
@@ -113,12 +112,13 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView courseTextView;
+        TextView courseTextView, courseHiddenTextView;
         View cardView, rootView, spacer;
 
         ViewHolder(View view) {
             super(view);
             courseTextView = view.findViewById(R.id.courseTextView);
+            courseHiddenTextView = view.findViewById(R.id.courseHiddenTextView);
             cardView = view.findViewById(R.id.cardView);
             rootView = view.findViewById(R.id.rootView);
             spacer = view.findViewById(R.id.spacer);

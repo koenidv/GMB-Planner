@@ -110,4 +110,5 @@
     <string name="timetable_today">"Heute: "</string>
     <string name="timetable_expand_description">Stundenplan umschalten</string>
     <string name="course_chip">%course (%teacher)</string>
+    <string name="next_changes">Nächste Änderungen</string>
 </resources>

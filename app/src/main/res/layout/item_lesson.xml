@@ -48,6 +48,13 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/timeHiddenTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View

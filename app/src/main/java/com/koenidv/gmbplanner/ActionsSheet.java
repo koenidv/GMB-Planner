@@ -63,7 +63,8 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
         // Only when started from change
         final String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString(),
-                date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
+                date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString(),
+                time = ((TextView) mPreview.findViewById(R.id.timeHiddenTextView)).getText().toString();
 
         final boolean isChange = mPreview.getId() == R.id.outerCard;
         if (isChange) {
@@ -79,7 +80,6 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         }
 
         // Timetable
-        //Lesson[][][] timetable = filterTimetable(course.getCourse());
         Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
 
         final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout);
@@ -118,7 +118,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         }
 
         // Expand button to show the entire timetable
-        expandButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener expandListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 expandButton.setVisibility(View.GONE);
@@ -136,7 +136,39 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                     }
                 }, getResources().getInteger(android.R.integer.config_shortAnimTime));
             }
-        });
+        };
+        expandButton.setOnClickListener(expandListener);
+        view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
+
+        List<Change> changeList = Arrays.asList(course.getChanges());
+        if (!isChange && !changeList.isEmpty()) {
+            view.findViewById(R.id.recyclerCard).setVisibility(View.VISIBLE);
+            final ImageButton recyclerExpandButton = view.findViewById(R.id.recyclerExpandButton);
+            final RecyclerView changesRecycler = view.findViewById(R.id.changesRecycler);
+
+            changesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            changesRecycler.setAdapter(new ChangesAdapter(changeList, resolver.isFavorite(course.getCourse(), getContext()), true));
+
+            view.findViewById(R.id.recyclerExpandLayout).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recyclerExpandButton.setVisibility(View.GONE);
+                    if (changesRecycler.getVisibility() == View.GONE) {
+                        changesRecycler.setVisibility(View.VISIBLE);
+                        recyclerExpandButton.setImageResource(R.drawable.ic_less);
+                    } else {
+                        changesRecycler.setVisibility(View.GONE);
+                        recyclerExpandButton.setImageResource(R.drawable.ic_more);
+                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerExpandButton.setVisibility(View.VISIBLE);
+                        }
+                    }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+                }
+            });
+        }
 
         Button emailButton = view.findViewById(R.id.emailButton);
         if (resolver.resolveTeacherInitial(course.getTeacher()).equals("unknown")) {

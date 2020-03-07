@@ -106,6 +106,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             holder.courseHiddenTextView.setText(thisChange.getCourseString());
             holder.teacherHiddenTextView.setText(thisChange.getTeacher());
             holder.typeHiddenTextView.setText(thisChange.getType());
+            holder.timeHiddenTextView.setText(thisChange.getTime());
 
             holder.dateTextView.setText(resolver.resolveDate(thisChange.getDate(), context));
             if (position == 0 || !thisChange.getDate().equals(mDataset.get(position - 1).getDate())) {
@@ -142,7 +143,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView topTextView, centerTextView, bottomTextView, dateTextView, courseHiddenTextView, teacherHiddenTextView, typeHiddenTextView;
+        TextView topTextView, centerTextView, bottomTextView, dateTextView, courseHiddenTextView, teacherHiddenTextView, typeHiddenTextView, timeHiddenTextView;
         View card, innerCard;
 
         ViewHolder(View view) {
@@ -156,6 +157,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             courseHiddenTextView = view.findViewById(R.id.courseHiddenTextView);
             teacherHiddenTextView = view.findViewById(R.id.teacherHiddenTextView);
             typeHiddenTextView = view.findViewById(R.id.typeHiddenTextView);
+            timeHiddenTextView = view.findViewById(R.id.timeHiddenTextView);
         }
     }
 }

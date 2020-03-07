@@ -55,6 +55,7 @@
     <string name="timetable">Your timetable</string>
     <string name="timetable_today">Today: </string>
     <string name="timetable_expand_description">Toggle timetable</string>
+    <string name="next_changes">Next changes</string>
 
     <string name="feedback_subject">[GMB Planner] Feedback</string>
     <string name="feedback_body">\n\nApp version: %app\nAndroid version: %android</string>
@@ -97,8 +98,8 @@
     <string name="course_ethics">Ethics</string>
     <string name="course_history_bili">History Bili</string>
     <string name="course_concb">Concert Band</string>
-    <string name="course_intensified"> IC</string>
-    <string name="course_examination"> ES</string>
+    <string name="course_intensified">" IC"</string>
+    <string name="course_examination">" ES"</string>
 
     <string name="course_german_short">Ger</string>
     <string name="course_english_short">Eng</string>
