@@ -6,8 +6,8 @@ android {
         applicationId "com.koenidv.gmbplanner"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 126
-        versionName '1.3 Beta'
+        versionCode 127
+        versionName '1.3 Beta 2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

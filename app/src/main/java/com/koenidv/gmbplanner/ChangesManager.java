@@ -162,7 +162,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 //todo debugging
                 //mChangeList.add(new Change("EVA", "Fr 13.3.", "1 - 2", "D-GK-5", "A13", "Kow"));
                 //mChangeList.add(new Change("Raum", "Mo 9.3.", "5 - 6", "E-GK-3", "M120", "Asc"));
-                //mChangeList.add(new Change("Klausur", "DO 12.3.", "3 - 4", "PH-LK-1", "E14", "Fgr"));
+                //mmChangeList.add(new Change("Klausur", "DO 12.3.", "3 - 4", "PH-LK-1", "E14", "Fgr"));
 
                 // Add all courses that have not yet been seen and add changes to courses
                 // Get all courses
@@ -195,14 +195,13 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                         || Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastCourseRefresh", 0) > 1209600 * 1000) {
                     // Get course presets from koenidv.de
                     final String finalGrade = grade;
+                    // Ignore first refresh broadcast, as this request will still be still running
+                    Intent ignoreIntent = new Intent("refreshing");
+                    ignoreIntent.putExtra("ignoreFirst", true);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(ignoreIntent);
                     new AsyncTask<String, String, String>() {
                         @Override
                         protected String doInBackground(String... mStrings) {
-                            // Ignore first refresh broadcast, as this request will still be still running
-                            Intent ignoreIntent = new Intent("refreshing");
-                            ignoreIntent.putExtra("ignoreFirst", true);
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(ignoreIntent);
-
                             // Network request needs to be async
                             Request request = new Request.Builder()
                                     .url(context.getString(R.string.url_presets).replace("%grade", finalGrade.toLowerCase()))
@@ -254,14 +253,13 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastTimetableRefresh", 0) > 4838400L * 1000) {
                     // Get timetable from koenidv.de
                     final String finalGrade = grade;
+                    // Ignore first refresh broadcast, as this request will still be still running
+                    Intent ignoreIntent = new Intent("refreshing");
+                    ignoreIntent.putExtra("ignoreFirst", true);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(ignoreIntent);
                     new AsyncTask<String, String, String>() {
                         @Override
                         protected String doInBackground(String... mStrings) {
-                            // Ignore first refresh broadcast, as this request will still be still running
-                            Intent ignoreIntent = new Intent("refreshing");
-                            ignoreIntent.putExtra("ignoreFirst", true);
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(ignoreIntent);
-
                             // Network request needs to be async
                             Request request = new Request.Builder()
                                     .url(context.getString(R.string.url_timetable).replace("%grade", finalGrade.toLowerCase()))

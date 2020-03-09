@@ -25,6 +25,7 @@
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/roboto_slab"
                 android:gravity="center_vertical"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
