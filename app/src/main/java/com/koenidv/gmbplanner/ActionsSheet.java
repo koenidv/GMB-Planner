@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,9 +85,14 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         final TextView titleTextView = view.findViewById(R.id.titleTextView);
         final ImageButton expandButton = view.findViewById(R.id.expandButton);
 
+        ((LinearLayout) view.findViewById(R.id.compactLayout)).setLayoutTransition(null);
+
+
         if (timetable != null && !course.getCourse().equals("")) {
-            if (!isChange)
+            if (!isChange) {
                 recyclerLayout.setVisibility(View.VISIBLE);
+                expandButton.setImageResource(R.drawable.ic_less);
+            }
             titleTextView.setText(resolver.resolveCourse(course.getCourse(), getContext()));
             titleTextView.setVisibility(View.VISIBLE);
             view.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
@@ -121,7 +125,6 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         View.OnClickListener expandListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expandButton.setVisibility(View.GONE);
                 if (recyclerLayout.getVisibility() == View.GONE) {
                     recyclerLayout.setVisibility(View.VISIBLE);
                     expandButton.setImageResource(R.drawable.ic_less);
@@ -129,16 +132,11 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                     recyclerLayout.setVisibility(View.GONE);
                     expandButton.setImageResource(R.drawable.ic_more);
                 }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        expandButton.setVisibility(View.VISIBLE);
-                    }
-                }, getResources().getInteger(android.R.integer.config_shortAnimTime));
             }
         };
         expandButton.setOnClickListener(expandListener);
         view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
+
 
         List<Change> changeList = Arrays.asList(course.getChanges());
         if (!isChange && !changeList.isEmpty()) {
@@ -152,7 +150,6 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             view.findViewById(R.id.recyclerExpandLayout).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    recyclerExpandButton.setVisibility(View.GONE);
                     if (changesRecycler.getVisibility() == View.GONE) {
                         changesRecycler.setVisibility(View.VISIBLE);
                         recyclerExpandButton.setImageResource(R.drawable.ic_less);
@@ -160,12 +157,6 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                         changesRecycler.setVisibility(View.GONE);
                         recyclerExpandButton.setImageResource(R.drawable.ic_more);
                     }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            recyclerExpandButton.setVisibility(View.VISIBLE);
-                        }
-                    }, getResources().getInteger(android.R.integer.config_shortAnimTime));
                 }
             });
         }

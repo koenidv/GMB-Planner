@@ -319,8 +319,12 @@ public class Resolver {
         switch (shorthand) {
             case "Adb":
                 return "Adelsberger";
+            case "Afh":
+                return "Afghanyar";
             case "Asc":
                 return "Ascheidt";
+            case "Bal":
+                return "Balser";
             case "Bar":
                 return "Barth";
             case "Bec":
@@ -395,6 +399,8 @@ public class Resolver {
                 return "Lüttmann";
             case "Mak":
                 return "Makridis";
+            case "Man":
+                return "Manig";
             case "Mes":
                 return "Menges";
             case "Mie":
@@ -503,6 +509,7 @@ public class Resolver {
             case "Tre":
             case "Sdr":
             case "Ker":
+            case "Man":
                 return "a";
             case "Brö":
             case "Mie":
@@ -551,6 +558,9 @@ public class Resolver {
                 return "l";
             case "Wei":
                 return "u";
+            case "Afh":
+            case "Bal":
+                return "n";
             default:
                 return "unknown";
         }

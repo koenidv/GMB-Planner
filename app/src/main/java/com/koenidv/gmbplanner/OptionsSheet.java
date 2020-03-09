@@ -79,7 +79,11 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 // Force refresh all changes, courses and lessons
-                prefs.edit().putLong("lastCourseRefresh", 0).putLong("lastTimetableRefresh", 0).commit();
+                prefs.edit()
+                        .putLong("lastCourseRefresh", 0)
+                        .putLong("lastTimetableRefresh", 0)
+                        .putString("courses", "")
+                        .commit();
                 new ChangesManager().refreshChanges(getContext());
                 dismiss();
             }

@@ -62,7 +62,7 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
 
             if (thisChange.getType().equals("EVA") || thisChange.getType().equals("Entfall") || thisChange.getType().equals("Freistellung")) {
                 if (thisChange.getRoomNew().equals("Sek"))
-                    topString.append(context.getString(R.string.change_workorders));
+                    topString.append(" • ").append(context.getString(R.string.change_workorders));
                 centerString.append(" ").append(thisChange.getType());
                 if (!thisChange.getRoom().equals(" "))
                     bottomString.append(thisChange.getRoom()).append(" • ");
@@ -88,8 +88,10 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
                     bottomString.append(resolver.resolveTeacher(thisChange.getTeacher()));
                 }
                 if (thisChange.isCourseChanged()) {
+                    if (isFavorite || thisChange.isTeacherChanged()) bottomString.append(" • ");
                     bottomString.append("<strike>").append(thisChange.getCourseString()).append("</strike>");
                 } else if (!isFavorite) {
+                    if (thisChange.isTeacherChanged()) bottomString.append(" • ");
                     bottomString.append(thisChange.getCourseString());
                 }
                 if (!thisChange.isRoomChanged() && !thisChange.isTeacherChanged() && !thisChange.isCourseChanged()) {
