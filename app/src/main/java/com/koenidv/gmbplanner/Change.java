@@ -1,5 +1,6 @@
 package com.koenidv.gmbplanner;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 
 //  Created by koenidv on 15.02.2020.
@@ -9,6 +10,7 @@ public class Change {
     private String date;
     private String time;
     private String schoolclass;
+    @Keep
     private String course;
     private String courseNew;
     private boolean courseChanged;

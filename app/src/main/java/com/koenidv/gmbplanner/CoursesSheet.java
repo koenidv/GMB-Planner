@@ -96,7 +96,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         if (courses != null) {
             for (Map.Entry<String, Course> thisMap : courses.entrySet()) {
                 // Only show courses that are not yet added
-                if (!myCourses.contains(thisMap.getValue().getCourse())) {
+                if (!myCourses.toString().contains(thisMap.getValue().getCourse())) {
                     final Chip chip = new Chip(chipgroup.getContext());
                     chip.setClickable(true);
                     chip.setOnClickListener(chipListener);

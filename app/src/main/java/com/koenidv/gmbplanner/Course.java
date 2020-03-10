@@ -1,13 +1,20 @@
 package com.koenidv.gmbplanner;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 
 //  Created by koenidv on 04.03.2020.
 public class Course {
 
+    @Keep
+    @SerializedName("course")
     private String course;
+    @Keep
+    @SerializedName("teacher")
     private String teacher;
     private String type;
     private ArrayList<Change> changes = new ArrayList<>();

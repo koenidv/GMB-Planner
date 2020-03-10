@@ -227,7 +227,10 @@ public class Resolver {
                 return resolveCourse(courseName, context).substring(0, 1);
         else if (courseName.contains("BIO"))
             return "Bio";
-        return resolveCourse(courseName, context).substring(0, 2);
+        if (courseName.length() >= 2)
+            return resolveCourse(courseName, context).substring(0, 2);
+        else
+            return courseName;
     }
 
     /**
@@ -238,7 +241,9 @@ public class Resolver {
      * @return The according color
      */
     int resolveCourseColor(String courseName, Context context) {
-        if (courseName.startsWith("D-")) {
+        if (courseName == null) {
+            return context.getResources().getColor(R.color.spotShadowColor);
+        } else if (courseName.startsWith("D-")) {
             return context.getResources().getColor(R.color.course_german);
         } else if (courseName.startsWith("E-")) {
             return context.getResources().getColor(R.color.course_english);

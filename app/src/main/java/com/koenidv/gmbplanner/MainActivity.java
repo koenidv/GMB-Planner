@@ -123,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
                     .putString("courses", "")
                     .putLong("lastCourseRefresh", 0)
                     .putLong("lastTimetableRefresh", 0).apply();
-            new ChangesManager().refreshChanges(getApplicationContext());
+            if (!prefs.getString("name", "").isEmpty())
+                new ChangesManager().refreshChanges(getApplicationContext());
         }
 
         super.onCreate(savedInstanceState);
