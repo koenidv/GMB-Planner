@@ -66,6 +66,8 @@
     <string name="url_timetable" translatable="false">https://koenidv.de/gmbplanner/timetable_%grade.json</string>
     <string name="widget_title">Your changes:</string>
     <string name="widget_nodata">Currently no changes</string>
+    <string name="update_downloaded">Update downloaded</string>
+    <string name="update_complete">Complete</string>
 
     <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourses refreshed: %courses</string>
     <string name="dateformat_hours">HH:mm:ss</string>

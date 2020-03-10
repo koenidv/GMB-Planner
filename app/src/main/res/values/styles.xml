@@ -14,8 +14,6 @@
         <item name="bottomSheetDialogTheme">@style/AppTheme.Sheet</item>
     </style>
 
-    <style name="AppTheme.ShadowStyle" parent="AppTheme" />
-
     <style name="AppTheme.Sheet" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>

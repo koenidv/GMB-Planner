@@ -3,6 +3,7 @@ package com.koenidv.gmbplanner;
 import com.google.gson.annotations.SerializedName;
 
 import androidx.annotation.Keep;
+import androidx.annotation.Nullable;
 
 //  Created by koenidv on 04.03.2020.
 public class Lesson {
@@ -24,5 +25,16 @@ public class Lesson {
     }
     public String getRoom() {
         return room;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        try {
+            Lesson testFor = (Lesson) obj;
+            return testFor != null && testFor.course.equals(course);
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+            return false;
+        }
     }
 }

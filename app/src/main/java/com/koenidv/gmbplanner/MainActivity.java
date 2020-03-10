@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +17,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.gson.Gson;
 import com.koenidv.gmbplanner.ui.main.SectionsPagerAdapter;
 import com.koenidv.gmbplanner.widget.WidgetProvider;
@@ -43,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static CoursesSheet coursesSheet;
     private SwipeRefreshLayout swiperefresh;
     boolean ignoreFirstRefreshed = false;
+    private int UPDATE_REQUEST = 100;
 
     // Show that changes are refreshing when the broadcast "refreshing" is received
     private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
@@ -100,6 +112,39 @@ public class MainActivity extends AppCompatActivity {
             new ChangesManager().refreshChanges(getApplicationContext());
             swiperefresh.setRefreshing(true);
         }
+
+        // In-App updates
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        // Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                // Request the update
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            appUpdateInfo,
+                            AppUpdateType.FLEXIBLE,
+                            this,
+                            UPDATE_REQUEST);
+
+                    // Create a listener to track request state updates.
+                    InstallStateUpdatedListener listener = state -> {
+                        // Show module progress, log state, or install the update.
+
+                        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                            Snackbar completeSnackbar = Snackbar.make(findViewById(R.id.rootView), R.string.update_downloaded, BaseTransientBottomBar.LENGTH_INDEFINITE);
+                            completeSnackbar.setAction(R.string.update_complete, view -> appUpdateManager.completeUpdate())
+                                    .show();
+                        }
+                    };
+                    appUpdateManager.registerListener(listener);
+                } catch (IntentSender.SendIntentException mE) {
+                    mE.printStackTrace();
+                }
+            }
+        });
+
         super.onResume();
     }
 
@@ -164,12 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up swipe to refresh
         swiperefresh = findViewById(R.id.swiperefresh);
-        swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new ChangesManager().refreshChanges(getApplicationContext());
-            }
-        });
+        swiperefresh.setOnRefreshListener(() -> new ChangesManager().refreshChanges(getApplicationContext()));
 
         // Switch to all changes if no courses are specified
         if (prefs.getString("myCourses", "").isEmpty()) {
@@ -297,6 +337,5 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent("changesRefreshed");
         LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
-
     }
 }

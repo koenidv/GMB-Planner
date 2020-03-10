@@ -81,6 +81,22 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         // Timetable
         Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
 
+        // Add to timetable if not a favorite course and thus not already added
+        if (!resolver.isFavorite(course.getCourse(), getContext())) {
+            Lesson[][][] allTable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+            for (int day = 0; day <= 4; day++) {
+                for (int period = 0; period < allTable[day].length; period++) {
+                    for (Lesson lesson : allTable[day][period]) {
+                        if (lesson.getCourse().equals(course.getCourse())) {
+                            List<Lesson> thisPeriod = new ArrayList<>(Arrays.asList(timetable[day][period]));
+                            thisPeriod.add(0, lesson);
+                            timetable[day][period] = thisPeriod.toArray(new Lesson[0]);
+                        }
+                    }
+                }
+            }
+        }
+
         final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout);
         final TextView titleTextView = view.findViewById(R.id.titleTextView);
         final ImageButton expandButton = view.findViewById(R.id.expandButton);
@@ -122,16 +138,13 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         }
 
         // Expand button to show the entire timetable
-        View.OnClickListener expandListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (recyclerLayout.getVisibility() == View.GONE) {
-                    recyclerLayout.setVisibility(View.VISIBLE);
-                    expandButton.setImageResource(R.drawable.ic_less);
-                } else {
-                    recyclerLayout.setVisibility(View.GONE);
-                    expandButton.setImageResource(R.drawable.ic_more);
-                }
+        View.OnClickListener expandListener = v -> {
+            if (recyclerLayout.getVisibility() == View.GONE) {
+                recyclerLayout.setVisibility(View.VISIBLE);
+                expandButton.setImageResource(R.drawable.ic_less);
+            } else {
+                recyclerLayout.setVisibility(View.GONE);
+                expandButton.setImageResource(R.drawable.ic_more);
             }
         };
         expandButton.setOnClickListener(expandListener);
@@ -147,16 +160,13 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             changesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
             changesRecycler.setAdapter(new ChangesAdapter(changeList, resolver.isFavorite(course.getCourse(), getContext()), true));
 
-            view.findViewById(R.id.recyclerExpandLayout).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (changesRecycler.getVisibility() == View.GONE) {
-                        changesRecycler.setVisibility(View.VISIBLE);
-                        recyclerExpandButton.setImageResource(R.drawable.ic_less);
-                    } else {
-                        changesRecycler.setVisibility(View.GONE);
-                        recyclerExpandButton.setImageResource(R.drawable.ic_more);
-                    }
+            view.findViewById(R.id.recyclerExpandLayout).setOnClickListener(v -> {
+                if (changesRecycler.getVisibility() == View.GONE) {
+                    changesRecycler.setVisibility(View.VISIBLE);
+                    recyclerExpandButton.setImageResource(R.drawable.ic_less);
+                } else {
+                    changesRecycler.setVisibility(View.GONE);
+                    recyclerExpandButton.setImageResource(R.drawable.ic_more);
                 }
             });
         }
@@ -165,29 +175,26 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         if (resolver.resolveTeacherInitial(course.getTeacher()).equals("unknown")) {
             emailButton.setVisibility(View.GONE);
         }
-        emailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String subject;
-                if (isChange) {
-                    if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
-                        subject = type + " " + date.toLowerCase();
-                    } else {
-                        subject = type + getString(R.string.change_connect_date) + date;
-                    }
+        emailButton.setOnClickListener(v -> {
+            String subject;
+            if (isChange) {
+                if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
+                    subject = type + " " + date.toLowerCase();
                 } else {
-                    subject = resolver.resolveCourse(course.getCourse(), getContext());
+                    subject = type + getString(R.string.change_connect_date) + date;
                 }
-                Intent emailIntent = new Intent(android.content.Intent.ACTION_SENDTO)
-                        .setData(Uri.parse("mailto:"))
-                        .putExtra(Intent.EXTRA_EMAIL, new String[]{
-                                resolver.resolveTeacherInitial(course.getTeacher()) + "." + resolver.resolveTeacher(course.getTeacher()).toLowerCase() + "@mosbacher-berg.de"})
-                        .putExtra(Intent.EXTRA_SUBJECT, subject);
-                // Only open if email client is installed
-                if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
-                    startActivity(emailIntent);
-                dismiss();
+            } else {
+                subject = resolver.resolveCourse(course.getCourse(), getContext());
             }
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO)
+                    .setData(Uri.parse("mailto:"))
+                    .putExtra(Intent.EXTRA_EMAIL, new String[]{
+                            resolver.resolveTeacherInitial(course.getTeacher()) + "." + resolver.resolveTeacher(course.getTeacher()).toLowerCase() + "@mosbacher-berg.de"})
+                    .putExtra(Intent.EXTRA_SUBJECT, subject);
+            // Only open if email client is installed
+            if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
+                startActivity(emailIntent);
+            dismiss();
         });
 
         MaterialButton favButton = view.findViewById(R.id.favoritesButton);
@@ -196,71 +203,59 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             favButton.setText(R.string.action_favorites_remove);
             favButton.setIcon(getResources().getDrawable(R.drawable.ic_star));
         }
-        favButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ApplySharedPref")
-            @Override
-            public void onClick(View v) {
-                // Toggle favorite
+        favButton.setOnClickListener(v -> {
+            // Toggle favorite
 
-                // Set up list with all added courses
-                List<String> myCourses = new ArrayList<>();
-                try {
-                    myCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class)));
-                } catch (NullPointerException ignored) {
-                    // No courses added yet
-                }
+            // Set up list with all added courses
+            List<String> myCourses = new ArrayList<>();
+            try {
+                myCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class)));
+            } catch (NullPointerException ignored) {
+                // No courses added yet
+            }
 
-                if (resolver.isFavorite(course.getCourse(), getContext())) {
-                    // Is already favorite -> remove
-                    // Check every entry if it contains this course and remove it if it does
-                    String courseToRemove = "";
-                    for (String thisCourse : myCourses) {
-                        if (thisCourse.toUpperCase().contains(course.getCourse().toUpperCase())) {
-                            courseToRemove = thisCourse;
-                        }
+            if (resolver.isFavorite(course.getCourse(), getContext())) {
+                // Is already favorite -> remove
+                // Check every entry if it contains this course and remove it if it does
+                String courseToRemove = "";
+                for (String thisCourse : myCourses) {
+                    if (thisCourse.toUpperCase().contains(course.getCourse().toUpperCase())) {
+                        courseToRemove = thisCourse;
                     }
-                    myCourses.remove(courseToRemove);
-                } else {
-                    // Not already favorite, add to myCourses
-                    myCourses.add(course.getCourse() + " (" + course.getTeacher() + ")");
                 }
-
-                // Save changes
-                prefsEdit.putString("myCourses", gson.toJson(myCourses)).commit();
-                // Broadcast to refresh UI
-                Intent intent = new Intent("changesRefreshed");
-                intent.putExtra("coursesChanged", true);
-                LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext())).sendBroadcast(intent);
-                dismiss();
+                myCourses.remove(courseToRemove);
+            } else {
+                // Not already favorite, add to myCourses
+                myCourses.add(course.getCourse() + " (" + course.getTeacher() + ")");
             }
+
+            // Save changes
+            prefsEdit.putString("myCourses", gson.toJson(myCourses)).apply();
+            // Broadcast to refresh UI
+            Intent intent = new Intent("changesRefreshed");
+            intent.putExtra("coursesChanged", true);
+            LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext())).sendBroadcast(intent);
+            dismiss();
         });
 
-        view.findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String dateBody;
-                if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
-                    dateBody = " " + date.toLowerCase();
-                } else {
-                    dateBody = getString(R.string.change_connect_date) + date;
-                }
-                String shareBody =
-                        ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString() + dateBody;
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, getString(R.string.action_share)));
-                dismiss();
-                // Todo: Improve shared content
+        view.findViewById(R.id.shareButton).setOnClickListener(v -> {
+            String dateBody;
+            if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
+                dateBody = " " + date.toLowerCase();
+            } else {
+                dateBody = getString(R.string.change_connect_date) + date;
             }
+            String shareBody =
+                    ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString() + dateBody;
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.action_share)));
+            dismiss();
+            // Todo: Improve shared content
         });
 
-        view.findViewById(R.id.doneButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        view.findViewById(R.id.doneButton).setOnClickListener(v -> dismiss());
 
 
         return view;

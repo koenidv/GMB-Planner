@@ -111,4 +111,6 @@
     <string name="timetable_expand_description">Stundenplan umschalten</string>
     <string name="course_chip">%course (%teacher)</string>
     <string name="next_changes">Nächste Änderungen</string>
+    <string name="update_downloaded">Update heruntergeladen</string>
+    <string name="update_complete">Fertigstellen</string>
 </resources>

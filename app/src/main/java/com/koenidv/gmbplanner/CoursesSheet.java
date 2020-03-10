@@ -74,26 +74,21 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         final TextInputEditText editText = view.findViewById(R.id.addCourseEditText);
 
 
-        View.OnClickListener chipListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = ((Chip) v).getText().toString();
-                myCourses.add(text);
-                adapter.notifyDataSetChanged();
-                v.setVisibility(View.GONE);
-                v.setEnabled(false);
-                editText.setText("");
-            }
+        View.OnClickListener chipListener = v -> {
+            String text = ((Chip) v).getText().toString();
+            myCourses.add(text);
+            adapter.notifyDataSetChanged();
+            v.setVisibility(View.GONE);
+            v.setEnabled(false);
+            editText.setText("");
         };
-        View.OnLongClickListener chipLongListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                v.setVisibility(View.GONE);
-                return true;
-            }
+        View.OnLongClickListener chipLongListener = v -> {
+            v.setVisibility(View.GONE);
+            return true;
         };
 
         if (courses != null) {
+            Resolver resolver = new Resolver();
             for (Map.Entry<String, Course> thisMap : courses.entrySet()) {
                 // Only show courses that are not yet added
                 if (!myCourses.toString().contains(thisMap.getValue().getCourse())) {
@@ -101,9 +96,18 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                     chip.setClickable(true);
                     chip.setOnClickListener(chipListener);
                     chip.setOnLongClickListener(chipLongListener);
+
+                    String courseName = thisMap.getValue().getCourse();
+                    try {
+                        courseName = resolver.resolveCourse(thisMap.getValue().getCourse(), getContext())
+                                + " " + thisMap.getValue().getCourse().substring(thisMap.getValue().getCourse().lastIndexOf('-') + 1);
+                    } catch (NullPointerException npe) {
+                        npe.printStackTrace();
+                    }
                     chip.setText(getString(R.string.course_chip)
-                            .replace("%course", thisMap.getValue().getCourse())
-                            .replace("%teacher", (new Resolver()).resolveTeacher(thisMap.getValue().getTeacher())));
+                            .replace("%course", courseName)
+                            .replace("%teacher", resolver.resolveTeacher(thisMap.getValue().getTeacher())))
+                    ;
                     chip.setMinHeight(32);
                     chipgroup.addView(chip);
                 }
@@ -113,14 +117,11 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         // Custom courses
         final TextInputLayout inputLayout = view.findViewById(R.id.addCourseInputLayout);
         inputLayout.setEndIconVisible(false);
-        inputLayout.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
-                    myCourses.add(Objects.requireNonNull(editText.getText()).toString());
-                    editText.setText("");
-                    adapter.notifyDataSetChanged();
-                }
+        inputLayout.setEndIconOnClickListener(v -> {
+            if (!Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
+                myCourses.add(Objects.requireNonNull(editText.getText()).toString());
+                editText.setText("");
+                adapter.notifyDataSetChanged();
             }
         });
         editText.addTextChangedListener(new TextWatcher() {
@@ -156,15 +157,12 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         });
 
         // Set up dismiss button
-        view.findViewById(R.id.doneButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
-                    myCourses.add(Objects.requireNonNull(editText.getText()).toString().toUpperCase());
-                    editText.setText("");
-                }
-                CoursesSheet.this.dismiss();
+        view.findViewById(R.id.doneButton).setOnClickListener(v -> {
+            if (!Objects.requireNonNull(editText.getText()).toString().isEmpty()) {
+                myCourses.add(Objects.requireNonNull(editText.getText()).toString().toUpperCase());
+                editText.setText("");
             }
+            CoursesSheet.this.dismiss();
         });
 
         return view;
