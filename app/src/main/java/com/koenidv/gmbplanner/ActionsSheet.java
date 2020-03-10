@@ -105,10 +105,6 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
 
         if (timetable != null && !course.getCourse().equals("")) {
-            if (!isChange) {
-                recyclerLayout.setVisibility(View.VISIBLE);
-                expandButton.setImageResource(R.drawable.ic_less);
-            }
             titleTextView.setText(resolver.resolveCourse(course.getCourse(), getContext()));
             titleTextView.setVisibility(View.VISIBLE);
             view.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
