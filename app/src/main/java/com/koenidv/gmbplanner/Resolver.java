@@ -154,6 +154,17 @@ public class Resolver {
         return name.toString();
     }
 
+    String resolveCourse(String courseName, Context context, boolean courseNumber) {
+        String course = resolveCourse(courseName, context);
+        if (courseNumber)
+            try {
+                course += " " + courseName.substring(courseName.lastIndexOf('-') + 1);
+            } catch (NullPointerException npe) {
+                npe.printStackTrace();
+            }
+        return course;
+    }
+
     /**
      * Resolves course descriptions to short subject names
      *

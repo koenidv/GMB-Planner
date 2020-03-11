@@ -68,11 +68,11 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
     @Override
     public int getCount() {
         return dataset.size();
-        //return mCursor == null ? 0 : mCursor.getCount();
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
+        if (position > dataset.size()) return null;
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_change_widget);
         Change change = dataset.get(position);
         Resolver resolver = new Resolver();

@@ -64,7 +64,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                 StringBuilder stringToAdd = new StringBuilder();
 
                 if (mDataset[position].length > 1)
-                    stringToAdd.append(resolver.resolveCourseVeryShort(thisLesson.getCourse(), context));
+                    stringToAdd.append(resolver.resolveCourseVeryShort(thisLesson.getCourse(), context)).append(".");
                 else
                     stringToAdd.append(resolver.resolveCourseShort(thisLesson.getCourse(), context));
 
@@ -97,7 +97,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                                 gradientColors.set(2 * (i + 1) - 1, context.getColor(R.color.background));
 
                             stringToAdd.setLength(0);
-                            stringToAdd.append(resolver.resolveCourseVeryShort(course.getCourse(), context));
+                            stringToAdd.append(resolver.resolveCourseVeryShort(course.getCourse(), context)).append(".");
                             if (change.isRoomChanged())
                                 stringToAdd.append(context.getString(R.string.change_connect_room)).append(change.getRoomNew());
                             if (change.isTeacherChanged()) {

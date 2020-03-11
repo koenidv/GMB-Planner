@@ -1,6 +1,5 @@
 package com.koenidv.gmbplanner;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +46,12 @@ public class CoursesSheet extends BottomSheetDialogFragment {
     }
 
 
+    private static boolean containsAll(String check, String... keywords) {
+        for (String k : keywords)
+            if (!check.toLowerCase().contains(k.toLowerCase())) return false;
+        return true;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,7 +80,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
 
 
         View.OnClickListener chipListener = v -> {
-            String text = ((Chip) v).getText().toString();
+            String text = (String) v.getTag();
             myCourses.add(text);
             adapter.notifyDataSetChanged();
             v.setVisibility(View.GONE);
@@ -98,16 +103,10 @@ public class CoursesSheet extends BottomSheetDialogFragment {
                     chip.setOnLongClickListener(chipLongListener);
 
                     String courseName = thisMap.getValue().getCourse();
-                    try {
-                        courseName = resolver.resolveCourse(thisMap.getValue().getCourse(), getContext())
-                                + " " + thisMap.getValue().getCourse().substring(thisMap.getValue().getCourse().lastIndexOf('-') + 1);
-                    } catch (NullPointerException npe) {
-                        npe.printStackTrace();
-                    }
                     chip.setText(getString(R.string.course_chip)
-                            .replace("%course", courseName)
-                            .replace("%teacher", resolver.resolveTeacher(thisMap.getValue().getTeacher())))
-                    ;
+                            .replace("%course", resolver.resolveCourse(thisMap.getValue().getCourse(), getContext(), true))
+                            .replace("%teacher", resolver.resolveTeacher(thisMap.getValue().getTeacher())));
+                    chip.setTag(thisMap.getValue().getCourse());
                     chip.setMinHeight(32);
                     chipgroup.addView(chip);
                 }
@@ -132,16 +131,17 @@ public class CoursesSheet extends BottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String[] filter = s.toString().split(" ");
                 if (s.toString().isEmpty())
                     inputLayout.setEndIconVisible(false);
                 else
                     inputLayout.setEndIconVisible(true);
                 for (int i = 0; i < chipgroup.getChildCount(); i++) {
-                    // Search chips
+                    // Search/Filter chips
                     if (chipgroup.getChildAt(i).isEnabled()) {
                         if (s.toString().isEmpty()) {
                             chipgroup.getChildAt(i).setVisibility(View.VISIBLE);
-                        } else if (((Chip) chipgroup.getChildAt(i)).getText().toString().toUpperCase().contains(s.toString().toUpperCase())) {
+                        } else if (containsAll(((Chip) chipgroup.getChildAt(i)).getText().toString(), filter)) {
                             chipgroup.getChildAt(i).setVisibility(View.VISIBLE);
                         } else {
                             chipgroup.getChildAt(i).setVisibility(View.GONE);
@@ -168,12 +168,11 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         return view;
     }
 
-    @SuppressLint("ApplySharedPref")
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         // Save changes
         final SharedPreferences.Editor prefsEdit = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE).edit();
-        prefsEdit.putString("myCourses", gson.toJson(myCourses)).commit();
+        prefsEdit.putString("myCourses", gson.toJson(myCourses)).apply();
         // Broadcast to refresh UI
         Intent intent = new Intent("changesRefreshed");
         intent.putExtra("coursesChanged", true);

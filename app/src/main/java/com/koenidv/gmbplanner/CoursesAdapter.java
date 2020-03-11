@@ -1,5 +1,6 @@
 package com.koenidv.gmbplanner;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,16 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String thisCourse = mDataset.get(position);
-        holder.courseTextView.setText(thisCourse);
+        Resolver resolver = new Resolver();
+        Context context = holder.courseTextView.getContext();
+
+        holder.courseTextView.setTag(thisCourse);
+        holder.courseTextView.setText(resolver.resolveCourse(thisCourse, context, true));
+        try {
+            holder.courseTextView.append(" (" + resolver.resolveTeacher(resolver.getCourse(thisCourse, context).getTeacher()) + ")");
+        } catch (NullPointerException ignored) {
+            // Unknown course
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

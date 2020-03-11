@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Post-process update
-        if (prefs.getInt("lastVersion", 123) < 127) {
-            prefs.edit().putInt("lastVersion", 127)
+        if (prefs.getInt("lastVersion", 123) < 128) {
+            prefs.edit().putInt("lastVersion", 128)
                     .putString("changes", "")
                     .putString("courses", "")
                     .putLong("lastCourseRefresh", 0)
@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
     public void deleteCourseItem(final View view) {
         View parent = (View) view.getParent();
         TextView textView = parent.findViewById(R.id.courseTextView);
-        coursesSheet.myCourses.remove(textView.getText().toString());
+        coursesSheet.myCourses.remove(textView.getTag().toString());
         coursesSheet.adapter.notifyDataSetChanged();
     }
 
