@@ -2,6 +2,12 @@ package com.koenidv.gmbplanner;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.TypedValue;
 
 import com.google.gson.Gson;
@@ -143,7 +149,11 @@ public class Resolver {
         } else if (courseName.startsWith("AG-ConcB")) {
             name.append(context.getString(R.string.course_concb));
         } else {
-            name.append(courseName.substring(0, courseName.indexOf('-')));
+            try {
+                name.append(courseName.substring(0, courseName.indexOf('-')));
+            } catch (StringIndexOutOfBoundsException iobe) {
+                name.append(courseName);
+            }
         }
 
         if (courseName.contains("-LK")) {
@@ -154,14 +164,22 @@ public class Resolver {
         return name.toString();
     }
 
-    String resolveCourse(String courseName, Context context, boolean courseNumber) {
+    String resolveCourse(String courseName, Context context, boolean longform) {
         String course = resolveCourse(courseName, context);
-        if (courseNumber)
+        if (longform) {
+            String teacher;
             try {
-                course += " " + courseName.substring(courseName.lastIndexOf('-') + 1);
+                String courseNumber = courseName.substring(courseName.lastIndexOf('-') + 1).substring(0, 1);
+                if (TextUtils.isDigitsOnly(courseNumber))
+                    course += " " + courseNumber;
+                teacher = resolveTeacher(getCourse(courseName, context).getTeacher());
+                return context.getString(R.string.course_chip)
+                        .replace("%course", course)
+                        .replace("%teacher", teacher);
             } catch (NullPointerException npe) {
                 npe.printStackTrace();
             }
+        }
         return course;
     }
 
@@ -607,7 +625,28 @@ public class Resolver {
         return course != null && myCourses.toString().toUpperCase().contains(course.toUpperCase());
     }
 
-    float dpToPx(float dp, Context context) {
+    public float dpToPx(float dp, Context context) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }
+
+    void vibrate(Context context) {
+        // Vibrate
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(5, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(5);
+        }
+    }
+
+    public Spanned fromHtml(String string) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(string, Html.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH);
+        } else {
+            //noinspection deprecation
+            return Html.fromHtml(string);
+        }
     }
 }

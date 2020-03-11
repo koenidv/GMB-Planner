@@ -113,4 +113,7 @@
     <string name="next_changes">Nächste Änderungen</string>
     <string name="update_downloaded">Update heruntergeladen</string>
     <string name="update_complete">Fertigstellen</string>
+    <string name="courses_add_more">Mehr Kurse</string>
+    <string name="courses_edit_timetable">Stundenplan</string>
+    <string name="courses_edit_courses">Kurse</string>
 </resources>

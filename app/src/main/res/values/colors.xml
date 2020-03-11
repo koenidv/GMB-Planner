@@ -11,6 +11,7 @@
     <color name="infoText">#cccccc</color>
     <color name="textColor">#000</color>
     <bool name="lightStatusBar">true</bool>
+    <color name="highlight">#204f76c5</color>
 
     <color name="ambientShadowColor">#0A000000</color>
     <color name="spotShadowColor">#30000000</color>

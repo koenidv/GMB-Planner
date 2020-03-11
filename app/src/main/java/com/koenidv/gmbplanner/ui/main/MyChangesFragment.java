@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -148,12 +149,9 @@ public class MyChangesFragment extends Fragment {
             if (prefs.getString("myCourses", "").length() <= 2) {
                 emptyTextView.setText(R.string.nocontent_mine_nocourses);
                 mView.findViewById(R.id.addCoursesButton).setVisibility(View.VISIBLE);
-                mView.findViewById(R.id.addCoursesButton).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        coursesSheet = new CoursesSheet();
-                        coursesSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "coursesSheet");
-                    }
+                mView.findViewById(R.id.addCoursesButton).setOnClickListener(v -> {
+                    coursesSheet = new CoursesSheet();
+                    coursesSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "coursesSheet");
                 });
             } else {
                 mView.findViewById(R.id.addCoursesButton).setVisibility(View.GONE);
@@ -188,6 +186,7 @@ public class MyChangesFragment extends Fragment {
             LinearLayoutManager todayLayoutManager = new LinearLayoutManager(getContext());
             todayLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
             todayRecycler.setLayoutManager(todayLayoutManager);
+            // Get today or tomorrow after 5pm
             int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
             if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
             if (weekDay < 0 || weekDay > 4) weekDay = 0;
@@ -209,54 +208,44 @@ public class MyChangesFragment extends Fragment {
                 titleTextView.setVisibility(View.VISIBLE);
 
             // Expand button to show the entire timetable
-            View.OnClickListener expandListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    expandButton.setVisibility(View.GONE);
-                    if (recyclerLayout.getVisibility() == View.GONE) {
-                        todayRecycler.setVisibility(View.GONE);
-                        titleTextView.setVisibility(View.VISIBLE);
-                        recyclerLayout.setVisibility(View.VISIBLE);
-                        expandButton.setImageResource(R.drawable.ic_less);
-                    } else {
-                        recyclerLayout.setVisibility(View.GONE);
-                        if (!todayEmpty)
-                            titleTextView.setVisibility(View.GONE);
-                        todayRecycler.setVisibility(View.VISIBLE);
-                        expandButton.setImageResource(R.drawable.ic_more);
-                    }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            expandButton.setVisibility(View.VISIBLE);
-                        }
-                    }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+            View.OnClickListener expandListener = v -> {
+                expandButton.setVisibility(View.GONE);
+                if (recyclerLayout.getVisibility() == View.GONE) {
+                    todayRecycler.setVisibility(View.GONE);
+                    titleTextView.setVisibility(View.VISIBLE);
+                    recyclerLayout.setVisibility(View.VISIBLE);
+                    expandButton.setImageResource(R.drawable.ic_less);
+                } else {
+                    recyclerLayout.setVisibility(View.GONE);
+                    if (!todayEmpty)
+                        titleTextView.setVisibility(View.GONE);
+                    todayRecycler.setVisibility(View.VISIBLE);
+                    expandButton.setImageResource(R.drawable.ic_more);
                 }
+                new Handler().postDelayed(() -> expandButton.setVisibility(View.VISIBLE), getResources().getInteger(android.R.integer.config_shortAnimTime));
             };
             mView.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
             expandButton.setOnClickListener(expandListener);
 
             // Set up 5 recyclerviews, one for each day
-            RecyclerView mondayRecycler = mView.findViewById(R.id.mondayRecycler),
-                    tuesdayRecycler = mView.findViewById(R.id.tuesdayRecycler),
-                    wednesdayRecycler = mView.findViewById(R.id.wednesdayRecycler),
-                    thursdayRecycler = mView.findViewById(R.id.thursdayRecycler),
-                    fridayRecycler = mView.findViewById(R.id.fridayRecycler);
-            mondayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            tuesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0], 0);
-            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1], 1);
-            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2], 2);
-            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3], 3);
-            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4], 4);
-            mondayRecycler.setAdapter(mondayAdapter);
-            tuesdayRecycler.setAdapter(tuesdayAdapter);
-            wednesdayRecycler.setAdapter(wednesdayAdapter);
-            thursdayRecycler.setAdapter(thursdayAdapter);
-            fridayRecycler.setAdapter(fridayAdapter);
+            RecyclerView[] dayRecyclers = {
+                    mView.findViewById(R.id.mondayRecycler),
+                    mView.findViewById(R.id.tuesdayRecycler),
+                    mView.findViewById(R.id.wednesdayRecycler),
+                    mView.findViewById(R.id.thursdayRecycler),
+                    mView.findViewById(R.id.fridayRecycler)
+            };
+            for (int i = 0; i < dayRecyclers.length; i++) {
+                RecyclerView recycler = dayRecyclers[i];
+                recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+                recycler.setAdapter(new LessonsAdapter(timetable[i], i));
+                recycler.setBackground(null);
+            }
+
+            // Mark today
+            PaintDrawable todayBackground = new PaintDrawable(getResources().getColor(R.color.highlight));
+            todayBackground.setCornerRadius((new Resolver()).dpToPx(8, getActivity()));
+            dayRecyclers[weekDay].setBackground(todayBackground);
         } catch (NullPointerException npe) {
             // Somethings wrong with the timetable, maybe there's just no data or no favorite courses
             mView.findViewById(R.id.include).setVisibility(View.GONE);

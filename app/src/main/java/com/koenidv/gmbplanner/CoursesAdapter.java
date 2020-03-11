@@ -15,16 +15,26 @@ import androidx.recyclerview.widget.RecyclerView;
 //  Created by koenidv on 15.02.2020.
 public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHolder> {
     private List<String> mDataset;
+    private boolean mEditMode;
 
     CoursesAdapter(List<String> dataset) {
         mDataset = dataset;
+    }
+
+    CoursesAdapter(List<String> dataset, boolean editMode) {
+        mDataset = dataset;
+        mEditMode = editMode;
     }
 
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
+        View itemView;
+        if (mEditMode)
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course_timetable, parent, false);
+        else
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -37,10 +47,14 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
 
         holder.courseTextView.setTag(thisCourse);
         holder.courseTextView.setText(resolver.resolveCourse(thisCourse, context, true));
-        try {
-            holder.courseTextView.append(" (" + resolver.resolveTeacher(resolver.getCourse(thisCourse, context).getTeacher()) + ")");
-        } catch (NullPointerException ignored) {
-            // Unknown course
+
+        if (mEditMode) {
+            holder.starButton.setTag(thisCourse);
+            holder.infoButton.setTag(thisCourse);
+            if (MainActivity.myCourses.contains(thisCourse))
+                holder.starButton.setImageResource(R.drawable.ic_star);
+        } else {
+            holder.deleteButton.setTag(thisCourse);
         }
     }
 
@@ -59,12 +73,14 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView courseTextView;
-        ImageButton deleteButton;
+        ImageButton deleteButton, starButton, infoButton;
 
         ViewHolder(View view) {
             super(view);
             courseTextView = view.findViewById(R.id.courseTextView);
             deleteButton = view.findViewById(R.id.deleteButton);
+            starButton = view.findViewById(R.id.favoritesButton);
+            infoButton = view.findViewById(R.id.infoButton);
         }
     }
 }

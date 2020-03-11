@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:gravity="end"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/courseTextView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <ImageButton
+        android:id="@+id/favoritesButton"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="0"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/action_favorites_add"
+        android:onClick="toggleCourse"
+        android:tint="@color/tabText"
+        app:srcCompat="@drawable/ic_star_outline" />
+
+    <ImageButton
+        android:id="@+id/infoButton"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="0"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/menu_information"
+        android:onClick="showChangeActions"
+        android:tint="@color/tabText"
+        app:srcCompat="@drawable/ic_info" />
+
+
+</LinearLayout>

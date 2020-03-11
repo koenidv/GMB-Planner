@@ -3,7 +3,6 @@ package com.koenidv.gmbplanner.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.text.Html;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -111,8 +110,8 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
             }
         }
 
-        rv.setTextViewText(R.id.centerTextView, Html.fromHtml(mainString.toString()));
-        rv.setTextViewText(R.id.infoTextView, Html.fromHtml(infoString.toString()));
+        rv.setTextViewText(R.id.centerTextView, resolver.fromHtml(mainString.toString()));
+        rv.setTextViewText(R.id.infoTextView, resolver.fromHtml(infoString.toString()));
 
         if (!change.getDate().equals(lastDate)) {
             rv.setTextViewText(R.id.dateTextView, resolver.resolveDate(change.getDate(), mContext));

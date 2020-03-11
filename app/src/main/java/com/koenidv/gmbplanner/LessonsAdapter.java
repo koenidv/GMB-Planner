@@ -2,6 +2,7 @@ package com.koenidv.gmbplanner;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
     private Lesson[][] mDataset;
     private String mFilter;
     private final int mDay;
+    private boolean mEditMode;
 
     public LessonsAdapter(Lesson[][] dataset, int day) {
         mDataset = dataset;
@@ -36,6 +38,12 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
         mDataset = dataset;
         mFilter = filter;
         mDay = day;
+    }
+
+    LessonsAdapter(Lesson[][] dataset, boolean editMode, int day) {
+        mDataset = dataset;
+        mDay = day;
+        mEditMode = editMode;
     }
 
     // Create new views (invoked by the layout manager)
@@ -94,7 +102,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                             gradientColors.set(2 * (i + 1) - 1, resolver.resolveTypeColor(change.getType(), context));
 
                             if (change.getType().equals("EVA") && !change.getRoomNew().equals("Sek"))
-                                gradientColors.set(2 * (i + 1) - 1, context.getColor(R.color.background));
+                                gradientColors.set(2 * (i + 1) - 1, Color.TRANSPARENT);
 
                             stringToAdd.setLength(0);
                             stringToAdd.append(resolver.resolveCourseVeryShort(course.getCourse(), context)).append(".");
@@ -154,11 +162,22 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             }
 
         } else {
-            holder.rootView.setVisibility(View.INVISIBLE);
-            holder.cardView.setVisibility(View.INVISIBLE);
-            holder.cardView.setOnClickListener(null);
-            holder.cardView.setClickable(false);
-            holder.spacer.setVisibility(View.INVISIBLE);
+            if (!mEditMode) {
+                holder.rootView.setVisibility(View.INVISIBLE);
+                holder.cardView.setOnClickListener(null);
+                holder.cardView.setClickable(false);
+            }
+        }
+
+        // Remove spacer from last element
+        if (position + 2 == mDataset.length) {
+            holder.spacer.setVisibility(View.GONE);
+        }
+
+        if (mEditMode) {
+            holder.cardView.setTag("edit");
+            holder.cardView.setTag(R.id.day, mDay);
+            holder.cardView.setTag(R.id.period, position);
         }
     }
 
@@ -187,5 +206,10 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             rootView = view.findViewById(R.id.rootView);
             spacer = view.findViewById(R.id.spacer);
         }
+    }
+
+    void setDataset(Lesson[][] mDataset) {
+        this.mDataset = mDataset;
+        notifyDataSetChanged();
     }
 }

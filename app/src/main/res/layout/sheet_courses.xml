@@ -2,63 +2,137 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/coursesRecycler"
+        <include
+            layout="@layout/card_timetable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true">
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/addCourseInputLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/recyclerCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxStrokeColor="@color/box_border"
-            app:endIconDrawable="@drawable/ic_send"
-            app:endIconMode="custom"
-            app:endIconTint="@color/colorAccent">
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:cardBackgroundColor="@color/cardBackground"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/addCourseEditText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/courses_add"
-                android:singleLine="true" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="vertical">
 
-        <HorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+                <LinearLayout
+                    android:id="@+id/recyclerExpandLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipgroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </HorizontalScrollView>
+                    <TextView
+                        android:id="@+id/recyclerTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/roboto_slab"
+                        android:gravity="center_vertical"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:text="@string/courses_edit_courses"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        tools:visibility="visible" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/doneButton"
-            style="@style/Widget.MaterialComponents.Button"
+                    <ImageButton
+                        android:id="@+id/recyclerExpandButton"
+                        style="@style/Widget.AppCompat.ImageButton"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/transparent"
+                        android:clickable="false"
+                        android:contentDescription="@string/timetable_expand_description"
+                        android:focusable="false"
+                        android:src="@drawable/ic_more" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/coursesRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
+                    android:overScrollMode="never"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/colorAccent"
-            android:text="@string/done"
-            android:textColor="@color/tabText" />
+            android:background="@drawable/rounded_dialog"
+            android:orientation="vertical">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addCourseInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                app:boxStrokeColor="@color/box_border"
+                app:endIconDrawable="@drawable/ic_send"
+                app:endIconMode="custom"
+                app:endIconTint="@color/colorAccent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addCourseEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/courses_add"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipgroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/doneButton"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/done"
+                android:textColor="@color/tabText" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

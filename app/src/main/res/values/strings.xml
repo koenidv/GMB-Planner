@@ -42,6 +42,9 @@
     <string name="credentials_pass">Password</string>
     <string name="courses_add">Find or add a course</string>
     <string name="course_chip">%course (%teacher)</string>
+    <string name="courses_add_more">More courses</string>
+    <string name="courses_edit_timetable">Edit timetable</string>
+    <string name="courses_edit_courses">Edit courses</string>
 
     <string name="change_hours">h</string>
     <string name="change_workorders">" Note work orders"</string>
@@ -125,4 +128,6 @@
     <string name="course_intensified_short" translatable="false" />
     <string name="course_examination_short" translatable="false" />
 
+    <item name="day" type="id" />
+    <item name="period" type="id" />
 </resources>

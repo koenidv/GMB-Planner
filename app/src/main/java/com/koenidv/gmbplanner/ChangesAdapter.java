@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,9 +101,9 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
                 }
             }
 
-            holder.topTextView.setText(Html.fromHtml(topString.toString()));
-            holder.centerTextView.setText(Html.fromHtml(centerString.toString()));
-            holder.bottomTextView.setText(Html.fromHtml(bottomString.toString()));
+            holder.topTextView.setText(resolver.fromHtml(topString.toString()));
+            holder.centerTextView.setText(resolver.fromHtml(centerString.toString()));
+            holder.bottomTextView.setText(resolver.fromHtml(bottomString.toString()));
             holder.courseHiddenTextView.setText(thisChange.getCourseString());
             holder.teacherHiddenTextView.setText(thisChange.getTeacher());
             holder.typeHiddenTextView.setText(thisChange.getType());

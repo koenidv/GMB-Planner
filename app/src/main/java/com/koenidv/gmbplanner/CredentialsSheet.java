@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -57,7 +56,7 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
             // First setup
             setCancelable(false);
             cancelButton.setVisibility(View.GONE);
-            explanationTextView.setText(Html.fromHtml(getString(R.string.start_credentials_explanation), Html.FROM_HTML_MODE_COMPACT));
+            explanationTextView.setText((new Resolver()).fromHtml(getString(R.string.start_credentials_explanation)));
             explanationTextView.setMovementMethod(LinkMovementMethod.getInstance());
             explanationTextView.setVisibility(View.VISIBLE);
         } else if (prefs.getString("pass", "").isEmpty()) {
@@ -93,31 +92,25 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
         nameEditText.addTextChangedListener(textWatcher);
         passEditText.addTextChangedListener(textWatcher);
 
-        view.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                // Disable password manager on cancel
+        view.findViewById(R.id.cancelButton).setOnClickListener(v -> {
+            // Disable password manager on cancel
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nameEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
                 passEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-                dismiss();
             }
+            dismiss();
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ApplySharedPref")
-            @Override
-            public void onClick(View v) {
-                // Save the entered values to SharedPrefs
-                dismiss();
-                prefsEdit.putString("name", nameEditText.getText().toString())
-                        .putString("pass", passEditText.getText().toString())
-                        .commit();
-                new ChangesManager().refreshChanges(Objects.requireNonNull(getContext()));
-                // Broadcast to show that contents are refreshing
-                Intent intent = new Intent("refreshing");
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
-            }
+        saveButton.setOnClickListener(v -> {
+            // Save the entered values to SharedPrefs
+            dismiss();
+            prefsEdit.putString("name", nameEditText.getText().toString())
+                    .putString("pass", passEditText.getText().toString())
+                    .apply();
+            new ChangesManager().refreshChanges(Objects.requireNonNull(getContext()));
+            // Broadcast to show that contents are refreshing
+            Intent intent = new Intent("refreshing");
+            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
         });
 
         return view;

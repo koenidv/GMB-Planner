@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -34,6 +35,7 @@ import com.koenidv.gmbplanner.widget.WidgetProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -52,7 +54,9 @@ import androidx.work.WorkManager;
 public class MainActivity extends AppCompatActivity {
 
     public static CoursesSheet coursesSheet;
+    static List<String> myCourses = new ArrayList<>();
     private SwipeRefreshLayout swiperefresh;
+    CoursesTimetableSheet selectorSheet;
     boolean ignoreFirstRefreshed = false;
     private int UPDATE_REQUEST = 100;
 
@@ -292,14 +296,39 @@ public class MainActivity extends AppCompatActivity {
     public void deleteCourseItem(final View view) {
         View parent = (View) view.getParent();
         TextView textView = parent.findViewById(R.id.courseTextView);
-        coursesSheet.myCourses.remove(textView.getTag().toString());
+        myCourses.remove(textView.getTag().toString());
         coursesSheet.adapter.notifyDataSetChanged();
+        coursesSheet.refreshTimetable();
+        // Vibrate
+        (new Resolver()).vibrate(getApplicationContext());
     }
 
     // OnClick for changeItem
     public void showChangeActions(final View view) {
-        ActionsSheet actionsSheet = new ActionsSheet(view);
-        actionsSheet.show(getSupportFragmentManager(), "actionsSheet");
+        if (view.getId() == R.id.cardView && view.getTag() == "edit") {
+            selectorSheet = new CoursesTimetableSheet((int) view.getTag(R.id.day), (int) view.getTag(R.id.period));
+            selectorSheet.show(getSupportFragmentManager(), "courseSelectorSheet");
+        } else if (view.getId() == R.id.infoButton) {
+            ActionsSheet actionsSheet = new ActionsSheet(view, (String) view.getTag());
+            actionsSheet.show(getSupportFragmentManager(), "courseInfoSheet");
+        } else {
+            ActionsSheet actionsSheet = new ActionsSheet(view);
+            actionsSheet.show(getSupportFragmentManager(), "actionsSheet");
+        }
+    }
+
+    // OnClick for editing courses from the timetable
+    public void toggleCourse(final View view) {
+        String course = (String) view.getTag();
+        if (myCourses.contains(course)) {
+            myCourses.remove(course);
+            ((ImageButton) view).setImageResource(R.drawable.ic_star_outline);
+        } else {
+            myCourses.add(course);
+            ((ImageButton) view).setImageResource(R.drawable.ic_star);
+        }
+        coursesSheet.refreshTimetable();
+        selectorSheet.dismiss();
     }
 
     void refreshTimetable() {

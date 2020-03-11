@@ -3,6 +3,7 @@ package com.koenidv.gmbplanner;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,9 +36,15 @@ import static android.content.Context.MODE_PRIVATE;
 public class ActionsSheet extends BottomSheetDialogFragment {
 
     private View mPreview;
+    private String mCourseTag;
 
     ActionsSheet(View preview) {
         mPreview = preview;
+    }
+
+    ActionsSheet(View preview, String course) {
+        mPreview = preview;
+        mCourseTag = course;
     }
 
     @Override
@@ -56,16 +64,19 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         final Gson gson = new Gson();
 
         // Get course
-        Course courseInherited = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
+        Course courseInherited;
+        if (mCourseTag == null)
+            courseInherited = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
+        else {
+            courseInherited = resolver.getCourse(mCourseTag, getContext());
+            view.findViewById(R.id.favoritesButton).setVisibility(View.GONE);
+            view.findViewById(R.id.recyclerLayout).setVisibility(View.VISIBLE);
+        }
         if (courseInherited == null) courseInherited = new Course();
         final Course course = courseInherited;
 
-        // Only when started from change
-        final String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString(),
-                date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString(),
-                time = ((TextView) mPreview.findViewById(R.id.timeHiddenTextView)).getText().toString();
-
         final boolean isChange = mPreview.getId() == R.id.outerCard;
+
         if (isChange) {
             // Copy values
             ((TextView) view.findViewById(R.id.topTextView)).setText(((TextView) mPreview.findViewById(R.id.topTextView)).getText());
@@ -89,7 +100,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                     for (Lesson lesson : allTable[day][period]) {
                         if (lesson.getCourse().equals(course.getCourse())) {
                             List<Lesson> thisPeriod = new ArrayList<>(Arrays.asList(timetable[day][period]));
-                            thisPeriod.add(0, lesson);
+                            thisPeriod.add(lesson);
                             timetable[day][period] = thisPeriod.toArray(new Lesson[0]);
                         }
                     }
@@ -103,32 +114,32 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
         ((LinearLayout) view.findViewById(R.id.compactLayout)).setLayoutTransition(null);
 
-
         if (timetable != null && !course.getCourse().equals("")) {
-            titleTextView.setText(resolver.resolveCourse(course.getCourse(), getContext()));
+            titleTextView.setText(resolver.resolveCourse(course.getCourse(), getContext(), true));
             titleTextView.setVisibility(View.VISIBLE);
             view.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
+
             // Set up 5 recyclerviews, one for each day
-            RecyclerView mondayRecycler = view.findViewById(R.id.mondayRecycler),
-                    tuesdayRecycler = view.findViewById(R.id.tuesdayRecycler),
-                    wednesdayRecycler = view.findViewById(R.id.wednesdayRecycler),
-                    thursdayRecycler = view.findViewById(R.id.thursdayRecycler),
-                    fridayRecycler = view.findViewById(R.id.fridayRecycler);
-            mondayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            tuesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            wednesdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            thursdayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            fridayRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            LessonsAdapter mondayAdapter = new LessonsAdapter(timetable[0], course.getCourse(), 0);
-            LessonsAdapter tuesdayAdapter = new LessonsAdapter(timetable[1], course.getCourse(), 1);
-            LessonsAdapter wednesdayAdapter = new LessonsAdapter(timetable[2], course.getCourse(), 2);
-            LessonsAdapter thursdayAdapter = new LessonsAdapter(timetable[3], course.getCourse(), 3);
-            LessonsAdapter fridayAdapter = new LessonsAdapter(timetable[4], course.getCourse(), 4);
-            mondayRecycler.setAdapter(mondayAdapter);
-            tuesdayRecycler.setAdapter(tuesdayAdapter);
-            wednesdayRecycler.setAdapter(wednesdayAdapter);
-            thursdayRecycler.setAdapter(thursdayAdapter);
-            fridayRecycler.setAdapter(fridayAdapter);
+            RecyclerView[] dayRecyclers = {
+                    view.findViewById(R.id.mondayRecycler),
+                    view.findViewById(R.id.tuesdayRecycler),
+                    view.findViewById(R.id.wednesdayRecycler),
+                    view.findViewById(R.id.thursdayRecycler),
+                    view.findViewById(R.id.fridayRecycler)
+            };
+            for (int i = 0; i < dayRecyclers.length; i++) {
+                RecyclerView recycler = dayRecyclers[i];
+                recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+                recycler.setAdapter(new LessonsAdapter(timetable[i], course.getCourse(), i));
+            }
+
+            // Mark today
+            int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
+            if (weekDay < 0 || weekDay > 4) weekDay = 0;
+            PaintDrawable todayBackground = new PaintDrawable(getResources().getColor(R.color.background));
+            todayBackground.setCornerRadius((new Resolver()).dpToPx(8, getActivity()));
+            dayRecyclers[weekDay].setBackground(todayBackground);
         } else {
             view.findViewById(R.id.card_timetable).setVisibility(View.GONE);
         }
@@ -174,6 +185,8 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         emailButton.setOnClickListener(v -> {
             String subject;
             if (isChange) {
+                String type = ((TextView) mPreview.findViewById(R.id.typeHiddenTextView)).getText().toString(),
+                        date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
                 if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
                     subject = type + " " + date.toLowerCase();
                 } else {
@@ -231,25 +244,30 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             Intent intent = new Intent("changesRefreshed");
             intent.putExtra("coursesChanged", true);
             LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext())).sendBroadcast(intent);
+            // Vibrate
+            resolver.vibrate(getContext());
             dismiss();
         });
 
-        view.findViewById(R.id.shareButton).setOnClickListener(v -> {
-            String dateBody;
-            if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
-                dateBody = " " + date.toLowerCase();
-            } else {
-                dateBody = getString(R.string.change_connect_date) + date;
-            }
-            String shareBody =
-                    ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString() + dateBody;
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-            startActivity(Intent.createChooser(sharingIntent, getString(R.string.action_share)));
-            dismiss();
-            // Todo: Improve shared content
-        });
+        if (isChange) {
+            view.findViewById(R.id.shareButton).setOnClickListener(v -> {
+                String dateBody;
+                String date = ((TextView) ((ViewGroup) mPreview.getParent()).findViewById(R.id.dateTextView)).getText().toString();
+                if (date.equals(getString(R.string.today)) || date.equals(getString(R.string.tomorrow))) {
+                    dateBody = " " + date.toLowerCase();
+                } else {
+                    dateBody = getString(R.string.change_connect_date) + date;
+                }
+                String shareBody =
+                        ((TextView) mPreview.findViewById(R.id.centerTextView)).getText().toString() + dateBody;
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.action_share)));
+                dismiss();
+                // Todo: Improve shared content
+            });
+        }
 
         view.findViewById(R.id.doneButton).setOnClickListener(v -> dismiss());
 
