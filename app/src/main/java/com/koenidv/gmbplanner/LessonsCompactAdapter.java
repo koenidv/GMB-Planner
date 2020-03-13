@@ -103,6 +103,7 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
             holder.cardView.setBackground(gradient);
 
             holder.cardView.setTag(R.id.room, mDataset[position][0].getRoom());
+            holder.cardView.setTag(R.id.course, mDataset[position][0].getCourse());
 
         } else {
             holder.rootView.setVisibility(View.GONE);

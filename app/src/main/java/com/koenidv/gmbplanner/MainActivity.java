@@ -329,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
             selectorSheet.dismiss();
         }
         coursesSheet.refreshTimetable();
+        (new Resolver()).vibrate(getApplicationContext());
     }
 
     void refreshTimetable() {

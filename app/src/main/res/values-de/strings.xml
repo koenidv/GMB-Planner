@@ -118,4 +118,10 @@
     <string name="courses_edit_courses">Kurse</string>
     <string name="lesson_room">In Raum %room</string>
     <string name="tab_tasks">Aufgaben</string>
+    <string name="course_mug">Museums-Guides</string>
+    <string name="course_korean">Koreanisch</string>
+    <string name="course_mug_short">M-Guide</string>
+    <string name="course_korean_short">Korean.</string>
+    <string name="course_sustain">Nachhaltigkeit</string>
+    <string name="course_sustain_short">Nachhalt.</string>
 </resources>

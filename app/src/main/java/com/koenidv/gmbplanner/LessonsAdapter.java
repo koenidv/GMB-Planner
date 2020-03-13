@@ -164,6 +164,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             }
 
             holder.cardView.setTag(R.id.room, mDataset[position][0].getRoom());
+            holder.cardView.setTag(R.id.course, mDataset[position][0].getCourse());
+
         } else {
             if (!mEditMode) {
                 holder.rootView.setVisibility(View.INVISIBLE);

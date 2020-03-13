@@ -148,6 +148,12 @@ public class Resolver {
             name.append(context.getString(R.string.course_history_bili));
         } else if (courseName.startsWith("AG-ConcB")) {
             name.append(context.getString(R.string.course_concb));
+        } else if (courseName.startsWith("AG-MuG")) {
+            name.append(context.getString(R.string.course_mug));
+        } else if (courseName.startsWith("AG-Kor")) {
+            name.append(context.getString(R.string.course_korean));
+        } else if (courseName.startsWith("AG-Nach")) {
+            name.append(context.getString(R.string.course_sustain));
         } else {
             try {
                 name.append(courseName.substring(0, courseName.indexOf('-')));
@@ -232,6 +238,12 @@ public class Resolver {
             name.append(context.getString(R.string.course_history_bili_short));
         } else if (courseName.startsWith("AG-ConcB")) {
             name.append(context.getString(R.string.course_concb_short));
+        } else if (courseName.startsWith("AG-MuG")) {
+            name.append(context.getString(R.string.course_mug_short));
+        } else if (courseName.startsWith("AG-Kor")) {
+            name.append(context.getString(R.string.course_korean_short));
+        } else if (courseName.startsWith("AG-Nach")) {
+            name.append(context.getString(R.string.course_sustain_short));
         } else {
             name.append(courseName.substring(0, courseName.indexOf('-')));
         }
@@ -455,6 +467,8 @@ public class Resolver {
                 return "Podehl";
             case "Rei":
                 return "Reich";
+            case "Rum":
+                return "Rumberger";
             case "Rüf":
                 return "Rüffel";
             case "Sbr":
@@ -553,6 +567,7 @@ public class Resolver {
             case "Glo":
             case "Sht":
             case "Rei":
+            case "Rum":
             case "Pod":
             case "Lüt":
             case "Hns":

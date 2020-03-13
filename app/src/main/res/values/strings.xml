@@ -105,6 +105,9 @@
     <string name="course_ethics">Ethics</string>
     <string name="course_history_bili">History Bili</string>
     <string name="course_concb">Concert Band</string>
+    <string name="course_mug">Museum guides</string>
+    <string name="course_korean">Korean</string>
+    <string name="course_sustain">Sustainability</string>
     <string name="course_intensified">" IC"</string>
     <string name="course_examination">" ES"</string>
 
@@ -127,10 +130,14 @@
     <string name="course_ethics_short">Eth</string>
     <string name="course_history_bili_short">His</string>
     <string name="course_concb_short">Con</string>
+    <string name="course_mug_short">MuG</string>
+    <string name="course_korean_short">Kor</string>
+    <string name="course_sustain_short">Sus</string>
     <string name="course_intensified_short" translatable="false" />
     <string name="course_examination_short" translatable="false" />
 
     <item name="day" type="id" />
     <item name="period" type="id" />
     <item name="room" type="id" />
+    <item name="course" type="id" />
 </resources>

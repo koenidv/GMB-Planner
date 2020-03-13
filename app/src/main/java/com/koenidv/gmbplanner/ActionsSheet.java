@@ -66,7 +66,9 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
         // Get course
         Course courseInherited;
-        if (mCourseTag == null)
+        if (mPreview.getTag(R.id.course) != null)
+            courseInherited = resolver.getCourse((String) mPreview.getTag(R.id.course), getContext());
+        else if (mCourseTag == null)
             courseInherited = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
         else {
             courseInherited = resolver.getCourse(mCourseTag, getContext());
@@ -98,6 +100,9 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                 view.findViewById(R.id.roomCard).setVisibility(View.VISIBLE);
                 ((TextView) view.findViewById(R.id.roomTextView)).setText(getString(R.string.lesson_room).replace("%room", (String) mPreview.getTag(R.id.room)));
             }
+            // Expand next lessons
+            view.findViewById(R.id.changesRecycler).setVisibility(View.VISIBLE);
+            ((ImageButton) view.findViewById(R.id.recyclerExpandButton)).setImageResource(R.drawable.ic_less);
         }
 
         // Add to timetable if not a favorite course and thus not already added
@@ -166,6 +171,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
 
 
+        // Next changes
         List<Change> changeList = Arrays.asList(course.getChanges());
         if (!isChange && !changeList.isEmpty()) {
             view.findViewById(R.id.recyclerCard).setVisibility(View.VISIBLE);
