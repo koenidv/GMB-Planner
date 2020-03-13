@@ -78,17 +78,19 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
 
                 if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
                         && Arrays.equals(mDataset[position], mDataset[position + 1])) {
+                    // Enlarge if same as next lesson
                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
                     params.height = (int) resolver.dpToPx(68, context);
                     holder.cardView.setLayoutParams(params);
                 } else if (position > 0 && mDataset[position - 1].length > 0
                         && Arrays.equals(mDataset[position], mDataset[position - 1])) {
+                    // Hide if same as last lesson
                     holder.rootView.setVisibility(View.GONE);
                     holder.cardView.setVisibility(View.GONE);
                     holder.spacer.setVisibility(View.GONE);
                 }
 
-                // ColorDrawable doesn't support corner radii
+                // Add course color to the gradient, twice
                 gradientColors.add(resolver.resolveCourseColor(thisLesson.getCourse(), context));
                 gradientColors.add(resolver.resolveCourseColor(thisLesson.getCourse(), context));
 
@@ -161,6 +163,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                 holder.cardView.setOnClickListener(null);
             }
 
+            holder.cardView.setTag(R.id.room, mDataset[position][0].getRoom());
         } else {
             if (!mEditMode) {
                 holder.rootView.setVisibility(View.INVISIBLE);
@@ -174,11 +177,9 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             holder.spacer.setVisibility(View.GONE);
         }
 
-        if (mEditMode) {
-            holder.cardView.setTag("edit");
-            holder.cardView.setTag(R.id.day, mDay);
-            holder.cardView.setTag(R.id.period, position);
-        }
+        holder.cardView.setTag(R.id.day, mDay);
+        holder.cardView.setTag(R.id.period, position);
+        if (mEditMode) holder.cardView.setTag("edit");
     }
 
     // Return the size of your dataset (invoked by the layout manager)

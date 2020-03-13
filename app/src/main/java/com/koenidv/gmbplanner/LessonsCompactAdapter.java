@@ -1,6 +1,7 @@
 package com.koenidv.gmbplanner;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -9,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -38,64 +43,75 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
         Context context = holder.courseTextView.getContext();
+        Resolver resolver = new Resolver();
+        List<Integer> gradientColors = new ArrayList<>();
+
         if (mDataset[position].length > 0) {
-            Lesson thisLesson = mDataset[position][0];
-            Resolver resolver = new Resolver();
+            holder.courseHiddenTextView.setText(mDataset[position][0].getCourse());
+            for (int i = 0; i < mDataset[position].length; i++) {
+                Lesson thisLesson = mDataset[position][i];
+                StringBuilder stringToAdd = new StringBuilder();
 
-            holder.courseTextView.setText(resolver.resolveCourseVeryShort(thisLesson.getCourse(), context));
-            holder.courseHiddenTextView.setText(thisLesson.getCourse());
+                stringToAdd.append(resolver.resolveCourseVeryShort(thisLesson.getCourse(), context));
 
-            // ColorDrawable doesn't support corner radii
-            int[] gradientColors = {resolver.resolveCourseColor(thisLesson.getCourse(), context), resolver.resolveCourseColor(thisLesson.getCourse(), context)};
-            GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, gradientColors);
-            try {
-                if (position > 0 && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())) {
+                // Hide if same as last lesson
+                if (position > 0 && mDataset[position - 1].length > 0
+                        && Arrays.equals(mDataset[position], mDataset[position - 1])) {
                     holder.rootView.setVisibility(View.GONE);
                     holder.cardView.setVisibility(View.GONE);
                     holder.spacer.setVisibility(View.GONE);
                 }
-            } catch (ArrayIndexOutOfBoundsException ignored) {
-                // Next or last period is empty
-            }
-            gradient.setCornerRadius(100f);
-            holder.cardView.setBackground(gradient);
 
-            // Show changes
-            Course course = resolver.getCourse(thisLesson.getCourse(), context);
-            if (course != null) {
-                for (Change change : course.getChanges()) {
-                    int[] period = resolver.resolvePeriod(change.getDate(), change.getTime());
-                    if (period[0] == mDay && period[1] <= position && period[2] >= position) {
-                        int[] changeGradientColors = {
-                                resolver.resolveCourseColor(thisLesson.getCourse(), context),
-                                resolver.resolveTypeColor(change.getType(), context),
-                                resolver.resolveTypeColor(change.getType(), context)
-                        };
+                // Add course color to the gradient
+                gradientColors.add(resolver.resolveCourseColor(thisLesson.getCourse(), context));
+                gradientColors.add(resolver.resolveCourseColor(thisLesson.getCourse(), context));
 
-                        if (change.getType().equals("EVA") && !change.getRoomNew().equals("Sek"))
-                            changeGradientColors[1] = context.getColor(R.color.background);
 
-                        GradientDrawable changeGradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, changeGradientColors);
-                        changeGradient.setCornerRadius(100f);
-                        holder.cardView.setBackground(changeGradient);
-                    }
-                    // If only one of multiple lessons is changed
-                    if (position > 0 && mDataset[position - 1].length > 0
-                            && mDataset[position][0].getCourse().equals(mDataset[position - 1][0].getCourse())
-                            && period[0] == mDay && (period[1] > position - 1 || period[2] < position)) {
-                        // Same course as last one, but different change
-                        holder.rootView.setVisibility(View.VISIBLE);
-                        holder.cardView.setVisibility(View.VISIBLE);
-                        holder.spacer.setVisibility(View.VISIBLE);
+                // Show changes
+                Course course = resolver.getCourse(thisLesson.getCourse(), context);
+                if (course != null) {
+                    for (Change change : course.getChanges()) {
+                        int[] period = resolver.resolvePeriod(change.getDate(), change.getTime());
+                        if (period[0] == mDay && period[1] <= position && period[2] >= position) {
+
+                            gradientColors.set(2 * (i + 1) - 1, resolver.resolveTypeColor(change.getType(), context));
+
+                            if (change.getType().equals("EVA") && !change.getRoomNew().equals("Sek"))
+                                gradientColors.set(2 * (i + 1) - 1, Color.TRANSPARENT);
+
+                        }
+                        // If only one of multiple lessons is changed
+                        if (position > 0 && mDataset[position - 1].length > 0
+                                && Arrays.equals(mDataset[position], mDataset[position - 1])
+                                && period[0] == mDay && (period[1] > position - 1 || period[2] < position)) {
+                            // Same course as last one, but different change
+                            holder.rootView.setVisibility(View.VISIBLE);
+                            holder.cardView.setVisibility(View.VISIBLE);
+                            holder.spacer.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
+
+                if (i < mDataset[position].length - 1)
+                    stringToAdd.append(", ");
+                holder.courseTextView.append(stringToAdd);
             }
+
+            int[] colorArray = gradientColors.stream().mapToInt(i -> i).toArray();
+            GradientDrawable gradient = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colorArray);
+            gradient.setCornerRadius(128f);
+            holder.cardView.setBackground(gradient);
+
+            holder.cardView.setTag(R.id.room, mDataset[position][0].getRoom());
 
         } else {
             holder.rootView.setVisibility(View.GONE);
             holder.cardView.setVisibility(View.GONE);
             holder.spacer.setVisibility(View.GONE);
         }
+
+        holder.cardView.setTag(R.id.day, mDay);
+        holder.cardView.setTag(R.id.period, position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

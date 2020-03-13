@@ -120,7 +120,7 @@ public class MyChangesFragment extends Fragment {
         }
 
         // Set up changes recycler
-        RecyclerView myChangesRecycler = mView.findViewById(R.id.myChangesRecycler);
+        RecyclerView myChangesRecycler = mView.findViewById(R.id.recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 

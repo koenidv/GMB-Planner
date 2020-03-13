@@ -17,7 +17,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
     private List<String> mDataset;
     private boolean mEditMode;
 
-    CoursesAdapter(List<String> dataset) {
+    public CoursesAdapter(List<String> dataset) {
         mDataset = dataset;
     }
 

@@ -116,4 +116,6 @@
     <string name="courses_add_more">Mehr Kurse</string>
     <string name="courses_edit_timetable">Stundenplan</string>
     <string name="courses_edit_courses">Kurse</string>
+    <string name="lesson_room">In Raum %room</string>
+    <string name="tab_tasks">Aufgaben</string>
 </resources>

@@ -326,9 +326,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             myCourses.add(course);
             ((ImageButton) view).setImageResource(R.drawable.ic_star);
+            selectorSheet.dismiss();
         }
         coursesSheet.refreshTimetable();
-        selectorSheet.dismiss();
     }
 
     void refreshTimetable() {

@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.koenidv.gmbplanner.MainActivity.coursesSheet;
 
 //  Created by koenidv on 16.02.2020.
 public class ActionsSheet extends BottomSheetDialogFragment {
@@ -77,20 +78,27 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
         final boolean isChange = mPreview.getId() == R.id.outerCard;
 
+        // Timetable
+        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
+
         if (isChange) {
             // Copy values
             ((TextView) view.findViewById(R.id.topTextView)).setText(((TextView) mPreview.findViewById(R.id.topTextView)).getText());
             ((TextView) view.findViewById(R.id.centerTextView)).setText(((TextView) mPreview.findViewById(R.id.centerTextView)).getText());
             ((TextView) view.findViewById(R.id.bottomTextView)).setText(((TextView) mPreview.findViewById(R.id.bottomTextView)).getText());
-            view.findViewById(R.id.changeCard).setOnClickListener(null);
             view.findViewById(R.id.changeCard).setBackground(mPreview.findViewById(R.id.changeCard).getBackground());
+            // Disable onClick as it would just open this sheet again
+            view.findViewById(R.id.changeCard).setOnClickListener(null);
         } else {
+            // Hide unneccessary buttons
             view.findViewById(R.id.shareButton).setVisibility(View.GONE);
             view.findViewById(R.id.include_change).setVisibility(View.GONE);
+            // Display the lesson's room
+            if (mPreview.getTag(R.id.room) != null) {
+                view.findViewById(R.id.roomCard).setVisibility(View.VISIBLE);
+                ((TextView) view.findViewById(R.id.roomTextView)).setText(getString(R.string.lesson_room).replace("%room", (String) mPreview.getTag(R.id.room)));
+            }
         }
-
-        // Timetable
-        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
 
         // Add to timetable if not a favorite course and thus not already added
         if (!resolver.isFavorite(course.getCourse(), getContext())) {
@@ -248,6 +256,11 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             resolver.vibrate(getContext());
             dismiss();
         });
+        favButton.setOnLongClickListener(v -> {
+            coursesSheet = new CoursesSheet();
+            coursesSheet.show(getActivity().getSupportFragmentManager(), "coursesSheet");
+            return true;
+        });
 
         if (isChange) {
             view.findViewById(R.id.shareButton).setOnClickListener(v -> {
@@ -265,7 +278,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.action_share)));
                 dismiss();
-                // Todo: Improve shared content
+                // leTodo: Improve shared content
             });
         }
 
