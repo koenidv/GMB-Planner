@@ -124,4 +124,7 @@
     <string name="course_korean_short">Korean.</string>
     <string name="course_sustain">Nachhaltigkeit</string>
     <string name="course_sustain_short">Nachhalt.</string>
+    <string name="courses_edit_timetable_help">Tippe zum Bearbeiten</string>
+    <string name="course_religion_catholic">Katholisch</string>
+    <string name="course_religion_protestant">Evangelisch</string>
 </resources>

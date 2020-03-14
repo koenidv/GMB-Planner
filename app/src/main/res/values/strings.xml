@@ -46,6 +46,7 @@
     <string name="courses_add_more">More courses</string>
     <string name="courses_edit_timetable">Edit timetable</string>
     <string name="courses_edit_courses">Edit courses</string>
+    <string name="courses_edit_timetable_help">Tap to add or remove a course</string>
 
     <string name="change_hours">h</string>
     <string name="change_workorders">" Note work orders"</string>
@@ -102,6 +103,8 @@
     <string name="course_politics">Politics</string>
     <string name="course_sports">Sports</string>
     <string name="course_religion">Religion</string>
+    <string name="course_religion_catholic">Catholic</string>
+    <string name="course_religion_protestant">Protestant</string>
     <string name="course_ethics">Ethics</string>
     <string name="course_history_bili">History Bili</string>
     <string name="course_concb">Concert Band</string>

@@ -140,8 +140,10 @@ public class Resolver {
             name.append(context.getString(R.string.course_geography));
         } else if (courseName.startsWith("POWI-")) {
             name.append(context.getString(R.string.course_politics));
-        } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-")) {
-            name.append(context.getString(R.string.course_religion));
+        } else if (courseName.startsWith("RKA-")) {
+            name.append(context.getString(R.string.course_religion_catholic));
+        } else if (courseName.startsWith("REV-")) {
+            name.append(context.getString(R.string.course_religion_protestant));
         } else if (courseName.startsWith("ETHI-")) {
             name.append(context.getString(R.string.course_ethics));
         } else if (courseName.startsWith("GBi-")) {
@@ -266,8 +268,12 @@ public class Resolver {
                 return "W";
             else
                 return resolveCourse(courseName, context).substring(0, 1);
-        else if (courseName.contains("BIO"))
-            return "Bio";
+        else {
+            if (courseName.contains("BIO"))
+                return "Bio";
+            if (courseName.contains("POWI"))
+                return "PW";
+        }
         if (courseName.length() >= 2)
             return resolveCourse(courseName, context).substring(0, 2);
         else

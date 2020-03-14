@@ -31,7 +31,6 @@ import com.koenidv.gmbplanner.Resolver;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +47,12 @@ import static com.koenidv.gmbplanner.MainActivity.coursesSheet;
 //  Created by koenidv on 15.02.2020.
 public class MyChangesFragment extends Fragment {
 
+    private RecyclerView[] dayRecyclers = new RecyclerView[5];
+    private LessonsCompactAdapter todayAdapter;
+    private Lesson[][][] timetable;
+    private int weekDay;
     private View mView;
+
     // Refresh the list of changes whenever the broadcast "changesRefreshed" is received
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -65,11 +69,109 @@ public class MyChangesFragment extends Fragment {
     };
 
     @Override
+    public void onResume() {
+
+        // Get today or tomorrow after 5pm
+
+        weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
+        if (weekDay < 0 || weekDay > 4) weekDay = 0;
+
+        // Update today overview recycler
+        todayAdapter.setDataset(timetable[weekDay]);
+
+        // Reset all day recycler backgrounds
+        for (RecyclerView recycler : dayRecyclers) {
+            recycler.setBackground(null);
+        }
+        // Mark todays day recycler
+        PaintDrawable todayBackground = new PaintDrawable(getResources().getColor(R.color.highlight));
+        todayBackground.setCornerRadius((new Resolver()).dpToPx(8, Objects.requireNonNull(getActivity())));
+        dayRecyclers[weekDay].setBackground(todayBackground);
+
+        super.onResume();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
+        SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+
+        /*
+         * Set up timetable
+         */
+
+        dayRecyclers = new RecyclerView[]{
+                view.findViewById(R.id.mondayRecycler),
+                view.findViewById(R.id.tuesdayRecycler),
+                view.findViewById(R.id.wednesdayRecycler),
+                view.findViewById(R.id.thursdayRecycler),
+                view.findViewById(R.id.fridayRecycler)
+        };
+
+        // Get filtered timetable
+        timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
+        if (!isTimetableEmpty(timetable))
+            view.findViewById(R.id.card_timetable).setVisibility(View.VISIBLE);
+
+        // Set up 5 recyclerviews, one for each day
+        for (int i = 0; i < dayRecyclers.length; i++) {
+            RecyclerView recycler = dayRecyclers[i];
+            recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            recycler.setAdapter(new LessonsAdapter(timetable[i], i));
+        }
+
+        final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout);
+        final TextView titleTextView = view.findViewById(R.id.titleTextView);
+        final ImageButton expandButton = view.findViewById(R.id.expandButton);
+        final RecyclerView todayRecycler = view.findViewById(R.id.todayRecycler);
+
+        // Get today or tomorrow after 5pm
+        weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
+        if (weekDay < 0 || weekDay > 4) weekDay = 0;
+
+        // Set up today overview
+        todayRecycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        todayAdapter = new LessonsCompactAdapter(timetable[weekDay], weekDay);
+        todayRecycler.setAdapter(todayAdapter);
+
+        // Expand button to show the entire timetable
+        View.OnClickListener expandListener = v -> {
+            expandButton.setVisibility(View.GONE);
+            if (recyclerLayout.getVisibility() == View.GONE) {
+                todayRecycler.setVisibility(View.GONE);
+                titleTextView.setVisibility(View.VISIBLE);
+                recyclerLayout.setVisibility(View.VISIBLE);
+                expandButton.setImageResource(R.drawable.ic_less);
+            } else {
+                recyclerLayout.setVisibility(View.GONE);
+                if (todayRecycler.getAdapter() != null && todayRecycler.getAdapter().getItemCount() != 0)
+                    titleTextView.setVisibility(View.GONE);
+                todayRecycler.setVisibility(View.VISIBLE);
+                expandButton.setImageResource(R.drawable.ic_more);
+            }
+            new Handler().postDelayed(() -> expandButton.setVisibility(View.VISIBLE), getResources().getInteger(android.R.integer.config_shortAnimTime));
+        };
+        view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
+        expandButton.setOnClickListener(expandListener);
+
+        // Enable transition for expanding the timetable
+        ((ViewGroup) todayRecycler.getParent()).getLayoutTransition()
+                .enableTransitionType(LayoutTransition.CHANGING);
+
+        // Edit courses on long click
+        View.OnLongClickListener editClickListener = v -> {
+            coursesSheet = new CoursesSheet();
+            coursesSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "coursesSheet");
+            return true;
+        };
+        view.findViewById(R.id.compactLayout).setOnLongClickListener(editClickListener);
+        expandButton.setOnLongClickListener(editClickListener);
+
+        // Refresh courses list
         refreshList();
-        refreshTimetable();
     }
 
     @Override
@@ -124,9 +226,6 @@ public class MyChangesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         myChangesRecycler.setLayoutManager(layoutManager);
 
-        // Enable transition for expanding the timetable
-        ((ViewGroup) myChangesRecycler.getParent()).getLayoutTransition()
-                .enableTransitionType(LayoutTransition.CHANGING);
 
         ChangesAdapter mAdapter = new ChangesAdapter(myChangeList, true, prefs.getBoolean("compactModeFavorite", false));
         myChangesRecycler.setAdapter(mAdapter);
@@ -167,88 +266,37 @@ public class MyChangesFragment extends Fragment {
 
         try {
             // Get filtered timetable
-            Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
-            mView.findViewById(R.id.include).setVisibility(View.VISIBLE);
+            timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
 
             // Hide card if timetable is empty
-            // Manual check as timetable might include empty entries
-            if (Arrays.deepToString(timetable)
-                    .replace("[", "")
-                    .replace("]", "")
-                    .replace(",", "")
-                    .replace(" ", "")
-                    .length() == 0)
-                mView.findViewById(R.id.include).setVisibility(View.GONE);
+            if (isTimetableEmpty(timetable))
+                mView.findViewById(R.id.card_timetable).setVisibility(View.GONE);
+            else
+                mView.findViewById(R.id.card_timetable).setVisibility(View.VISIBLE);
 
-            // Set up today overview
-            // Show today's classes, tomorrows if after 5pm or monday's on weekends
-            final RecyclerView todayRecycler = mView.findViewById(R.id.todayRecycler);
-            LinearLayoutManager todayLayoutManager = new LinearLayoutManager(getContext());
-            todayLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-            todayRecycler.setLayoutManager(todayLayoutManager);
-            // Get today or tomorrow after 5pm
-            int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
-            if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
-            if (weekDay < 0 || weekDay > 4) weekDay = 0;
-            LessonsCompactAdapter todayAdapter = new LessonsCompactAdapter(timetable[weekDay], weekDay);
-            todayRecycler.setAdapter(todayAdapter);
+            // Update today recycler
+            todayAdapter.setDataset(timetable[weekDay]);
 
-            final LinearLayout recyclerLayout = mView.findViewById(R.id.recyclerLayout);
-            final TextView titleTextView = mView.findViewById(R.id.titleTextView);
-            final ImageButton expandButton = mView.findViewById(R.id.expandButton);
-
-            // Show title if today overview is empty
-            final boolean todayEmpty = Arrays.deepToString(timetable[weekDay])
-                    .replace("[", "")
-                    .replace("]", "")
-                    .replace(",", "")
-                    .replace(" ", "")
-                    .length() == 0;
-            if (todayEmpty)
-                titleTextView.setVisibility(View.VISIBLE);
-
-            // Expand button to show the entire timetable
-            View.OnClickListener expandListener = v -> {
-                expandButton.setVisibility(View.GONE);
-                if (recyclerLayout.getVisibility() == View.GONE) {
-                    todayRecycler.setVisibility(View.GONE);
-                    titleTextView.setVisibility(View.VISIBLE);
-                    recyclerLayout.setVisibility(View.VISIBLE);
-                    expandButton.setImageResource(R.drawable.ic_less);
-                } else {
-                    recyclerLayout.setVisibility(View.GONE);
-                    if (!todayEmpty)
-                        titleTextView.setVisibility(View.GONE);
-                    todayRecycler.setVisibility(View.VISIBLE);
-                    expandButton.setImageResource(R.drawable.ic_more);
-                }
-                new Handler().postDelayed(() -> expandButton.setVisibility(View.VISIBLE), getResources().getInteger(android.R.integer.config_shortAnimTime));
-            };
-            mView.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
-            expandButton.setOnClickListener(expandListener);
-
-            // Set up 5 recyclerviews, one for each day
-            RecyclerView[] dayRecyclers = {
-                    mView.findViewById(R.id.mondayRecycler),
-                    mView.findViewById(R.id.tuesdayRecycler),
-                    mView.findViewById(R.id.wednesdayRecycler),
-                    mView.findViewById(R.id.thursdayRecycler),
-                    mView.findViewById(R.id.fridayRecycler)
-            };
+            // Update every day recycler
             for (int i = 0; i < dayRecyclers.length; i++) {
-                RecyclerView recycler = dayRecyclers[i];
-                recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-                recycler.setAdapter(new LessonsAdapter(timetable[i], i));
-                recycler.setBackground(null);
+                ((LessonsAdapter) Objects.requireNonNull(dayRecyclers[i].getAdapter())).setDataset(timetable[i]);
             }
 
-            // Mark today
-            PaintDrawable todayBackground = new PaintDrawable(getResources().getColor(R.color.highlight));
-            todayBackground.setCornerRadius((new Resolver()).dpToPx(8, getActivity()));
-            dayRecyclers[weekDay].setBackground(todayBackground);
         } catch (NullPointerException npe) {
             // Somethings wrong with the timetable, maybe there's just no data or no favorite courses
-            mView.findViewById(R.id.include).setVisibility(View.GONE);
+            mView.findViewById(R.id.card_timetable).setVisibility(View.GONE);
         }
+    }
+
+    private boolean isTimetableEmpty(@NonNull Lesson[][][] mTimetable) {
+        for (Lesson[][] day : mTimetable) {
+            if (day != null)
+                for (Lesson[] period : day) {
+                    if (period.length > 0) {
+                        return false;
+                    }
+                }
+        }
+        return true;
     }
 }

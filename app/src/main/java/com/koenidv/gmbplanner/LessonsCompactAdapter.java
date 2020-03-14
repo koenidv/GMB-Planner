@@ -45,9 +45,14 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
         Context context = holder.courseTextView.getContext();
         Resolver resolver = new Resolver();
         List<Integer> gradientColors = new ArrayList<>();
+        holder.courseTextView.setText("");
+        holder.rootView.setVisibility(View.VISIBLE);
+        holder.cardView.setVisibility(View.VISIBLE);
+        holder.spacer.setVisibility(View.VISIBLE);
 
         if (mDataset[position].length > 0) {
             holder.courseHiddenTextView.setText(mDataset[position][0].getCourse());
+
             for (int i = 0; i < mDataset[position].length; i++) {
                 Lesson thisLesson = mDataset[position][i];
                 StringBuilder stringToAdd = new StringBuilder();
@@ -123,6 +128,11 @@ public class LessonsCompactAdapter extends RecyclerView.Adapter<LessonsCompactAd
         } catch (NullPointerException npe) {
             return 0;
         }
+    }
+
+    public void setDataset(Lesson[][] dataset) {
+        this.mDataset = dataset;
+        notifyDataSetChanged();
     }
 
     // Provide a reference to the views for each data item

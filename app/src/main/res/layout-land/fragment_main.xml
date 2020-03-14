@@ -15,7 +15,6 @@
         android:animateLayoutChanges="true">
 
         <include
-            android:id="@+id/include"
             layout="@layout/card_timetable"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,7 +37,7 @@
             android:nestedScrollingEnabled="false"
             android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/include"
+            app:layout_constraintStart_toEndOf="@+id/card_timetable"
             app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="2"
             tools:listitem="@layout/item_change" />

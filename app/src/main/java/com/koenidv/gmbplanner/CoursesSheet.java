@@ -41,7 +41,6 @@ public class CoursesSheet extends BottomSheetDialogFragment {
 
     CoursesAdapter adapter;
     private Gson gson = new Gson();
-    CoursesTimetableSheet selectorSheet;
     private Lesson[][][] timetable = new Lesson[5][][];
     private LessonsAdapter[] timetableAdapters = {
             new LessonsAdapter(timetable[0], true, 0),
@@ -76,6 +75,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
 
         timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
+        if (timetable == null) timetable = new Lesson[5][][];
         try {
             myCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class)));
         } catch (NullPointerException ignored) {
@@ -93,8 +93,12 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         titleTextView.setText(getString(R.string.courses_edit_timetable));
         titleTextView.setVisibility(View.VISIBLE);
         view.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
-        expandButton.setImageResource(R.drawable.ic_less);
-        recyclerLayout.setVisibility(View.VISIBLE);
+        if (timetable[0] != null) {
+            expandButton.setImageResource(R.drawable.ic_less);
+            recyclerLayout.setVisibility(View.VISIBLE);
+        } else {
+            view.findViewById(R.id.card_timetable).setVisibility(View.GONE);
+        }
 
         // Set up 5 recyclerviews, one for each day
         dayRecyclers = new RecyclerView[]{
@@ -132,6 +136,8 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         expandButton.setOnClickListener(expandListener);
         view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
 
+        // Display a helping text
+        view.findViewById(R.id.helpText).setVisibility(View.VISIBLE);
 
         // Course list & manually add courses
 
@@ -272,17 +278,11 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         ArrayList<Lesson[]> dayTable = new ArrayList<>();
         ArrayList<Lesson> periodTable = new ArrayList<>();
 
-        if (allTable == null) {
-            // Probably q34 - no data yet
-            prefs.edit().putString("timetableMine", "").apply();
-            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent("changesRefreshed"));
-            return;
-        }
-
         for (int day = 0; day <= 4; day++) {
             for (int period = 0; period < allTable[day].length; period++) {
                 for (Lesson lesson : allTable[day][period]) {
-                    if (myCourses.contains(lesson.getCourse())) {
+                    // Manual check: compatibility for entries below v127
+                    if (myCourses.toString().toUpperCase().contains(lesson.getCourse().toUpperCase())) {
                         periodTable.add(lesson);
                     }
                 }
@@ -293,10 +293,9 @@ public class CoursesSheet extends BottomSheetDialogFragment {
             dayTable.clear();
         }
 
-        // Re-set adapters.. Won't work otherwise
+        // Update recyclers
         for (int i = 0; i < timetableAdapters.length; i++) {
-            dayRecyclers[i].setAdapter(timetableAdapters[i]);
-            timetableAdapters[i].setDataset(timetable[i]);
+            ((LessonsAdapter) Objects.requireNonNull(dayRecyclers[i].getAdapter())).setDataset(timetable[i]);
         }
 
         adapter.notifyDataSetChanged();

@@ -62,8 +62,18 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
         Context context = holder.courseTextView.getContext();
         Resolver resolver = new Resolver();
         List<Integer> gradientColors = new ArrayList<>();
-        holder.courseTextView.setText("");
         boolean matchesFilter = mFilter == null;
+
+        // Reset to avoid recycling issues
+        holder.courseTextView.setText("");
+        holder.rootView.setVisibility(View.VISIBLE);
+        holder.cardView.setVisibility(View.VISIBLE);
+        holder.spacer.setVisibility(View.VISIBLE);
+        holder.cardView.setClickable(true);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
+        params.height = (int) resolver.dpToPx(32, context);
+        holder.cardView.setLayoutParams(params);
+        holder.cardView.setBackground(null);
 
         if (mDataset[position].length > 0) {
             holder.courseHiddenTextView.setText(mDataset[position][0].getCourse());
@@ -79,7 +89,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                 if (position < mDataset.length - 1 && mDataset[position + 1].length > 0
                         && Arrays.equals(mDataset[position], mDataset[position + 1])) {
                     // Enlarge if same as next lesson
-                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
+                    params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
                     params.height = (int) resolver.dpToPx(68, context);
                     holder.cardView.setLayoutParams(params);
                 } else if (position > 0 && mDataset[position - 1].length > 0
@@ -125,7 +135,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                                 && Arrays.equals(mDataset[position], mDataset[position + 1])
                                 && period[0] == mDay && (period[2] < position + 1 || period[1] > position)) {
                             // Same course as next one, but different change
-                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
+                            params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
                             params.height = (int) resolver.dpToPx(32, context);
                             holder.cardView.setLayoutParams(params);
                         } else if (position > 0 && mDataset[position - 1].length > 0
@@ -160,7 +170,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             }
 
             if (mFilter != null) {
-                holder.cardView.setOnClickListener(null);
+                //holder.cardView.setOnClickListener(null);
+                holder.cardView.setClickable(false);
             }
 
             holder.cardView.setTag(R.id.room, mDataset[position][0].getRoom());
@@ -169,7 +180,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
         } else {
             if (!mEditMode) {
                 holder.rootView.setVisibility(View.INVISIBLE);
-                holder.cardView.setOnClickListener(null);
+                //holder.cardView.setOnClickListener(null);
                 holder.cardView.setClickable(false);
             }
         }
@@ -211,7 +222,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
         }
     }
 
-    void setDataset(Lesson[][] mDataset) {
+    public void setDataset(Lesson[][] mDataset) {
         this.mDataset = mDataset;
         notifyDataSetChanged();
     }

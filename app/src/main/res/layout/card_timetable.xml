@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/cardBackground"
@@ -48,11 +49,23 @@
                 android:background="@drawable/transparent"
                 android:contentDescription="@string/timetable_expand_description"
                 android:src="@drawable/ic_more" />
-
-
         </LinearLayout>
 
         <include layout="@layout/include_timetable" />
+
+        <TextView
+            android:id="@+id/helpText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_info"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/infoText"
+            android:padding="8dp"
+            android:paddingTop="0dp"
+            android:text="@string/courses_edit_timetable_help"
+            android:textColor="@color/infoText"
+            android:visibility="gone"
+            tools:targetApi="m" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
