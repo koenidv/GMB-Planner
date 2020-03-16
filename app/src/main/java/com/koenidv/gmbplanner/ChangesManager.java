@@ -314,6 +314,10 @@ public class ChangesManager extends AsyncTask<String, String, String> {
         // Broadcast to refresh UI
         Intent intent = new Intent("changesRefreshed");
         intent.putExtra("setup_changes", true);
+        if (!prefs.getBoolean("completed_first", false)) {
+            prefsEdit.putBoolean("completed_first", true).apply();
+            intent.putExtra("first_update", true);
+        }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
         // Send a notification for new changes within myCourses

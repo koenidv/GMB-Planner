@@ -35,10 +35,12 @@
     <string name="action_favorites_remove">Remove from your plan</string>
     <string name="action_share">Share</string>
 
-    <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
+    <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://sv.gmbwi.de/ovp">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
     <string name="credentials_password_info">Your password will only be saved locally</string>
     <string name="start_add_courses">Add your courses</string>
+    <string name="setup_prompt">Complete setup?</string>
+    <string name="setup_action">Choose courses</string>
 
     <string-array name="loading_facts">
         <item>There is a teacher for every 12 students at Mosbacher Berg.</item>

@@ -79,8 +79,19 @@ public class MainActivity extends AppCompatActivity {
             else
                 ignoreFirstRefreshed = false;
 
+            // Update timetable if courses have changed
             if (intent.getBooleanExtra("coursesChanged", false))
                 refreshTimetable();
+
+            // Show a setup snackbar if this was the first refresh
+            if (intent.getBooleanExtra("first_update", false))
+                Snackbar.make(findViewById(R.id.rootView), getString(R.string.setup_prompt), BaseTransientBottomBar.LENGTH_INDEFINITE)
+                        .setAction(R.string.setup_action, v -> {
+                            coursesSheet = new CoursesSheet();
+                            coursesSheet.show(getSupportFragmentManager(), "coursesSheet");
+                        })
+                        .setGestureInsetBottomIgnored(false)
+                        .show();
 
             // Update widget
             Intent widgetIntent = new Intent(MainActivity.this, WidgetProvider.class);

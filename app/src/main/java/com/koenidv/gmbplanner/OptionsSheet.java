@@ -87,7 +87,7 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             }
         });
 
-        view.findViewById(R.id.githubTextView).setOnClickListener(v -> {
+        view.findViewById(R.id.githubButton).setOnClickListener(v -> {
             // Link to this app's GitHub repository
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://github.com/koenidv/gmb-planner"));

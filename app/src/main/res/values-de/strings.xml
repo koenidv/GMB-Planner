@@ -19,7 +19,7 @@
     <string name="credentials_pass">Passwort</string>
     <string name="done">Fertig</string>
     <string name="save">Speichern</string>
-    <string name="start_credentials_explanation"><![CDATA[Hey!<br>Um diese App zu nutzen benötigst du einen Account des Gymnasiums am Mosbacher Berg.<br>Bitte gib deine Anmeldeinformationen ein oder <a href="https://mosbacher-berg.de/user/register">erstelle einen Account mit deinem Aktivierungscode</a>.]]></string>
+    <string name="start_credentials_explanation"><![CDATA[Hey!<br>Um diese App zu nutzen benötigst du einen Account des Gymnasiums am Mosbacher Berg.<br>Bitte gib deine Anmeldeinformationen ein oder <a href="https://sv.gmbwi.de/ovp">erstelle einen Account mit deinem Aktivierungscode</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nDeine Zugangsdaten funktionieren scheinbar nicht. Bitte versuche es noch einmal.</string>
     <string name="remove">Entfernen</string>
     <string name="change_connect_room">" in "</string>
@@ -49,7 +49,7 @@
     <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change\nKurse aktualisiert: %courses</string>
     <string name="menu_information">Informationen</string>
     <string name="info_author">Florian König 2020 • Eure SV am GMB</string>
-    <string name="info_thanks">Danke an das Mosbacher Berg und die Schülervertretungen von 2015 bis heute für die Onlinestellung des Vertretungsplans, an Ryan für das Erledigen von einem Teil der Übertragungsarbeit, an meinen Pyhsik-LK fürs Betatesten und an Marei für das Befreien der notwendigen Zeit.</string>
+    <string name="info_thanks">Danke an das Gymnasium am Mosbacher Berg und die Schülervertretungen von 2015 bis heute für die Onlinestellung des Vertretungsplans, an Ryan für das Erledigen von einem Teil der Übertragungsarbeit, an meinen Pyhsik-LK fürs Betatesten und an Marei für das Befreien der notwendigen Zeit.</string>
     <string name="info_github">Code auf GitHub einsehen</string>
     <string name="menu_darkmode_disable">Helles Design</string>
     <string name="menu_darkmode_enable">Dunkles Design</string>
@@ -134,7 +134,7 @@
     <string name="notification_channel_firebase_description">Du wirst benachrichtigt, wenn etwas wichtiges geschieht.</string>
     <string name="credentials_password_info">Dein Passwort wird nur lokal gespeichert</string>
     <string-array name="loading_facts">
-        <item>Am Mosbacher Berg gibt es eine Lehrkraft pro etwa 12 Lernende.</item>
+        <item>Am Mosbacher Berg gibt es etwa eine Lehrkraft pro 12 Lernende.</item>
         <item>Das Mosbacher Berg wurde am 1. August 1969 gegründet.</item>
         <item>Als das Mosbacher Berg gegründet wurde, mussten Lernende noch samstags zur Schule.</item>
         <item>Auf dem Gelände des heutigen Mosbacher Bergs stand einmal die Diltheyschule.</item>
@@ -142,4 +142,6 @@
         <item>Der Campus des Mosbacher Bergs umfässt etwa 100 Räume.</item>
         <item>Das Büro der Schülervertretung ist in B120.</item>
     </string-array>
+    <string name="setup_prompt">Einrichtung abschließen?</string>
+    <string name="setup_action">Kurse auswählen</string>
 </resources>

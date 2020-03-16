@@ -55,10 +55,8 @@
                 android:clickable="false"
                 android:contentDescription="@string/expand_description"
                 android:focusable="false"
-                android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/ic_more"
-                android:tint="@color/titleText"
-                tools:ignore="UnusedAttribute" />
+                android:tint="@color/titleText" />
 
         </LinearLayout>
 
@@ -78,14 +76,82 @@
                 android:layout_height="wrap_content"
                 android:text="@string/info_thanks" />
 
-            <TextView
-                android:id="@+id/githubTextView"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/githubButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="?attr/selectableItemBackground"
-                android:text="@string/info_github"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:layout_marginTop="8dp"
+                android:text="@string/info_github" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/darkmodeToggleGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:selectionRequired="true"
+                app:singleSelection="true"
+                tools:visibility="visible">
+
+                <Button
+                    android:id="@+id/darkButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/option_theme_dark" />
+
+                <Button
+                    android:id="@+id/lightButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/option_theme_light" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/compactToggleGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <Button
+                    android:id="@+id/comfortableButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/option_compact_off" />
+
+                <Button
+                    android:id="@+id/autoCompactButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp"
+                    android:text="@string/option_compact_auto" />
+
+                <Button
+                    android:id="@+id/compactButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/option_compact_on" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/infoText" />
 
         </LinearLayout>
 
@@ -131,69 +197,6 @@
                 android:textColor="@color/tabText" />
 
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/darkmodeToggleGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:selectionRequired="true"
-            app:singleSelection="true"
-            tools:visibility="visible">
-
-            <Button
-                android:id="@+id/darkButton"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/option_theme_dark" />
-
-            <Button
-                android:id="@+id/lightButton"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/option_theme_light" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/compactToggleGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-            <Button
-                android:id="@+id/comfortableButton"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/option_compact_off" />
-
-            <Button
-                android:id="@+id/autoCompactButton"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingStart="32dp"
-                android:paddingEnd="32dp"
-                android:text="@string/option_compact_auto" />
-
-            <Button
-                android:id="@+id/compactButton"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/option_compact_on" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/backgroundToggleGroup"
