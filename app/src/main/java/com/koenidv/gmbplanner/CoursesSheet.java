@@ -83,7 +83,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         // Add courses from timetable
 
         final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout);
-        final TextView titleTextView = view.findViewById(R.id.titleTextView);
+        final TextView titleTextView = view.findViewById(R.id.titleTextView), infoTextView = view.findViewById(R.id.helpText);
         final ImageButton expandButton = view.findViewById(R.id.expandButton);
 
         ((LinearLayout) view.findViewById(R.id.compactLayout)).setLayoutTransition(null);
@@ -117,9 +117,11 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         View.OnClickListener expandListener = v -> {
             if (recyclerLayout.getVisibility() == View.GONE) {
                 recyclerLayout.setVisibility(View.VISIBLE);
+                infoTextView.setVisibility(View.VISIBLE);
                 expandButton.setImageResource(R.drawable.ic_less);
             } else {
                 recyclerLayout.setVisibility(View.GONE);
+                infoTextView.setVisibility(View.GONE);
                 expandButton.setImageResource(R.drawable.ic_more);
             }
         };
@@ -127,7 +129,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
 
         // Display a helping text
-        view.findViewById(R.id.helpText).setVisibility(View.VISIBLE);
+        infoTextView.setVisibility(View.VISIBLE);
 
         // Course list & manually add courses
 
