@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,6 +26,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:visibility="gone"
+            android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="@color/cardBackground"
             app:cardCornerRadius="12dp"
             app:cardElevation="8dp">
@@ -39,14 +40,17 @@
                 <TextView
                     android:id="@+id/roomTextView"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="32dp"
                     android:fontFamily="@font/roboto_slab"
                     android:gravity="center_vertical"
                     android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
+                    android:drawableEnd="@drawable/ic_right"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@color/infoText"
+                    android:paddingEnd="12dp"
                     android:text="@string/next_changes"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    tools:targetApi="m"
                     tools:visibility="visible" />
 
             </LinearLayout>
@@ -106,7 +110,8 @@
                         android:clickable="false"
                         android:contentDescription="@string/timetable_expand_description"
                         android:focusable="false"
-                        android:src="@drawable/ic_more" />
+                        android:src="@drawable/ic_more"
+                        android:tint="@color/infoText" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -36,6 +36,7 @@ import com.koenidv.gmbplanner.widget.WidgetProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -273,11 +274,12 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("changes", getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(getString(R.string.notification_channel_description));
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(channel);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+
+            NotificationChannel firebasechannel = new NotificationChannel("firebase", getString(R.string.notification_channel_firebase_name), NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(getString(R.string.notification_channel_firebase_description));
+            Objects.requireNonNull(notificationManager).createNotificationChannel(firebasechannel);
         }
     }
 

@@ -140,10 +140,20 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
                 lastChange = lastChange.substring(0, lastChange.indexOf("<"));
 
-                String grade = prefs.getString("grade", "");
-                if (grade.isEmpty()) {
+                // Get grade
+                String grade = "";
+                try {
                     grade = result.substring(result.indexOf("Stufe ") + 6);
                     grade = grade.substring(0, grade.indexOf("<"));
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
+                }
+                // Update courses and timetable if grade has changed
+                if (!grade.equals(prefs.getString("grade", ""))) {
+                    prefsEdit.putLong("lastCourseRefresh", 0)
+                            .putLong("lastTimetableRefresh", 0)
+                            .putString("grade", grade)
+                            .apply();
                 }
 
                 // Parse website to changes
@@ -235,12 +245,14 @@ public class ChangesManager extends AsyncTask<String, String, String> {
 
                                 // Broadcast to refresh UI
                                 Intent doneIntent = new Intent("changesRefreshed");
-                                doneIntent.putExtra("dontIgnore", true);
+                                doneIntent.putExtra("dontIgnore", true)
+                                        .putExtra("setup_courses", true);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                             } catch (IOException | RuntimeException mE) {
                                 Intent doneIntent = new Intent("changesRefreshed");
                                 doneIntent.putExtra("dontIgnore", true)
-                                        .putExtra("failed", true);
+                                        .putExtra("failed", true)
+                                        .putExtra("setup_courses", true);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                                 mE.printStackTrace();
                             }
@@ -278,12 +290,14 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                                 // Broadcast to refresh UI
                                 Intent doneIntent = new Intent("changesRefreshed");
                                 doneIntent.putExtra("dontIgnore", true)
-                                        .putExtra("coursesChanged", true);
+                                        .putExtra("coursesChanged", true)
+                                        .putExtra("setup_timetable", true);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                             } catch (IOException | RuntimeException mE) {
                                 Intent doneIntent = new Intent("changesRefreshed");
                                 doneIntent.putExtra("dontIgnore", true)
-                                        .putExtra("failed", true);
+                                        .putExtra("failed", true)
+                                        .putExtra("setup_timetable", true);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(doneIntent);
                                 mE.printStackTrace();
                             }
@@ -299,6 +313,7 @@ public class ChangesManager extends AsyncTask<String, String, String> {
 
         // Broadcast to refresh UI
         Intent intent = new Intent("changesRefreshed");
+        intent.putExtra("setup_changes", true);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
         // Send a notification for new changes within myCourses

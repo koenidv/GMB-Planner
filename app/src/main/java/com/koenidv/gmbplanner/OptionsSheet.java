@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -54,10 +56,41 @@ public class OptionsSheet extends BottomSheetDialogFragment {
         DateFormat timeFormatter = new SimpleDateFormat(getString(R.string.dateformat_hours), Locale.GERMAN);
         DateFormat dateFormatter = new SimpleDateFormat(getString(R.string.dateformat_coursesrefreshed), Locale.GERMAN);
 
+        // Append version to app name
+        try {
+            PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            String version = pInfo.versionName;
+            TextView titleTextView = view.findViewById(R.id.titleTextView);
+            titleTextView.append(" ");
+            titleTextView.append((new Resolver()).fromHtml("<small>" + version + "</small>"));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         view.findViewById(R.id.authorTextView).setOnClickListener(v -> {
             // Link to my instagram
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://instagram.com/halbunsichtbar"));
+            startActivity(i);
+        });
+
+        // Expand button to show more info
+        view.findViewById(R.id.expandButton).setOnClickListener(v -> {
+            LinearLayout expandLayout = view.findViewById(R.id.expandLayout);
+            ImageButton expandButton = view.findViewById(R.id.expandButton);
+            if (expandLayout.getVisibility() == View.GONE) {
+                expandLayout.setVisibility(View.VISIBLE);
+                expandButton.setImageResource(R.drawable.ic_less);
+            } else {
+                expandLayout.setVisibility(View.GONE);
+                expandButton.setImageResource(R.drawable.ic_more);
+            }
+        });
+
+        view.findViewById(R.id.githubTextView).setOnClickListener(v -> {
+            // Link to this app's GitHub repository
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse("https://github.com/koenidv/gmb-planner"));
             startActivity(i);
         });
 

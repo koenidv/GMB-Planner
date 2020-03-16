@@ -26,6 +26,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -103,6 +104,14 @@ public class ActionsSheet extends BottomSheetDialogFragment {
             // Expand next lessons
             view.findViewById(R.id.changesRecycler).setVisibility(View.VISIBLE);
             ((ImageButton) view.findViewById(R.id.recyclerExpandButton)).setImageResource(R.drawable.ic_less);
+
+            // Show a custom tab with the online room plan
+            view.findViewById(R.id.roomCard).setOnClickListener(v -> {
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(getActivity(), Uri.parse("https://docs.google.com/gview?embedded=true&url=https://mosbacher-berg.de/sites/mosbacher-berg.de/files/binaries/Raumplan_1.pdf"));
+                dismiss();
+            });
         }
 
         // Add to timetable if not a favorite course and thus not already added

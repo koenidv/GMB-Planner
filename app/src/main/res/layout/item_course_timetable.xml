@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
@@ -24,10 +25,12 @@
         android:layout_height="48dp"
         android:layout_weight="0"
         android:background="@android:color/transparent"
+        android:foreground="?attr/selectableItemBackground"
         android:contentDescription="@string/action_favorites_add"
         android:onClick="toggleCourse"
         android:tint="@color/tabText"
-        app:srcCompat="@drawable/ic_star_outline" />
+        app:srcCompat="@drawable/ic_star_outline"
+        tools:ignore="UnusedAttribute" />
 
     <ImageButton
         android:id="@+id/infoButton"
@@ -36,10 +39,12 @@
         android:layout_height="48dp"
         android:layout_weight="0"
         android:background="@android:color/transparent"
+        android:foreground="?attr/selectableItemBackground"
         android:contentDescription="@string/menu_information"
         android:onClick="showChangeActions"
         android:tint="@color/tabText"
-        app:srcCompat="@drawable/ic_info" />
+        app:srcCompat="@drawable/ic_info"
+        tools:ignore="UnusedAttribute" />
 
 
 </LinearLayout>

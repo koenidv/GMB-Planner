@@ -37,7 +37,18 @@
 
     <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://mosbacher-berg.de/user/register">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
+    <string name="credentials_password_info">Your password will only be saved locally</string>
     <string name="start_add_courses">Add your courses</string>
+
+    <string-array name="loading_facts">
+        <item>There is a teacher for every 12 students at Mosbacher Berg.</item>
+        <item>Mosbacher Berg was founded on August 1st, 1969.</item>
+        <item>When Mosbacher Berg was founded, students had to go to school on saturdays.</item>
+        <item>On the site of today\'s Mosbacher Berg, there was once the Diltheyschule.</item>
+        <item>Some students have classes until 6pm.</item>
+        <item>Mosbacher Berg\'s campus contains about 100 rooms.</item>
+        <item>The student reps\' office is in B120.</item>
+    </string-array>
 
     <string name="credentials_name">Username or email</string>
     <string name="credentials_pass">Password</string>
@@ -60,6 +71,7 @@
     <string name="timetable">Your timetable</string>
     <string name="timetable_today">Today: </string>
     <string name="timetable_expand_description">Toggle timetable</string>
+    <string name="expand_description">Expand / Minify</string>
     <string name="next_changes">Next changes</string>
     <string name="lesson_room">In room %room</string>
 
@@ -79,9 +91,13 @@
     <string name="dateformat_hours">HH:mm:ss</string>
     <string name="dateformat_coursesrefreshed">d. MMM</string>
     <string name="info_author">Florian König 2020</string>
+    <string name="info_thanks">Thanks to Mosbacher Berg and the student reps from 2015 until today for making changes available online, to Ryan for doing some of the annoying work, to my physics ic for beta testing, and to Marei for making the necessary time available.</string>
+    <string name="info_github">View source code on GitHub</string>
 
     <string name="notification_channel_name">Changes</string>
     <string name="notification_channel_description">This will notify you when a new change is made public. </string>
+    <string name="notification_channel_firebase_name">Current events</string>
+    <string name="notification_channel_firebase_description">You will get a notification when someting import is happening. </string>
     <plurals name="notification_title">
         <item quantity="one">New change</item>
         <item quantity="other">New changes</item>

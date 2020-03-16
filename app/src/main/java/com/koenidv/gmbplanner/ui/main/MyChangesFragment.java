@@ -72,13 +72,13 @@ public class MyChangesFragment extends Fragment {
     public void onResume() {
 
         // Get today or tomorrow after 5pm
-
         weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
         if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
         if (weekDay < 0 || weekDay > 4) weekDay = 0;
 
         // Update today overview recycler
-        todayAdapter.setDataset(timetable[weekDay]);
+        if (timetable != null)
+            todayAdapter.setDataset(timetable[weekDay]);
 
         // Reset all day recycler backgrounds
         for (RecyclerView recycler : dayRecyclers) {
@@ -112,7 +112,9 @@ public class MyChangesFragment extends Fragment {
 
         // Get filtered timetable
         timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
-        if (!isTimetableEmpty(timetable))
+        if (isTimetableEmpty(timetable))
+            timetable = new Lesson[5][0][0];
+        else
             view.findViewById(R.id.card_timetable).setVisibility(View.VISIBLE);
 
         // Set up 5 recyclerviews, one for each day
@@ -288,15 +290,17 @@ public class MyChangesFragment extends Fragment {
         }
     }
 
-    private boolean isTimetableEmpty(@NonNull Lesson[][][] mTimetable) {
-        for (Lesson[][] day : mTimetable) {
-            if (day != null)
-                for (Lesson[] period : day) {
-                    if (period.length > 0) {
-                        return false;
+    private boolean isTimetableEmpty(Lesson[][][] mTimetable) {
+        if (mTimetable != null)
+            for (Lesson[][] day : mTimetable) {
+                if (day != null)
+                    for (Lesson[] period : day) {
+                        if (period != null)
+                            if (period.length > 0) {
+                                return false;
+                            }
                     }
-                }
-        }
+            }
         return true;
     }
 }

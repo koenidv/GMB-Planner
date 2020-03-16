@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "376595919304",
+    "firebase_url": "https://gmb-planner.firebaseio.com",
+    "project_id": "gmb-planner",
+    "storage_bucket": "gmb-planner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376595919304:android:e03d6ae5568cace35e90fd",
+        "android_client_info": {
+          "package_name": "com.koenidv.gmbplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376595919304-iul7h4nqse7tpv8ossrvgadmte695j12.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb99nHyIqltlLEbV7-YmEYBd9PT6ywRPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376595919304-iul7h4nqse7tpv8ossrvgadmte695j12.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

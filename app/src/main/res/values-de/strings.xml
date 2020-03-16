@@ -49,6 +49,8 @@
     <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change\nKurse aktualisiert: %courses</string>
     <string name="menu_information">Informationen</string>
     <string name="info_author">Florian König 2020 • Eure SV am GMB</string>
+    <string name="info_thanks">Danke an das Mosbacher Berg und die Schülervertretungen von 2015 bis heute für die Onlinestellung des Vertretungsplans, an Ryan für das Erledigen von einem Teil der Übertragungsarbeit, an meinen Pyhsik-LK fürs Betatesten und an Marei für das Befreien der notwendigen Zeit.</string>
+    <string name="info_github">Code auf GitHub einsehen</string>
     <string name="menu_darkmode_disable">Helles Design</string>
     <string name="menu_darkmode_enable">Dunkles Design</string>
     <string name="menu_rate">Bewerten</string>
@@ -109,6 +111,7 @@
     <string name="timetable">Dein Stundenplan</string>
     <string name="timetable_today">"Heute: "</string>
     <string name="timetable_expand_description">Stundenplan umschalten</string>
+    <string name="expand_description">Erweitern / Minimieren</string>
     <string name="course_chip">%course (%teacher)</string>
     <string name="next_changes">Nächste Änderungen</string>
     <string name="update_downloaded">Update heruntergeladen</string>
@@ -127,4 +130,16 @@
     <string name="courses_edit_timetable_help">Tippe zum Bearbeiten</string>
     <string name="course_religion_catholic">Katholisch</string>
     <string name="course_religion_protestant">Evangelisch</string>
+    <string name="notification_channel_firebase_name">Aktuelle Ereignisse</string>
+    <string name="notification_channel_firebase_description">Du wirst benachrichtigt, wenn etwas wichtiges geschieht.</string>
+    <string name="credentials_password_info">Dein Passwort wird nur lokal gespeichert</string>
+    <string-array name="loading_facts">
+        <item>Am Mosbacher Berg gibt es eine Lehrkraft pro etwa 12 Lernende.</item>
+        <item>Das Mosbacher Berg wurde am 1. August 1969 gegründet.</item>
+        <item>Als das Mosbacher Berg gegründet wurde, mussten Lernende noch samstags zur Schule.</item>
+        <item>Auf dem Gelände des heutigen Mosbacher Bergs stand einmal die Diltheyschule.</item>
+        <item>Manche Lernenden haben bis 18 Uhr Unterricht.</item>
+        <item>Der Campus des Mosbacher Bergs umfässt etwa 100 Räume.</item>
+        <item>Das Büro der Schülervertretung ist in B120.</item>
+    </string-array>
 </resources>

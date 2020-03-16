@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +93,10 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                     params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
                     params.height = (int) resolver.dpToPx(68, context);
                     holder.cardView.setLayoutParams(params);
+                    // Remove spacer from second-last (eg last shown) element
+                    if (position + 2 == mDataset.length) {
+                        holder.spacer.setVisibility(View.GONE);
+                    }
                 } else if (position > 0 && mDataset[position - 1].length > 0
                         && Arrays.equals(mDataset[position], mDataset[position - 1])) {
                     // Hide if same as last lesson
@@ -138,6 +143,10 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                             params = (LinearLayout.LayoutParams) holder.cardView.getLayoutParams();
                             params.height = (int) resolver.dpToPx(32, context);
                             holder.cardView.setLayoutParams(params);
+                            // Re-show spacer as this is not the last element anymore
+                            if (position + 2 == mDataset.length) {
+                                holder.spacer.setVisibility(View.VISIBLE);
+                            }
                         } else if (position > 0 && mDataset[position - 1].length > 0
                                 && Arrays.equals(mDataset[position], mDataset[position - 1])
                                 && period[0] == mDay && (period[1] > position - 1 || period[2] < position)) {
@@ -170,7 +179,6 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             }
 
             if (mFilter != null) {
-                //holder.cardView.setOnClickListener(null);
                 holder.cardView.setClickable(false);
             }
 
@@ -178,15 +186,18 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
             holder.cardView.setTag(R.id.course, mDataset[position][0].getCourse());
 
         } else {
-            if (!mEditMode) {
+            if (mEditMode) {
+                PaintDrawable emptyBackground = new PaintDrawable(context.getColor(R.color.background));
+                emptyBackground.setCornerRadius(resolver.dpToPx(8, context));
+                holder.cardView.setBackground(emptyBackground);
+            } else {
                 holder.rootView.setVisibility(View.INVISIBLE);
-                //holder.cardView.setOnClickListener(null);
                 holder.cardView.setClickable(false);
             }
         }
 
         // Remove spacer from last element
-        if (position + 2 == mDataset.length) {
+        if (position + 1 == mDataset.length) {
             holder.spacer.setVisibility(View.GONE);
         }
 

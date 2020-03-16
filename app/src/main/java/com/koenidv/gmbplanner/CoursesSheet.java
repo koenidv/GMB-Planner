@@ -3,7 +3,6 @@ package com.koenidv.gmbplanner;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,7 +22,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
 
@@ -114,14 +112,6 @@ public class CoursesSheet extends BottomSheetDialogFragment {
             recycler.setAdapter(timetableAdapters[i]);
             timetableAdapters[i].setDataset(timetable[i]);
         }
-
-        // Mark today
-        int weekDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
-        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 16) weekDay++;
-        if (weekDay < 0 || weekDay > 4) weekDay = 0;
-        PaintDrawable todayBackground = new PaintDrawable(getResources().getColor(R.color.background));
-        todayBackground.setCornerRadius((new Resolver()).dpToPx(8, getActivity()));
-        dayRecyclers[weekDay].setBackground(todayBackground);
 
         // Expand button to show the entire timetable
         View.OnClickListener expandListener = v -> {

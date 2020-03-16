@@ -48,7 +48,8 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/transparent"
                 android:contentDescription="@string/timetable_expand_description"
-                android:src="@drawable/ic_more" />
+                android:src="@drawable/ic_more"
+                android:tint="@color/infoText" />
         </LinearLayout>
 
         <include layout="@layout/include_timetable" />
@@ -63,6 +64,7 @@
             android:padding="8dp"
             android:paddingTop="0dp"
             android:text="@string/courses_edit_timetable_help"
+            android:gravity="center_vertical"
             android:textColor="@color/infoText"
             android:visibility="gone"
             tools:targetApi="m" />
