@@ -2,9 +2,7 @@
     <string name="app_name">GMB Planner</string>
     <string name="tab_mine">Yours</string>
     <string name="tab_all">All changes</string>
-    <string name="tab_changes">Changes</string>
     <string name="tab_tasks">Tasks</string>
-    <string name="tab_more">More</string>
     <string name="nocontent_mine">👨‍🏫\nYour schedule seems to be regular</string>
     <string name="nocontent_mine_nocourses">➕\nAdd your own courses to see them here</string>
     <string name="nocontent_all">✔️\nNo irregularities found</string>
@@ -12,8 +10,6 @@
     <string name="save">Save</string>
     <string name="done">Done</string>
     <string name="remove">Remove</string>
-
-    <string name="more_options">Options</string>
 
     <string name="menu_option_credentials">Change credentials</string>
     <string name="menu_option_courses">Change your courses</string>
@@ -84,7 +80,6 @@
     <string name="feedback_subject">[GMB Planner] Feedback</string>
     <string name="feedback_body">\n\nApp version: %app\nAndroid version: %android</string>
 
-    <string name="error_general">An error occurred. Please contact the student reps.</string>
     <string name="error_nomailclient">No email client installed</string>
     <string name="error_offline">You\'re currently offline</string>
     <string name="url_presets" translatable="false">https://koenidv.de/gmbplanner/courses2_%grade.json</string>

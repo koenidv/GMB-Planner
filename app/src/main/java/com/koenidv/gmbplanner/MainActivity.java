@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -30,11 +29,9 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
-import com.koenidv.gmbplanner.ui.main.ChangesFragment;
-import com.koenidv.gmbplanner.ui.main.MoreFragment;
-import com.koenidv.gmbplanner.ui.main.TasksFragment;
+import com.koenidv.gmbplanner.ui.main.AllChangesFragment;
+import com.koenidv.gmbplanner.ui.main.MyChangesFragment;
 import com.koenidv.gmbplanner.widget.WidgetProvider;
 
 import java.util.ArrayList;
@@ -46,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -60,15 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static CoursesSheet coursesSheet;
     static List<String> myCourses = new ArrayList<>();
-    public static SwipeRefreshLayout swiperefresh;
+    private SwipeRefreshLayout swiperefresh;
     CoursesTimetableSheet selectorSheet;
     boolean ignoreFirstRefreshed = false;
     private int UPDATE_REQUEST = 100;
-
-    private final ChangesFragment changesFragment = new ChangesFragment();
-    private final TasksFragment tasksFragment = new TasksFragment();
-    private final MoreFragment moreFragment = new MoreFragment();
-    Fragment activeFragment = changesFragment;
 
     // Show that changes are refreshing when the broadcast "refreshing" is received
     private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
@@ -206,28 +197,53 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+        // Set up tabs
+        /*SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
+        // Disable SwipeRefreshLayout while swiping
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (swiperefresh != null)
+                    swiperefresh.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
+            }
+        });*/
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
 
-        fragmentManager.beginTransaction().add(R.id.container, moreFragment, "more").hide(moreFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.container, tasksFragment, "tasks").hide(tasksFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.container, changesFragment, "changes").commit();
+        // Switch to all changes if no courses are specified
+        if (prefs.getString("myCourses", "").isEmpty())
+            fragmentManager.beginTransaction().replace(R.id.container, new AllChangesFragment()).commit();
+        else
+            fragmentManager.beginTransaction().replace(R.id.container, new MyChangesFragment()).commit();
 
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.action_all:
-                    fragmentManager.beginTransaction().hide(activeFragment).show(changesFragment).commit();
-                    activeFragment = changesFragment;
+                case R.id.action_mine:
+                    fragmentManager.beginTransaction().replace(R.id.container, new MyChangesFragment()).commit();
                     return true;
-                case R.id.action_tasks:
-                    fragmentManager.beginTransaction().hide(activeFragment).show(tasksFragment).commit();
-                    activeFragment = tasksFragment;
+                case R.id.action_all:
+                    fragmentManager.beginTransaction().replace(R.id.container, new ChangesFragment()).commit();
                     return true;
                 case R.id.action_options:
-                    fragmentManager.beginTransaction().hide(activeFragment).show(moreFragment).commit();
-                    activeFragment = moreFragment;
+                    OptionsSheet optionsSheet = new OptionsSheet();
+                    optionsSheet.show(getSupportFragmentManager(), "optionsSheet");
                     return true;
             }
             return false;
@@ -242,9 +258,6 @@ public class MainActivity extends AppCompatActivity {
         broadcastManager.registerReceiver(mInvalidateCredentialsReceiver, new IntentFilter("invalidateCredentials"));
         broadcastManager.registerReceiver(mRecreateReceiver, new IntentFilter("recreate"));
         broadcastManager.registerReceiver(mFailedReceiver, new IntentFilter("refreshFailed"));
-
-        //todo
-        Toast.makeText(this, FirebaseAuth.getInstance().getUid(), Toast.LENGTH_LONG).show();
 
         // Set up swipe to refresh
         swiperefresh = findViewById(R.id.swiperefresh);

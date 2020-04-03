@@ -39,7 +39,7 @@ import static com.koenidv.gmbplanner.MainActivity.coursesSheet;
 //  Created by koenidv on 16.02.2020.
 public class OptionsSheet extends BottomSheetDialogFragment {
 
-    public OptionsSheet() {
+    OptionsSheet() {
     }
 
     @Override

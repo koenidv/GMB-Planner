@@ -12,21 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.koenidv.gmbplanner.CoursesAdapter;
 import com.koenidv.gmbplanner.R;
-import com.koenidv.gmbplanner.Task;
-import com.koenidv.gmbplanner.TaskExternal;
-import com.koenidv.gmbplanner.TasksAdapter;
-import com.koenidv.gmbplanner.TasksExternalAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -44,7 +35,7 @@ public class TasksFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            refreshList();
         }
     };
 
@@ -52,38 +43,7 @@ public class TasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
-
-
-        List<Task> taskList = new ArrayList<>();
-        taskList.add(new Task("TestEintrag", "", "Florian", "PH-LK-1", Calendar.getInstance().getTime(), Calendar.getInstance().getTime()));
-
-        TasksAdapter tasksAdapter = new TasksAdapter(taskList);
-        RecyclerView tasksRecycler = view.findViewById(R.id.tasksRecycler);
-        tasksRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        tasksRecycler.setAdapter(tasksAdapter);
-
-
-        // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        List<TaskExternal> externalTasks = new ArrayList<>();
-        Query query = db.collection("tasks");
-
-        TasksExternalAdapter externalAdapter = new TasksExternalAdapter(externalTasks);
-        RecyclerView externalRecycler = view.findViewById(R.id.externalTasksRecycler);
-        externalRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        externalRecycler.setAdapter(externalAdapter);
-
-        // Get external tasks and listen for updates
-        query.addSnapshotListener((value, e) -> {
-            externalTasks.clear();
-            if (value != null) {
-                for (QueryDocumentSnapshot doc : value) {
-                    externalTasks.add(doc.toObject(TaskExternal.class));
-                }
-            }
-            //((TasksExternalAdapter) Objects.requireNonNull(externalRecycler.getAdapter())).setDataset(externalTasks);
-            externalAdapter.notifyDataSetChanged();
-        });
+        refreshList();
     }
 
     @Override
@@ -98,7 +58,7 @@ public class TasksFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_tasks, container, false);
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override

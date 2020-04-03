@@ -11,18 +11,15 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 import java.util.Random;
@@ -37,7 +34,6 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
 
     private BottomSheetDialog loaderSheet;
     private boolean setup_changes, setup_courses, setup_timetable;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     // Receive broadcasts to hide loaderSheet when everything is loaded
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -49,21 +45,6 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
 
             if (setup_changes && setup_courses && setup_timetable) {
                 loaderSheet.dismiss();
-
-                // Sign in
-                // All users share the same account
-                // This is terrible for security
-                // The database does not contain any sensitive information, therefore I do not care right now
-                mAuth.signInWithEmailAndPassword("user@gmbplaner.koenidv.de", "gmb-user")
-                        .addOnCompleteListener(signinTask -> {
-                            if (signinTask.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("GMB-PLANNER", "signInWithEmail:success");
-                            } else {
-                                Log.w("GMB-PLANNER", "signInWithEmail:failure", signinTask.getException());
-                                Toast.makeText(getActivity(), R.string.error_general, Toast.LENGTH_LONG).show();
-                            }
-                        });
             }
         }
     };
@@ -82,7 +63,7 @@ public class CredentialsSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sheet_credentials, container, false);
 
-        SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
         @SuppressLint("CommitPrefEdits") final SharedPreferences.Editor prefsEdit = prefs.edit();
 
         // Create loader sheet with a random message
