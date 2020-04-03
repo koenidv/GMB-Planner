@@ -18,9 +18,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -30,8 +30,7 @@ import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
 import com.google.gson.Gson;
-import com.koenidv.gmbplanner.ui.main.AllChangesFragment;
-import com.koenidv.gmbplanner.ui.main.MyChangesFragment;
+import com.koenidv.gmbplanner.ui.main.SectionsPagerAdapter;
 import com.koenidv.gmbplanner.widget.WidgetProvider;
 
 import java.util.ArrayList;
@@ -43,9 +42,10 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
@@ -116,13 +116,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             recreate();
-        }
-    };
-    // Show offline snackbar on error
-    private BroadcastReceiver mFailedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Snackbar.make(findViewById(R.id.container), R.string.error_offline, Snackbar.LENGTH_LONG).show();
         }
     };
 
@@ -197,11 +190,11 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Set up tabs
-        /*SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
@@ -221,34 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 if (swiperefresh != null)
                     swiperefresh.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
             }
-        });*/
-
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-
-        // Switch to all changes if no courses are specified
-        if (prefs.getString("myCourses", "").isEmpty())
-            fragmentManager.beginTransaction().replace(R.id.container, new AllChangesFragment()).commit();
-        else
-            fragmentManager.beginTransaction().replace(R.id.container, new MyChangesFragment()).commit();
-
-        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_mine:
-                    fragmentManager.beginTransaction().replace(R.id.container, new MyChangesFragment()).commit();
-                    return true;
-                case R.id.action_all:
-                    fragmentManager.beginTransaction().replace(R.id.container, new ChangesFragment()).commit();
-                    return true;
-                case R.id.action_options:
-                    OptionsSheet optionsSheet = new OptionsSheet();
-                    optionsSheet.show(getSupportFragmentManager(), "optionsSheet");
-                    return true;
-            }
-            return false;
-        });
-        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
         });
 
         // Register to receive messages.
@@ -257,12 +222,15 @@ public class MainActivity extends AppCompatActivity {
         broadcastManager.registerReceiver(mRefreshingReceiver, new IntentFilter("refreshing"));
         broadcastManager.registerReceiver(mInvalidateCredentialsReceiver, new IntentFilter("invalidateCredentials"));
         broadcastManager.registerReceiver(mRecreateReceiver, new IntentFilter("recreate"));
-        broadcastManager.registerReceiver(mFailedReceiver, new IntentFilter("refreshFailed"));
 
         // Set up swipe to refresh
         swiperefresh = findViewById(R.id.swiperefresh);
         swiperefresh.setOnRefreshListener(() -> new ChangesManager().refreshChanges(getApplicationContext()));
 
+        // Switch to all changes if no courses are specified
+        if (prefs.getString("myCourses", "").isEmpty()) {
+            viewPager.setCurrentItem(1);
+        }
         // Ask for credentials if none have been entered yet
         if (prefs.getString("name", "").isEmpty()) {
             // Show a bottom sheet to add credentials
@@ -333,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshingReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mInvalidateCredentialsReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRecreateReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFailedReceiver);
         super.onDestroy();
     }
 

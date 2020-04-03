@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.koenidv.gmbplanner.Change;
@@ -63,7 +64,7 @@ public class MyChangesFragment extends Fragment {
     private BroadcastReceiver mFailedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.constraintLayout), R.string.error_offline, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.constraintLayout), R.string.error_offline, Snackbar.LENGTH_LONG).show();
         }
     };
 
@@ -113,19 +114,15 @@ public class MyChangesFragment extends Fragment {
         timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
         if (isTimetableEmpty(timetable))
             timetable = new Lesson[5][0][0];
+        else
+            view.findViewById(R.id.card_timetable).setVisibility(View.VISIBLE);
 
-        // Post delayed so that the fragment can start faster
-        (new Handler()).postDelayed(() -> {
-            // Set up 5 recyclerviews, one for each day
-            for (int i = 0; i < dayRecyclers.length; i++) {
-                RecyclerView recycler = dayRecyclers[i];
-                recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-                recycler.setAdapter(new LessonsAdapter(timetable[i], i));
-            }
-            if (!isTimetableEmpty(timetable))
-                view.findViewById(R.id.card_timetable).setVisibility(View.VISIBLE);
-        }, 0);
-
+        // Set up 5 recyclerviews, one for each day
+        for (int i = 0; i < dayRecyclers.length; i++) {
+            RecyclerView recycler = dayRecyclers[i];
+            recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            recycler.setAdapter(new LessonsAdapter(timetable[i], i));
+        }
 
         final LinearLayout recyclerLayout = view.findViewById(R.id.recyclerLayout);
         final TextView titleTextView = view.findViewById(R.id.titleTextView);
