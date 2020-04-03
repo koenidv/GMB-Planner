@@ -92,7 +92,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                app:boxStrokeColor="@color/box_border"
+                app:boxStrokeColor="@color/selector"
                 app:endIconDrawable="@drawable/ic_send"
                 app:endIconMode="custom"
                 app:endIconTint="@color/colorAccent">

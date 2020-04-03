@@ -2,21 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_mine"
-        android:enabled="true"
-        android:icon="@drawable/ic_star"
-        android:title="Mine"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/action_all"
         android:enabled="true"
         android:icon="@drawable/ic_mail"
-        android:title="All"
+        android:title="@string/tab_changes"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_tasks"
+        android:enabled="true"
+        android:icon="@drawable/ic_notification"
+        android:title="@string/tab_tasks"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_options"
         android:enabled="true"
         android:icon="@drawable/ic_info"
-        android:title="Info"
+        android:title="@string/tab_more"
         app:showAsAction="ifRoom" />
 </menu>
