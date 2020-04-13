@@ -48,8 +48,10 @@
     <string name="dateformat_hours">HH:mm:ss</string>
     <string name="last_refreshed">Zuletzt aktualisiert: %refresh\nLetzte Änderung: %change\nKurse aktualisiert: %courses</string>
     <string name="menu_information">Informationen</string>
+    <string name="info_greeting">Hey %name</string>
+    <string name="info_app">GMB Planner %version</string>
     <string name="info_author">Florian König 2020 • Eure SV am GMB</string>
-    <string name="info_thanks">Danke an das Gymnasium am Mosbacher Berg und die Schülervertretungen von 2015 bis heute für die Onlinestellung des Vertretungsplans, an Ryan für das Erledigen von einem Teil der Übertragungsarbeit, an meinen Pyhsik-LK fürs Betatesten und an Marei für das Befreien der notwendigen Zeit.</string>
+    <string name="info_thanks">Besonderer Dank gilt dem GMB und den SV von 2015 bis heute für die Onlinestellung des Vertretungsplans. Danke auch an Ryan für das Erledigen von einem Teil der Übertragungsarbeit und an meinen Pyhsik-LK fürs Betatesten.</string>
     <string name="info_github">Code auf GitHub einsehen</string>
     <string name="menu_darkmode_disable">Helles Design</string>
     <string name="menu_darkmode_enable">Dunkles Design</string>
@@ -144,4 +146,8 @@
     </string-array>
     <string name="setup_prompt">Einrichtung abschließen?</string>
     <string name="setup_action">Kurse auswählen</string>
+    <string name="last_refreshed_shortly">Kürzlich aktualisiert</string>
+    <string name="last_refreshed_hourly">Innerhalb der letzten Stunde aktualisiert</string>
+    <string name="last_refreshed_other">Vor einiger Zeit aktualisiert</string>
+    <string name="credentials_redeem_code_prompt">Bitte löse zunächst deinen Zugangscode ein</string>
 </resources>

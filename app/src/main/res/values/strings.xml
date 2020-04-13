@@ -38,6 +38,7 @@
     <string name="start_credentials_explanation"><![CDATA[Hey there!<br>To use this app, you need an account with the school Gymnasium am Mosbacher Berg.<br>Please enter your credentials or <a href="https://sv.gmbwi.de/ovp">create an account using your activation code</a>.]]></string>
     <string name="credentials_invalidated">Whoops!\nYour credentials don\'t seem to be working. Please enter them again.</string>
     <string name="credentials_password_info">Your password will only be saved locally</string>
+    <string name="credentials_redeem_code_prompt">Please redeem your access code first</string>
     <string name="start_add_courses">Add your courses</string>
     <string name="setup_prompt">Complete setup?</string>
     <string name="setup_action">Choose courses</string>
@@ -90,10 +91,15 @@
     <string name="update_complete">Complete</string>
 
     <string name="last_refreshed">Last refresh: %refresh\nLast change: %change\nCourses refreshed: %courses</string>
+    <string name="last_refreshed_shortly">Recently updated</string>
+    <string name="last_refreshed_hourly">Updated within the last hour</string>
+    <string name="last_refreshed_other">Updated a while ago</string>
     <string name="dateformat_hours">HH:mm:ss</string>
     <string name="dateformat_coursesrefreshed">d. MMM</string>
+    <string name="info_greeting">Hey %name</string>
+    <string name="info_app">GMB Planner %version</string>
     <string name="info_author">Florian König 2020</string>
-    <string name="info_thanks">Thanks to Mosbacher Berg and the student reps from 2015 until today for making changes available online, to Ryan for doing some of the annoying work, to my physics ic for beta testing, and to Marei for making the necessary time available.</string>
+    <string name="info_thanks">Thanks to Mosbacher Berg and the student reps from 2015 until today for making changes available online, to Ryan for doing some of the annoying work, and to my physics ic for beta testing.</string>
     <string name="info_github">View source code on GitHub</string>
 
     <string name="notification_channel_name">Changes</string>

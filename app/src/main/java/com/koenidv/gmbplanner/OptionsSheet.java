@@ -42,6 +42,11 @@ public class OptionsSheet extends BottomSheetDialogFragment {
     OptionsSheet() {
     }
 
+    private String appnameTitle;
+    private String greetingTitle;
+    private String refreshedShort;
+    private String refreshedInfo;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,14 +65,36 @@ public class OptionsSheet extends BottomSheetDialogFragment {
         try {
             PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
             String version = pInfo.versionName;
-            TextView titleTextView = view.findViewById(R.id.titleTextView);
-            titleTextView.append(" ");
-            titleTextView.append((new Resolver()).fromHtml("<small>" + version + "</small>"));
+            appnameTitle = getString(R.string.info_app);
+            appnameTitle = appnameTitle.replace("%version", version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
 
-        view.findViewById(R.id.authorTextView).setOnClickListener(v -> {
+        String firstname = prefs.getString("realname", "");
+        firstname = firstname.substring(0, firstname.indexOf(" "));
+        greetingTitle = getString(R.string.info_greeting).replace("%name", firstname);
+
+        refreshedInfo = getString(R.string.last_refreshed)
+                .replace("%refresh", prefs.getLong("lastRefresh", 0) == 0 ? "..." : timeFormatter.format(prefs.getLong("lastRefresh", 0)))
+                .replace("%change", prefs.getString("lastChange", "..."))
+                .replace("%courses", prefs.getLong("lastCourseRefresh", 0) == 0 ? "..." : dateFormatter.format(prefs.getLong("lastCourseRefresh", 0)));
+        if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastRefresh", 0) < 900000)
+            refreshedShort = getString(R.string.last_refreshed_shortly);
+        else if (Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastRefresh", 0) < 3600000)
+            refreshedShort = getString(R.string.last_refreshed_hourly);
+        else refreshedShort = getString(R.string.last_refreshed_other);
+
+
+        final TextView titleTextView = view.findViewById(R.id.titleTextView);
+        final TextView authorTextView = view.findViewById(R.id.authorTextView);
+        final TextView refreshTextView = view.findViewById(R.id.lastRefreshedTextView);
+
+        titleTextView.setText(greetingTitle);
+        authorTextView.setVisibility(View.GONE);
+        refreshTextView.setText(refreshedShort);
+
+        authorTextView.setOnClickListener(v -> {
             // Link to my instagram
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://instagram.com/halbunsichtbar"));
@@ -80,9 +107,17 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             ImageButton expandButton = view.findViewById(R.id.expandButton);
             if (expandLayout.getVisibility() == View.GONE) {
                 expandLayout.setVisibility(View.VISIBLE);
+                titleTextView.setText(appnameTitle);
+                authorTextView.setVisibility(View.VISIBLE);
+                refreshTextView.setText(refreshedInfo);
+                refreshTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_refresh), null);
                 expandButton.setImageResource(R.drawable.ic_less);
             } else {
                 expandLayout.setVisibility(View.GONE);
+                titleTextView.setText(greetingTitle);
+                authorTextView.setVisibility(View.GONE);
+                refreshTextView.setText(refreshedShort);
+                refreshTextView.setCompoundDrawablesRelative(null, null, null, null);
                 expandButton.setImageResource(R.drawable.ic_more);
             }
         });
@@ -94,12 +129,6 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             startActivity(i);
         });
 
-        TextView refreshTextView = view.findViewById(R.id.lastRefreshedTextView);
-        assert refreshTextView != null;
-        refreshTextView.setText(getString(R.string.last_refreshed)
-                .replace("%refresh", prefs.getLong("lastRefresh", 0) == 0 ? "..." : timeFormatter.format(prefs.getLong("lastRefresh", 0)))
-                .replace("%change", prefs.getString("lastChange", "..."))
-                .replace("%courses", prefs.getLong("lastCourseRefresh", 0) == 0 ? "..." : dateFormatter.format(prefs.getLong("lastCourseRefresh", 0))));
         refreshTextView.setOnClickListener(v -> {
             // Force refresh all changes, courses and lessons
             prefs.edit()

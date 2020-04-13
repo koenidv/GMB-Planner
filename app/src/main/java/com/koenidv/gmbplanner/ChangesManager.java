@@ -6,8 +6,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -140,19 +142,22 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 String lastChange = result.substring(result.indexOf("Importierte Daten wurden hochgeladen: ") + 38);
                 lastChange = lastChange.substring(0, lastChange.indexOf("<"));
 
-                // Get grade
+                // Get name and grade
+                String personname = "";
                 String grade = "";
                 try {
+                    personname = result.substring(result.indexOf("page-title\">") + 12);
+                    personname = personname.substring(0, personname.indexOf("<"));
                     grade = result.substring(result.indexOf("Stufe ") + 6);
                     grade = grade.substring(0, grade.indexOf("<"));
                 } catch (NullPointerException npe) {
                     npe.printStackTrace();
                 }
+
                 // Update courses and timetable if grade has changed
                 if (!grade.equals(prefs.getString("grade", ""))) {
                     prefsEdit.putLong("lastCourseRefresh", 0)
                             .putLong("lastTimetableRefresh", 0)
-                            .putString("grade", grade)
                             .apply();
                 }
 
@@ -196,6 +201,8 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 prefsEdit
                         .putString("changes", gson.toJson(mChangeList))
                         .putString("courses", gson.toJson(courses))
+                        .putString("grade", grade)
+                        .putString("realname", personname)
                         .putString("lastChange", lastChange)
                         .putLong("lastRefresh", Calendar.getInstance().getTimeInMillis());
                 prefsEdit.apply();
@@ -306,8 +313,14 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     }.execute();
                 }
 
-            } // Todo: Handle activation code
-            // else if (result.contains("Berechtigungscode")) {}
+            } else if (result.contains("Berechtigungscode")) {
+                // Prompt to redeem access code first
+                Intent redeemintent = new Intent(Intent.ACTION_VIEW);
+                redeemintent.setData(Uri.parse("https://mosbacher-berg.de/school_coderole/redeem"));
+                redeemintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(redeemintent);
+                Toast.makeText(context, context.getString(R.string.credentials_redeem_code_prompt), Toast.LENGTH_LONG).show();
+            }
         } catch (IndexOutOfBoundsException ignored) {
         }
 

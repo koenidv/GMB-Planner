@@ -52,7 +52,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 2 total pages.
-        // Todo: Change to 3 in 1.4
         return 2;
     }
 }
