@@ -240,12 +240,6 @@ public class MyChangesFragment extends Fragment {
             if (prefs.getBoolean("sveaEE", false))
                 emptyTextView.append(" :(");
 
-            // Show timetable
-            mView.findViewById(R.id.expandButton).setVisibility(View.GONE);
-            mView.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
-            mView.findViewById(R.id.titleTextView).setVisibility(View.VISIBLE);
-            mView.findViewById(R.id.recyclerLayout).setVisibility(View.VISIBLE);
-
             // Show option to add courses if none are added yet
             if (prefs.getString("myCourses", "").length() <= 2) {
                 emptyTextView.setText(R.string.nocontent_mine_nocourses);
@@ -257,6 +251,15 @@ public class MyChangesFragment extends Fragment {
             } else {
                 mView.findViewById(R.id.addCoursesButton).setVisibility(View.GONE);
             }
+
+            // Show timetable
+            mView.findViewById(R.id.expandButton).setVisibility(View.GONE);
+            mView.findViewById(R.id.todayRecycler).setVisibility(View.GONE);
+            new Handler().postDelayed(() -> {
+                mView.findViewById(R.id.titleTextView).setVisibility(View.VISIBLE);
+                mView.findViewById(R.id.recyclerLayout).setVisibility(View.VISIBLE);
+            }, 0);
+
         } else {
             mView.findViewById(R.id.noContentTextView).setVisibility(View.GONE);
             mView.findViewById(R.id.addCoursesButton).setVisibility(View.GONE);

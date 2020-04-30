@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_mine, R.string.tab_all, R.string.tab_tasks};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_mine, R.string.tab_all, R.string.tab_grades};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -38,7 +38,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new AllChangesFragment();
             case 2:
-                return new TasksFragment();
+                return new GradesFragment();
         }
         return new MyChangesFragment();
     }
@@ -51,7 +51,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
-        return 2;
+        // Show 3 total pages.
+        return 3;
     }
 }

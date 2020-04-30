@@ -134,7 +134,7 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             prefs.edit()
                     .putLong("lastCourseRefresh", 0)
                     .putLong("lastTimetableRefresh", 0)
-                    .putString("courses", "")
+                    /*.putString("courses", "") Do not delete courses by default; would remove added grades */
                     .apply();
             new ChangesManager().refreshChanges(getContext());
             dismiss();

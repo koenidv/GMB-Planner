@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 //  Created by koenidv on 07.03.2020.
-class ListType {
+public class ListType {
     static Type COURSES = new TypeToken<ArrayList<Course>>() {
     }.getType();
-    static Type COURSEMAP = new TypeToken<HashMap<String, Course>>() {
+    public static Type COURSEMAP = new TypeToken<HashMap<String, Course>>() {
     }.getType();
     static Type CHANGES = new TypeToken<ArrayList<Change>>() {
     }.getType();

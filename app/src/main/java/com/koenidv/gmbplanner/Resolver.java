@@ -287,7 +287,7 @@ public class Resolver {
      * @param context    Context to get resources
      * @return The according color
      */
-    int resolveCourseColor(String courseName, Context context) {
+    public int resolveCourseColor(String courseName, Context context) {
         if (courseName == null) {
             return context.getResources().getColor(R.color.spotShadowColor);
         } else if (courseName.startsWith("D-")) {

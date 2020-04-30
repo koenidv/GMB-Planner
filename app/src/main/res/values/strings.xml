@@ -167,4 +167,5 @@
     <item name="period" type="id" />
     <item name="room" type="id" />
     <item name="course" type="id" />
+    <string name="tab_grades">Grades</string>
 </resources>
