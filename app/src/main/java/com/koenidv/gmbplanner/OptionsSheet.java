@@ -188,13 +188,19 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             if (isChecked) {
                 if (checkedId == R.id.compactButton) {
                     prefs.edit().putBoolean("compactModeFavorite", true)
-                            .putBoolean("compactModeAll", true).apply();
+                            .putBoolean("compactModeAll", true)
+                            .putBoolean("colorless", true)
+                            .apply();
                 } else if (checkedId == R.id.autoCompactButton) {
                     prefs.edit().putBoolean("compactModeFavorite", false)
-                            .putBoolean("compactModeAll", true).apply();
+                            .putBoolean("compactModeAll", true)
+                            .putBoolean("colorless", false)
+                            .apply();
                 } else if (checkedId == R.id.comfortableButton) {
                     prefs.edit().putBoolean("compactModeFavorite", false)
-                            .putBoolean("compactModeAll", false).apply();
+                            .putBoolean("compactModeAll", false)
+                            .putBoolean("colorless", false)
+                            .apply();
                 }
                 // Broadcast to refresh UI
                 Intent doneIntent = new Intent("changesRefreshed");
@@ -284,12 +290,6 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null)
                 startActivity(emailIntent);
             dismiss();
-        });
-
-        view.findViewById(R.id.feedbackButton).setOnLongClickListener(v -> {
-            prefs.edit().putBoolean("colorless", !prefs.getBoolean("colorless", false)).apply();
-            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent("changesRefreshed"));
-            return true;
         });
 
         view.findViewById(R.id.rateButton).setOnClickListener(v -> {

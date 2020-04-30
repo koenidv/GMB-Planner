@@ -94,29 +94,29 @@ public class Course {
                 othersAverage += thisGrade.getGrade() * thisGrade.getWeight();
                 othersCounter += thisGrade.getWeight();
             }
-
-            if (participationPartialCounter != 0) {
-                participationPartialAverage /= participationPartialCounter;
-                participationAverage += participationPartialAverage;
-                participationCounter++;
-            }
-
-            examsAverage /= examsCounter;
-            participationAverage /= participationCounter;
-            othersAverage /= othersCounter;
-
-            Float overallAverage = 0f;
-            int overallCounter = 0;
-            overallAverage += examsCounter == 0 ? 0 : 50 * examsAverage;
-            overallCounter += examsCounter == 0 ? 0 : 50;
-            overallAverage += participationCounter == 0 ? 0 : 50 * participationAverage;
-            overallCounter += participationCounter == 0 ? 0 : 50;
-            overallAverage += othersCounter == 0 ? 0 : 50 * othersAverage;
-            overallCounter += othersCounter == 0 ? 0 : 20;
-
-            overallAverage /= overallCounter;
-            gradeAverage = overallAverage;
         }
+
+        if (participationPartialCounter != 0) {
+            participationPartialAverage /= participationPartialCounter;
+            participationAverage += participationPartialAverage;
+            participationCounter++;
+        }
+
+        examsAverage /= examsCounter;
+        participationAverage /= participationCounter;
+        othersAverage /= othersCounter;
+
+        Float overallAverage = 0f;
+        int overallCounter = 0;
+        overallAverage += examsCounter == 0 ? 0 : 50 * examsAverage;
+        overallCounter += examsCounter == 0 ? 0 : 50;
+        overallAverage += participationCounter == 0 ? 0 : 50 * participationAverage;
+        overallCounter += participationCounter == 0 ? 0 : 50;
+        overallAverage += othersCounter == 0 ? 0 : 50 * othersAverage;
+        overallCounter += othersCounter == 0 ? 0 : 20;
+
+        overallAverage /= overallCounter;
+        gradeAverage = overallAverage;
     }
 
     public void addGrade(Grade grade) {

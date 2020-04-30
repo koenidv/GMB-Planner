@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">GMB Planner</string>
     <string name="tab_mine">Yours</string>
-    <string name="tab_all">All changes</string>
+    <string name="tab_all">Changes</string>
     <string name="tab_tasks">Tasks</string>
     <string name="nocontent_mine">👨‍🏫\nYour schedule seems to be regular</string>
     <string name="nocontent_mine_nocourses">➕\nAdd your own courses to see them here</string>

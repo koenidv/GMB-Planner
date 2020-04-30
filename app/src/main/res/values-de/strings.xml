@@ -9,7 +9,7 @@
     <string name="menu_refresh">Aktualisieren</string>
     <string name="nocontent_all">✔️\nKeine Vertretungen gefunden</string>
     <string name="nocontent_mine">👨‍🏫\nDu hast regulären Unterricht</string>
-    <string name="tab_all">Alle Vertretungen</string>
+    <string name="tab_all">Änderungen</string>
     <string name="tab_mine">Dein Plan</string>
     <string name="menu_manage_account">Account verwalten</string>
     <string name="start_add_courses">Füge deine Kurse hinzu</string>
