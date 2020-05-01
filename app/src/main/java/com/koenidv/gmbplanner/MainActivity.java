@@ -55,6 +55,7 @@ import androidx.work.WorkManager;
 public class MainActivity extends AppCompatActivity {
 
     public static CoursesSheet coursesSheet;
+    private GradesSheet gradesSheet;
     static List<String> myCourses = new ArrayList<>();
     private SwipeRefreshLayout swiperefresh;
     CoursesTimetableSheet selectorSheet;
@@ -343,6 +344,18 @@ public class MainActivity extends AppCompatActivity {
         }
         coursesSheet.refreshTimetable();
         (new Resolver()).vibrate(getApplicationContext());
+    }
+
+    // OnClick for grades overview / details
+    public void showGrades(final View view) {
+        if ((int) view.getTag(R.id.type) == Grade.TYPE_COURSE_AVERAGE) {
+            gradesSheet = new GradesSheet();
+            gradesSheet.show(getSupportFragmentManager(), (String) view.getTag(R.id.course));
+        } else {
+            EditGradesSheet editSheet = new EditGradesSheet((String) view.getTag(R.id.course), (int) view.getTag(R.id.index));
+            editSheet.show(getSupportFragmentManager(), (String) view.getTag());
+            gradesSheet.dismiss();
+        }
     }
 
     void refreshTimetable() {

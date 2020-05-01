@@ -136,6 +136,10 @@ public class Course {
         doCalculateGradesAverage();
     }
 
+    public ArrayList<Grade> getGrades() {
+        return grades;
+    }
+
     public Float getGradeAverage() {
         return gradeAverage;
     }

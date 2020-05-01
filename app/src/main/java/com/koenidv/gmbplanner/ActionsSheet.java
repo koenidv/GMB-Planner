@@ -69,6 +69,8 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         Course courseInherited;
         if (mPreview.getTag(R.id.course) != null)
             courseInherited = resolver.getCourse((String) mPreview.getTag(R.id.course), getContext());
+        else if (getTag() != null)
+            courseInherited = resolver.getCourse(getTag(), getContext());
         else if (mCourseTag == null)
             courseInherited = resolver.getCourse(((TextView) mPreview.findViewById(R.id.courseHiddenTextView)).getText().toString(), getContext());
         else {

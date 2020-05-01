@@ -433,6 +433,8 @@ public class Resolver {
                 return "Hansmann";
             case "Jaz":
                 return "Jarzina";
+            case "Kan":
+                return "Kang";
             case "Ker":
                 return "Kleer";
             case "Kli":

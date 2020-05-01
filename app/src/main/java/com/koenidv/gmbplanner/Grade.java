@@ -6,7 +6,7 @@ import java.util.Date;
 //  Created by koenidv on 30.04.2020.
 public class Grade {
 
-    final static int TYPE_EXAM = 0, TYPE_PARTICIPATION = 1, TYPE_PARTICIPATION_PARTIAL = 2, TYPE_OTHER = 3;
+    final static int TYPE_EXAM = 0, TYPE_PARTICIPATION = 1, TYPE_PARTICIPATION_PARTIAL = 2, TYPE_OTHER = 3, TYPE_COURSE_AVERAGE = -1;
 
     private String name;
     private Date date = Calendar.getInstance().getTime();
@@ -14,6 +14,12 @@ public class Grade {
     private int type;
 
     Grade() {
+    }
+
+    public Grade(String course, Float average) {
+        this.name = course;
+        this.grade = average;
+        this.type = TYPE_COURSE_AVERAGE;
     }
 
     Grade(String name, Float grade, int type) {

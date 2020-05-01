@@ -175,9 +175,9 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 }
 
                 //todo debugging
-                mChangeList.add(new Change("EVA", "Fr 13.3.", "1 - 2", "D-GK-5", "A13", "Kow"));
-                mChangeList.add(new Change("Raum", "Mo 9.3.", "5 - 6", "E-GK-3", "M120", "Asc"));
-                mChangeList.add(new Change("Klausur", "Mo 9.3.", "3 - 4", "PH-LK-1", "E14", "Fgr"));
+                //mChangeList.add(new Change("EVA", "Fr 13.3.", "1 - 2", "D-GK-5", "A13", "Kow"));
+                //mChangeList.add(new Change("Raum", "Mo 9.3.", "5 - 6", "E-GK-3", "M120", "Asc"));
+                //mChangeList.add(new Change("Klausur", "Mo 9.3.", "3 - 4", "PH-LK-1", "E14", "Fgr"));
 
                 // Add all courses that have not yet been seen and add changes to courses
                 // Get all courses
@@ -198,10 +198,11 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     }
 
                     //todo debugging
-                    courses.get("D-GK-5").addGrade(new Grade("Testklausur", 7f, Grade.TYPE_EXAM));
-                    courses.get("M-GK-3").addGrade(new Grade("Testklausur", 13f, Grade.TYPE_EXAM));
-                    courses.get("POWI-LK-1").addGrade(new Grade("EPO", 11f, Grade.TYPE_PARTICIPATION_PARTIAL));
-                    courses.get("INFO-GK-1").addGrade(new Grade("Mitarbeit", 15f, Grade.TYPE_PARTICIPATION));
+                    //courses.get("D-GK-5").addGrade(new Grade("Testklausur", 7f, Grade.TYPE_EXAM));
+                    //courses.get("M-GK-3").addGrade(new Grade("Testklausur", 13f, Grade.TYPE_EXAM));
+                    //courses.get("POWI-LK-1").addGrade(new Grade("EPO", 11f, Grade.TYPE_PARTICIPATION_PARTIAL));
+                    //courses.get("INFO-GK-1").addGrade(new Grade("Mitarbeit", 15f, Grade.TYPE_PARTICIPATION));
+                    //courses.get("KU-GK-3").addGrade(new Grade("Test", 3f, Grade.TYPE_EXAM));
 
                 }
 

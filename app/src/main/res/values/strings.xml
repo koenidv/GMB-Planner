@@ -3,6 +3,7 @@
     <string name="tab_mine">Yours</string>
     <string name="tab_all">Changes</string>
     <string name="tab_tasks">Tasks</string>
+    <string name="tab_grades">Grades</string>
     <string name="nocontent_mine">👨‍🏫\nYour schedule seems to be regular</string>
     <string name="nocontent_mine_nocourses">➕\nAdd your own courses to see them here</string>
     <string name="nocontent_all">✔️\nNo irregularities found</string>
@@ -77,6 +78,21 @@
     <string name="expand_description">Expand / Minify</string>
     <string name="next_changes">Next changes</string>
     <string name="lesson_room">In room %room</string>
+
+    <string name="grade_add">Add grade</string>
+    <string name="grade_type_exam">Exam</string>
+    <string name="grade_type_participation">Participation</string>
+    <string name="grade_type_participation_partial">Partial participation</string>
+    <string name="grade_type_other">Other</string>
+    <string name="grade_name">Name</string>
+    <string name="grade_grade">Grade</string>
+    <string-array name="grade_types">
+        <item>Exam</item>
+        <item>Participation</item>
+        <item>Partial participation</item>
+        <item>Other</item>
+    </string-array>
+    <string name="grade_error">Please check your input</string>
 
     <string name="feedback_subject">[GMB Planner] Feedback</string>
     <string name="feedback_body">\n\nApp version: %app\nAndroid version: %android</string>
@@ -167,5 +183,6 @@
     <item name="period" type="id" />
     <item name="room" type="id" />
     <item name="course" type="id" />
-    <string name="tab_grades">Grades</string>
+    <item name="type" type="id" />
+    <item name="index" type="id" />
 </resources>

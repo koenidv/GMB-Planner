@@ -124,6 +124,19 @@
     <string name="lesson_room">In Raum %room</string>
     <string name="tab_tasks">Aufgaben</string>
     <string name="tab_grades">Noten</string>
+    <string name="grade_add">Note hinzufügen</string>
+    <string name="grade_type_exam">Klausur</string>
+    <string name="grade_type_participation">Mündlich</string>
+    <string name="grade_type_participation_partial">Mündliche Teilleistung</string>
+    <string name="grade_type_other">Anderes</string>
+    <string name="grade_name">Name</string>
+    <string name="grade_grade">Note</string>
+    <string-array name="grade_types">
+        <item>Klausur</item>
+        <item>Mündlich</item>
+        <item>Mündliche Teilleistung</item>
+        <item>Anderes</item>
+    </string-array>
     <string name="course_mug">Museums-Guides</string>
     <string name="course_korean">Koreanisch</string>
     <string name="course_mug_short">M-Guide</string>
@@ -151,4 +164,5 @@
     <string name="last_refreshed_hourly">Innerhalb der letzten Stunde aktualisiert</string>
     <string name="last_refreshed_other">Vor einiger Zeit aktualisiert</string>
     <string name="credentials_redeem_code_prompt">Bitte löse zunächst deinen Zugangscode ein</string>
+    <string name="grade_error">Bitte überprüfe deine Eingabe</string>
 </resources>
