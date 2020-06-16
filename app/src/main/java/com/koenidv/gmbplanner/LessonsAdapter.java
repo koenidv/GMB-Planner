@@ -75,6 +75,7 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
         params.height = (int) resolver.dpToPx(32, context);
         holder.cardView.setLayoutParams(params);
         holder.cardView.setBackground(null);
+        holder.roomTextView.setVisibility(View.GONE);
 
         if (mDataset[position].length > 0) {
             holder.courseHiddenTextView.setText(mDataset[position][0].getCourse());
@@ -97,6 +98,8 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
                     if (position + 2 == mDataset.length) {
                         holder.spacer.setVisibility(View.GONE);
                     }
+                    holder.roomTextView.setVisibility(View.VISIBLE);
+                    holder.roomTextView.setText(thisLesson.getRoom());
                 } else if (position > 0 && mDataset[position - 1].length > 0
                         && Arrays.equals(mDataset[position], mDataset[position - 1])) {
                     // Hide if same as last lesson
@@ -220,13 +223,14 @@ public class LessonsAdapter extends RecyclerView.Adapter<LessonsAdapter.ViewHold
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView courseTextView, courseHiddenTextView;
+        TextView courseTextView, courseHiddenTextView, roomTextView;
         View cardView, rootView, spacer;
 
         ViewHolder(View view) {
             super(view);
             courseTextView = view.findViewById(R.id.courseTextView);
             courseHiddenTextView = view.findViewById(R.id.courseHiddenTextView);
+            roomTextView = view.findViewById(R.id.roomTextView);
             cardView = view.findViewById(R.id.cardView);
             rootView = view.findViewById(R.id.rootView);
             spacer = view.findViewById(R.id.spacer);

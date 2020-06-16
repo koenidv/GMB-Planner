@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 //  Created by koenidv on 15.02.2020.
@@ -46,7 +47,7 @@ public class GradesAdapter extends RecyclerView.Adapter<GradesAdapter.ViewHolder
 
         if (thisGrade.getType() == Grade.TYPE_COURSE_AVERAGE) {
             holder.nameTextView.setText(resolver.resolveCourse(thisGrade.getName(), context));
-            holder.iconImageView.setColorFilter(resolver.resolveCourseColor(thisGrade.getName(), context));
+            holder.iconImageView.setColorFilter(ColorUtils.setAlphaComponent(resolver.resolveCourseColor(thisGrade.getName(), context), 200));
             holder.rootView.setTag(R.id.course, thisGrade.getName());
             if (thisGrade.getGrade() != null && thisGrade.getGrade() < 6) {
                 holder.iconImageView.setImageResource(R.drawable.ic_error);

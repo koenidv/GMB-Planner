@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,14 +42,15 @@ public class GradesFragment extends Fragment {
     private BroadcastReceiver mCourseChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getBooleanExtra("coursesChanged", false))
+            if (intent.getBooleanExtra("coursesChanged", false) && getView() != null)
                 setup();
         }
     };
     private BroadcastReceiver mGradeChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            setup();
+            if (getView() != null)
+                setup();
         }
     };
 
@@ -69,6 +71,7 @@ public class GradesFragment extends Fragment {
         List<Grade> myGrades = new ArrayList<>();
         Float overallAverage = 0f;
         int overallCount = 0;
+        Float totalValue = 0f;
 
         if (courses != null) {
             for (Map.Entry<String, Course> map : courses.entrySet()) {
@@ -76,7 +79,7 @@ public class GradesFragment extends Fragment {
                 if (resolver.isFavorite(map.getKey(), getContext())) {
                     if (map.getValue().getGradeAverage() != null) {
                         donutSet.add(new DonutDataset(resolver.resolveCourse(map.getKey(), getContext()),
-                                resolver.resolveCourseColor(map.getKey(), getContext()),
+                                ColorUtils.setAlphaComponent(resolver.resolveCourseColor(map.getKey(), getContext()), 200),
                                 map.getValue().getGradeAverage()));
 
                         if (map.getKey().contains("LK")) {
@@ -86,6 +89,7 @@ public class GradesFragment extends Fragment {
                             overallAverage += map.getValue().getGradeAverage();
                             overallCount++;
                         }
+                        totalValue += map.getValue().getGradeAverage();
                     }
                     myGrades.add(new Grade(map.getKey(), map.getValue().getGradeAverage()));
                 }
@@ -101,12 +105,14 @@ public class GradesFragment extends Fragment {
             else return Float.compare(o2.getGrade(), o1.getGrade());
         });
 
-        ((DonutProgressView) getView().findViewById(R.id.donut)).setCap(donutSet.size() * 15);
+        ((DonutProgressView) getView().findViewById(R.id.donut)).setCap(totalValue > donutSet.size() * 14 ? totalValue : donutSet.size() * 14);
         ((DonutProgressView) getView().findViewById(R.id.donut)).submitData(donutSet);
 
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(1);
-        ((TextView) getView().findViewById(R.id.averageTextView)).setText(nf.format((17 - overallAverage / overallCount) / 3));
+        if (overallCount > 0)
+            ((TextView) getView().findViewById(R.id.averageTextView)).setText(nf.format((17 - overallAverage / overallCount) / 3));
+        else ((TextView) getView().findViewById(R.id.averageTextView)).setText("");
 
         RecyclerView recycler = getView().findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));

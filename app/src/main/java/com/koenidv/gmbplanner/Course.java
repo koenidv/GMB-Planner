@@ -117,6 +117,7 @@ public class Course {
 
         overallAverage /= overallCounter;
         gradeAverage = overallAverage;
+        if (Float.isNaN(gradeAverage)) gradeAverage = null;
     }
 
     public void addGrade(Grade grade) {
@@ -142,5 +143,9 @@ public class Course {
 
     public Float getGradeAverage() {
         return gradeAverage;
+    }
+
+    public void setGradeAverage(Float mGradeAverage) {
+        gradeAverage = mGradeAverage;
     }
 }

@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -159,6 +161,16 @@ public class EditGradesSheet extends BottomSheetDialogFragment {
             }
         });
 
+        view.findViewById(R.id.moreButton).setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(getContext(), v);
+            popup.setOnMenuItemClickListener(this::onMenuItemClick);
+            popup.inflate(R.menu.delete);
+            popup.show();
+        });
+
+        if (mIndex < 0)
+            view.findViewById(R.id.moreButton).setVisibility(View.GONE);
+
         view.findViewById(R.id.cancelButton).setOnClickListener(v -> dismiss());
 
         saveButton.setOnClickListener(v -> {
@@ -182,4 +194,19 @@ public class EditGradesSheet extends BottomSheetDialogFragment {
                 && !nameText.getText().toString().isEmpty()
                 && !gradeText.getText().toString().isEmpty());
     }
+
+    private boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.action_delete) {
+            //Delete this grade
+            SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+            Map<String, Course> courses = new Gson().fromJson(prefs.getString("courses", ""), ListType.COURSEMAP);
+            courses.get(mCourse).removeGrade(mIndex);
+            prefs.edit().putString("courses", new Gson().toJson(courses)).apply();
+            dismiss();
+            Intent doneIntent = new Intent("gradesRefreshed");
+            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(doneIntent);
+        }
+        return true;
+    }
+
 }

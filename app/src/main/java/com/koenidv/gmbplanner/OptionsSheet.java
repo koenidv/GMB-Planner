@@ -292,6 +292,12 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
+        view.findViewById(R.id.feedbackButton).setOnLongClickListener(v -> {
+            prefs.edit().putBoolean("testing_grades", !prefs.getBoolean("testing_grades", false)).apply();
+            dismiss();
+            return true;
+        });
+
         view.findViewById(R.id.rateButton).setOnClickListener(v -> {
             // Open Play Store to let the user rate the app
             final String appPackageName = getActivity().getPackageName();

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/corona_title" />
+
+    <TextView
+        android:id="@+id/titleEnglishTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/corona_title_english" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/englishToggleGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <Button
+                android:id="@+id/english1Button"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingEnd="32dp"
+                android:text="@string/corona_course_e1" />
+
+            <Button
+                android:id="@+id/english2Button"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingEnd="32dp"
+                android:text="@string/corona_course_e1" />
+
+            <Button
+                android:id="@+id/english3Button"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="128dp"
+                android:layout_height="48dp"
+                android:paddingEnd="32dp"
+                android:text="@string/corona_course_e1" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+    </HorizontalScrollView>
+
+</LinearLayout>

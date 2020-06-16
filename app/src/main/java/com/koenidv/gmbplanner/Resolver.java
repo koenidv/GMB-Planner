@@ -25,6 +25,27 @@ import java.util.Objects;
 //  Created by koenidv on 20.02.2020.
 public class Resolver {
 
+    public boolean isEvenWeek() {
+        Calendar now = Calendar.getInstance();
+        boolean isEvenWeek = now.get(Calendar.WEEK_OF_YEAR) % 2 == 0;
+        if ((now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
+                || now.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+                || now.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) && now.get(Calendar.HOUR_OF_DAY) > 16)
+            isEvenWeek = !isEvenWeek;
+        return isEvenWeek;
+    }
+
+    public String getWeekSuffix() {
+        return getWeekSuffix(false);
+    }
+
+    public String getWeekSuffix(boolean inverted) {
+        if (inverted)
+            return !isEvenWeek() ? "_even" : "_odd";
+        else
+            return isEvenWeek() ? "_even" : "_odd";
+    }
+
     /**
      * Resolves absolute date Strings to relative date Strings
      *
@@ -112,7 +133,7 @@ public class Resolver {
             return "";
         } else if (courseName.startsWith("D-")) {
             name.append(context.getString(R.string.course_german));
-        } else if (courseName.startsWith("E-")) {
+        } else if (courseName.startsWith("E-") || courseName.startsWith("cE")) {
             name.append(context.getString(R.string.course_english));
         } else if (courseName.startsWith("L-")) {
             name.append(context.getString(R.string.course_latin));
@@ -130,15 +151,15 @@ public class Resolver {
             name.append(context.getString(R.string.course_music));
         } else if (courseName.startsWith("M-")) {
             name.append(context.getString(R.string.course_maths));
-        } else if (courseName.startsWith("PH-")) {
+        } else if (courseName.startsWith("PH-") || courseName.startsWith("cPh")) {
             name.append(context.getString(R.string.course_physics));
-        } else if (courseName.startsWith("BIO-")) {
+        } else if (courseName.startsWith("BIO-") || courseName.startsWith("cBio")) {
             name.append(context.getString(R.string.course_biology));
-        } else if (courseName.startsWith("CH-")) {
+        } else if (courseName.startsWith("CH-") || courseName.startsWith("cCh")) {
             name.append(context.getString(R.string.course_chemistry));
         } else if (courseName.startsWith("EK-")) {
             name.append(context.getString(R.string.course_geography));
-        } else if (courseName.startsWith("POWI-")) {
+        } else if (courseName.startsWith("POWI-") || courseName.startsWith("cPoWi")) {
             name.append(context.getString(R.string.course_politics));
         } else if (courseName.startsWith("RKA-")) {
             name.append(context.getString(R.string.course_religion_catholic));
@@ -177,7 +198,11 @@ public class Resolver {
         if (longform) {
             String teacher;
             try {
-                String courseNumber = courseName.substring(courseName.lastIndexOf('-') + 1).substring(0, 1);
+                String courseNumber;
+                if (courseName.startsWith("c"))
+                    courseNumber = courseName.substring(courseName.length() - 1);
+                else
+                    courseNumber = courseName.substring(courseName.lastIndexOf('-') + 1).substring(0, 1);
                 if (TextUtils.isDigitsOnly(courseNumber))
                     course += " " + courseNumber;
                 teacher = resolveTeacher(getCourse(courseName, context).getTeacher());
@@ -204,7 +229,7 @@ public class Resolver {
             return "";
         } else if (courseName.startsWith("D-")) {
             name.append(context.getString(R.string.course_german_short));
-        } else if (courseName.startsWith("E-")) {
+        } else if (courseName.startsWith("E-") || courseName.startsWith("cE")) {
             name.append(context.getString(R.string.course_english_short));
         } else if (courseName.startsWith("L-")) {
             name.append(context.getString(R.string.course_latin_short));
@@ -222,15 +247,15 @@ public class Resolver {
             name.append(context.getString(R.string.course_music_short));
         } else if (courseName.startsWith("M-")) {
             name.append(context.getString(R.string.course_maths_short));
-        } else if (courseName.startsWith("PH-")) {
+        } else if (courseName.startsWith("PH-") || courseName.startsWith("cPh")) {
             name.append(context.getString(R.string.course_physics_short));
-        } else if (courseName.startsWith("BIO-")) {
+        } else if (courseName.startsWith("BIO-") || courseName.startsWith("cBio")) {
             name.append(context.getString(R.string.course_biology_short));
-        } else if (courseName.startsWith("CH-")) {
+        } else if (courseName.startsWith("CH-") || courseName.startsWith("cBio")) {
             name.append(context.getString(R.string.course_chemistry_short));
         } else if (courseName.startsWith("EK-")) {
             name.append(context.getString(R.string.course_geography_short));
-        } else if (courseName.startsWith("POWI-")) {
+        } else if (courseName.startsWith("POWI-") || courseName.startsWith("cPoWi")) {
             name.append(context.getString(R.string.course_politics_short));
         } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-")) {
             name.append(context.getString(R.string.course_religion_short));
@@ -247,7 +272,11 @@ public class Resolver {
         } else if (courseName.startsWith("AG-Nach")) {
             name.append(context.getString(R.string.course_sustain_short));
         } else {
-            name.append(courseName.substring(0, courseName.indexOf('-')));
+            try {
+                name.append(courseName.substring(0, courseName.indexOf('-')));
+            } catch (StringIndexOutOfBoundsException iobe) {
+                name.append(courseName);
+            }
         }
 
         if (courseName.contains("-LK")) {
@@ -292,7 +321,7 @@ public class Resolver {
             return context.getResources().getColor(R.color.spotShadowColor);
         } else if (courseName.startsWith("D-")) {
             return context.getResources().getColor(R.color.course_german);
-        } else if (courseName.startsWith("E-")) {
+        } else if (courseName.startsWith("E-") || courseName.startsWith("cE")) {
             return context.getResources().getColor(R.color.course_english);
         } else if (courseName.startsWith("SPO-")) {
             return context.getResources().getColor(R.color.course_sports);
@@ -310,15 +339,15 @@ public class Resolver {
             return context.getResources().getColor(R.color.course_music);
         } else if (courseName.startsWith("M-")) {
             return context.getResources().getColor(R.color.course_maths);
-        } else if (courseName.startsWith("PH-")) {
+        } else if (courseName.startsWith("PH-") || courseName.startsWith("cPh")) {
             return context.getResources().getColor(R.color.course_physics);
-        } else if (courseName.startsWith("BIO-")) {
+        } else if (courseName.startsWith("BIO-") || courseName.startsWith("cBio")) {
             return context.getResources().getColor(R.color.course_biology);
-        } else if (courseName.startsWith("CH-")) {
+        } else if (courseName.startsWith("CH-") || courseName.startsWith("cCh")) {
             return context.getResources().getColor(R.color.course_chemistry);
         } else if (courseName.startsWith("EK-")) {
             return context.getResources().getColor(R.color.course_geography);
-        } else if (courseName.startsWith("POWI-")) {
+        } else if (courseName.startsWith("POWI-") || courseName.startsWith("cPoWi")) {
             return context.getResources().getColor(R.color.course_politics);
         } else if (courseName.startsWith("RKA-") || courseName.startsWith("REV-") || courseName.startsWith("ETHI-")) {
             return context.getResources().getColor(R.color.course_religion);

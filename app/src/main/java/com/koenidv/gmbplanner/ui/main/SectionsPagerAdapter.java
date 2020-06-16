@@ -18,6 +18,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+    private int mCount = 3;
+
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_mine, R.string.tab_all, R.string.tab_grades};
     private final Context mContext;
@@ -51,7 +53,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return 3;
+        // Show 2 total pages.
+        return mCount;
+    }
+
+    public void setCount(int count) {
+        mCount = count;
     }
 }

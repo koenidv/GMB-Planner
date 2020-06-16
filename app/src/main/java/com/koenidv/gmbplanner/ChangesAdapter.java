@@ -50,6 +50,9 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         Resolver resolver = new Resolver();
 
         if (thisChange.getType() != null) {
+
+            ((View) holder.card.getParent()).setTag(R.id.course, thisChange.getCourse().getCourse());
+
             StringBuilder topString = new StringBuilder(thisChange.getTime() + context.getString(R.string.change_hours));
             StringBuilder centerString = new StringBuilder();
             StringBuilder bottomString = new StringBuilder();
@@ -62,7 +65,11 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (thisChange.getType().equals("EVA") || thisChange.getType().equals("Entfall") || thisChange.getType().equals("Freistellung")) {
                 if (thisChange.getRoomNew().equals("Sek"))
                     topString.append(" • ").append(context.getString(R.string.change_workorders));
-                centerString.append(" ").append(thisChange.getType());
+                if (thisChange.getType().equals("Entfall")) {
+                    centerString.append(context.getString(R.string.change_type_cancelled));
+                } else {
+                    centerString.append(" ").append(thisChange.getType());
+                }
                 if (!thisChange.getRoom().equals(" "))
                     bottomString.append(thisChange.getRoom()).append(" • ");
             if (isFavorite)

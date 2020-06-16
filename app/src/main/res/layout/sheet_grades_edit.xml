@@ -84,6 +84,19 @@
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <ImageButton
+        android:id="@+id/moreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/transparent"
+        android:src="@drawable/ic_more"
+        android:tint="@color/textColor"
+        app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gradeInputLayout" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancelButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -95,7 +108,7 @@
         android:text="@string/cancel"
         android:textColor="@color/tabText"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/moreButton"
         app:layout_constraintTop_toBottomOf="@id/gradeInputLayout" />
 
     <com.google.android.material.button.MaterialButton

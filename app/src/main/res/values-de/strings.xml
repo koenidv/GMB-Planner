@@ -165,4 +165,7 @@
     <string name="last_refreshed_other">Vor einiger Zeit aktualisiert</string>
     <string name="credentials_redeem_code_prompt">Bitte löse zunächst deinen Zugangscode ein</string>
     <string name="grade_error">Bitte überprüfe deine Eingabe</string>
+    <string name="not_now">Später</string>
+    <string name="change_type_cancelled">" entfällt"</string>
+    <string name="suggestion_bad_course">Streng dich heute besonders in %s an!</string>
 </resources>

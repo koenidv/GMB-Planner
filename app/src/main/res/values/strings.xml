@@ -11,6 +11,7 @@
     <string name="save">Save</string>
     <string name="done">Done</string>
     <string name="remove">Remove</string>
+    <string name="not_now">Not now</string>
 
     <string name="menu_option_credentials">Change credentials</string>
     <string name="menu_option_courses">Change your courses</string>
@@ -78,6 +79,7 @@
     <string name="expand_description">Expand / Minify</string>
     <string name="next_changes">Next changes</string>
     <string name="lesson_room">In room %room</string>
+    <string name="change_type_cancelled">" cancelled"</string>
 
     <string name="grade_add">Add grade</string>
     <string name="grade_type_exam">Exam</string>
@@ -185,4 +187,33 @@
     <item name="course" type="id" />
     <item name="type" type="id" />
     <item name="index" type="id" />
+
+
+    <string name="corona_disclaimer" translatable="false">Aktuell können auf dem Vertretungsplan Unstimmigkeiten auftreten</string>
+    <string name="corona_title" translatable="false">Aufgrund der aktuellen Situation wurden einige Kurse neu verteilt. Bitte wähle diese Kurse noch einmal aus.</string>
+    <string name="corona_select_courses" translatable="false">Kurse auswählen</string>
+    <string name="corona_title_english" translatable="false">Englisch</string>
+    <string name="corona_course_e1" translatable="false">Fr. Klie</string>
+    <string name="corona_course_e2" translatable="false">Fr. Hinkel</string>
+    <string name="corona_course_e3" translatable="false">Fr. Ascheidt</string>
+    <string name="corona_title_politics" translatable="false">PoWi</string>
+    <string name="corona_course_powi1" translatable="false">Hr. Esslinger (Mo/Do)</string>
+    <string name="corona_course_powi2" translatable="false">Hr. Esslinger (Mo/Fr)</string>
+    <string name="corona_course_powi3" translatable="false">Ker</string>
+    <string name="corona_course_powi4" translatable="false">Hr. Piniek</string>
+    <string name="corona_title_physics" translatable="false">Physik</string>
+    <string name="corona_course_ph1" translatable="false">Hr. Nicolay</string>
+    <string name="corona_course_ph2" translatable="false">Hr. Makridis</string>
+    <string name="corona_title_biology" translatable="false">Bio</string>
+    <string name="corona_course_bio1" translatable="false">Hr. Pausch</string>
+    <string name="corona_course_bio2" translatable="false">Fr. Wangen</string>
+    <string name="corona_title_chemistry" translatable="false">Chemie</string>
+    <string name="corona_course_ch1" translatable="false">Hr. Pausch</string>
+    <string name="corona_course_ch2" translatable="false">Fr. Cassier</string>
+    <string name="corona_title_hidden" translatable="false">Du scheinst in keinem Grundkurs zu %s zu sein.</string>
+    <string name="corona_even_week" translatable="false">: Gerade Woche</string>
+    <string name="corona_odd_week" translatable="false">: Ungerade Woche</string>
+
+    <string name="suggestion_bad_course">Pay attention to %1$s today!</string>
+
 </resources>

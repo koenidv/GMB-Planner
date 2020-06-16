@@ -32,7 +32,8 @@
                 android:paddingEnd="4dp"
                 android:text="@string/timetable"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:autoSizeTextType="uniform" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/todayRecycler"
@@ -40,6 +41,17 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal" />
+
+            <ImageButton
+                android:id="@+id/switchWeekButton"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/transparent"
+                android:contentDescription="@string/timetable_expand_description"
+                android:src="@drawable/ic_loop"
+                android:tint="@color/infoText"
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/expandButton"
