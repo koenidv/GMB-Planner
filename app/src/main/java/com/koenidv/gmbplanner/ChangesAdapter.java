@@ -120,7 +120,6 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
             if (position == 0 || !thisChange.getDate().equals(mDataset.get(position - 1).getDate())) {
                 holder.dateTextView.setVisibility(View.VISIBLE);
                 holder.setIsRecyclable(false);
-                String lastDate = thisChange.getDate();
             } else {
                 holder.dateTextView.setVisibility(View.GONE);
             }

@@ -84,7 +84,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
         final boolean isChange = mPreview.getId() == R.id.outerCard;
 
         // Timetable
-        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+        Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
 
         if (isChange) {
             // Copy values
@@ -118,7 +118,7 @@ public class ActionsSheet extends BottomSheetDialogFragment {
 
         // Add to timetable if not a favorite course and thus not already added
         if (!resolver.isFavorite(course.getCourse(), getContext())) {
-            Lesson[][][] allTable = (new Gson()).fromJson(prefs.getString("timetableAll" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+            Lesson[][][] allTable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
             for (int day = 0; day <= 4; day++) {
                 for (int period = 0; period < allTable[day].length; period++) {
                     for (Lesson lesson : allTable[day][period]) {

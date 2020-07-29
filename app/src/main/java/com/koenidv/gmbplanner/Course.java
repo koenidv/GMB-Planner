@@ -73,8 +73,8 @@ public class Course {
     }
 
     private void doCalculateGradesAverage() {
-        Float examsAverage = 0f, participationAverage = 0f, participationPartialAverage = 0f, othersAverage = 0f;
-        Float examsCounter = 0f, participationCounter = 0f, participationPartialCounter = 0f, othersCounter = 0f;
+        float examsAverage = 0f, participationAverage = 0f, participationPartialAverage = 0f, othersAverage = 0f;
+        float examsCounter = 0f, participationCounter = 0f, participationPartialCounter = 0f, othersCounter = 0f;
         Date recent_participation = null;
 
         for (Grade thisGrade : grades) {
@@ -106,7 +106,7 @@ public class Course {
         participationAverage /= participationCounter;
         othersAverage /= othersCounter;
 
-        Float overallAverage = 0f;
+        float overallAverage = 0f;
         int overallCounter = 0;
         overallAverage += examsCounter == 0 ? 0 : 50 * examsAverage;
         overallCounter += examsCounter == 0 ? 0 : 50;

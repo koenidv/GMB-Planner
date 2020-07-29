@@ -71,9 +71,13 @@ public class OptionsSheet extends BottomSheetDialogFragment {
             e.printStackTrace();
         }
 
-        String firstname = prefs.getString("realname", "");
-        firstname = firstname.substring(0, firstname.indexOf(" "));
-        greetingTitle = getString(R.string.info_greeting).replace("%name", firstname);
+        try {
+            String firstname = prefs.getString("realname", "");
+            firstname = firstname.substring(0, firstname.indexOf(" "));
+            greetingTitle = getString(R.string.info_greeting).replace("%name", firstname);
+        } catch (StringIndexOutOfBoundsException e) {
+            greetingTitle = getString(R.string.app_name);
+        }
 
         refreshedInfo = getString(R.string.last_refreshed)
                 .replace("%refresh", prefs.getLong("lastRefresh", 0) == 0 ? "..." : timeFormatter.format(prefs.getLong("lastRefresh", 0)))

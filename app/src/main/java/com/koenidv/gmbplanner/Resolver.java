@@ -25,27 +25,6 @@ import java.util.Objects;
 //  Created by koenidv on 20.02.2020.
 public class Resolver {
 
-    public boolean isEvenWeek() {
-        Calendar now = Calendar.getInstance();
-        boolean isEvenWeek = now.get(Calendar.WEEK_OF_YEAR) % 2 == 0;
-        if ((now.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY
-                || now.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
-                || now.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) && now.get(Calendar.HOUR_OF_DAY) > 16)
-            isEvenWeek = !isEvenWeek;
-        return isEvenWeek;
-    }
-
-    public String getWeekSuffix() {
-        return getWeekSuffix(false);
-    }
-
-    public String getWeekSuffix(boolean inverted) {
-        if (inverted)
-            return !isEvenWeek() ? "_even" : "_odd";
-        else
-            return isEvenWeek() ? "_even" : "_odd";
-    }
-
     /**
      * Resolves absolute date Strings to relative date Strings
      *
@@ -251,7 +230,7 @@ public class Resolver {
             name.append(context.getString(R.string.course_physics_short));
         } else if (courseName.startsWith("BIO-") || courseName.startsWith("cBio")) {
             name.append(context.getString(R.string.course_biology_short));
-        } else if (courseName.startsWith("CH-") || courseName.startsWith("cBio")) {
+        } else if (courseName.startsWith("CH-") || courseName.startsWith("cCh")) {
             name.append(context.getString(R.string.course_chemistry_short));
         } else if (courseName.startsWith("EK-")) {
             name.append(context.getString(R.string.course_geography_short));

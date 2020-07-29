@@ -72,7 +72,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.sheet_courses, container, false);
         final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
 
-        timetable = (new Gson()).fromJson(prefs.getString("timetableMine" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+                timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
         if (timetable == null) timetable = new Lesson[5][][];
         try {
             myCourses = new ArrayList<>(Arrays.asList(gson.fromJson(prefs.getString("myCourses", ""), String[].class)));
@@ -87,8 +87,6 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         final ImageButton expandButton = view.findViewById(R.id.expandButton);
 
         ((LinearLayout) view.findViewById(R.id.compactLayout)).setLayoutTransition(null);
-
-        ((TextView) view.findViewById(R.id.titleTextView)).append(new Resolver().isEvenWeek() ? getString(R.string.corona_even_week) : getString(R.string.corona_odd_week));
 
         titleTextView.setText(getString(R.string.courses_edit_timetable));
         titleTextView.setVisibility(View.VISIBLE);
@@ -267,7 +265,7 @@ public class CoursesSheet extends BottomSheetDialogFragment {
         SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         Gson gson = new Gson();
 
-        Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+        Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
         ArrayList<Lesson[]> dayTable = new ArrayList<>();
         ArrayList<Lesson> periodTable = new ArrayList<>();
 

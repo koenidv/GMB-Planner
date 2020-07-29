@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -180,22 +179,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Post-process update
-        if (prefs.getString("myCourses", "").length() > 4 && !prefs.getBoolean("selected_corona_courses", false)) {
+        if (prefs.getInt("lastVersion", 123) < 142) {
             prefs.edit()
+                    .putString("timetableAll_even", "")
+                    .putString("timetableMine_odd", "")
+                    .putString("timetableAll_even", "")
+                    .putString("timetableMine_odd", "")
                     .putLong("lastCourseRefresh", 0)
-                    .putLong("lastTimetableRefresh", 0).apply();
-            if (!prefs.getString("name", "").isEmpty())
+                    .putLong("lastTimetableRefresh", 0)
+                    .putInt("lastVersion", 142)
+                    .apply();
+            if (!prefs.getString("pass", "").isEmpty())
                 new ChangesManager().refreshChanges(getApplicationContext());
-
-            MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(this, R.style.Theme_Design_BottomSheetDialog);
-            dialog.setMessage(R.string.corona_title)
-                    .setPositiveButton(R.string.corona_select_courses, (dialog1, which) -> {
-                        coursesSheet = new CoursesSheet();
-                        coursesSheet.show(getSupportFragmentManager(), "coursesSheet");
-                    })
-                    .setNegativeButton(R.string.not_now, (dialog1, which) -> dialog1.cancel())
-                    .setCancelable(false)
-                    .show();
         }
 
         super.onCreate(savedInstanceState);
@@ -373,40 +368,36 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         Resolver resolver = new Resolver();
 
-        for (int i = 0; i <= 1; i++) {
-            String suffix = i == 0 ? "_odd" : "_even";
+        Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
+        Lesson[][][] myTable = new Lesson[5][][];
+        ArrayList<Lesson[]> dayTable = new ArrayList<>();
+        ArrayList<Lesson> periodTable = new ArrayList<>();
 
-            Lesson[][][] allTable = gson.fromJson(prefs.getString("timetableAll" + suffix, ""), Lesson[][][].class);
-            Lesson[][][] myTable = new Lesson[5][][];
-            ArrayList<Lesson[]> dayTable = new ArrayList<>();
-            ArrayList<Lesson> periodTable = new ArrayList<>();
-
-            if (allTable == null) {
-                // Probably q34 - no data yet
-                prefs.edit().putString("timetableMine" + suffix, "").apply();
-                LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(new Intent("changesRefreshed"));
-                return;
-            }
-
-            for (int day = 0; day <= 4; day++) {
-                for (int period = 0; period < allTable[day].length; period++) {
-                    for (Lesson lesson : allTable[day][period]) {
-                        if (resolver.isFavorite(lesson.getCourse(), getApplicationContext())) {
-                            periodTable.add(lesson);
-                        }
-                    }
-                    dayTable.add(periodTable.toArray(new Lesson[0]));
-                    periodTable.clear();
-                }
-                myTable[day] = dayTable.toArray(new Lesson[0][]);
-                dayTable.clear();
-            }
-
-            prefs.edit().putString("timetableMine" + suffix, gson.toJson(myTable)).apply();
-
-            Intent intent = new Intent("changesRefreshed");
-            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
-
+        if (allTable == null) {
+            // Probably q34 - no data yet
+            prefs.edit().putString("timetableMine", "").apply();
+            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(new Intent("changesRefreshed"));
+            return;
         }
+
+        for (int day = 0; day <= 4; day++) {
+            for (int period = 0; period < allTable[day].length; period++) {
+                for (Lesson lesson : allTable[day][period]) {
+                    if (resolver.isFavorite(lesson.getCourse(), getApplicationContext())) {
+                        periodTable.add(lesson);
+                    }
+                }
+                dayTable.add(periodTable.toArray(new Lesson[0]));
+                periodTable.clear();
+            }
+            myTable[day] = dayTable.toArray(new Lesson[0][]);
+            dayTable.clear();
+        }
+
+        prefs.edit().putString("timetableMine", gson.toJson(myTable)).apply();
+
+        Intent intent = new Intent("changesRefreshed");
+        LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
+
     }
 }

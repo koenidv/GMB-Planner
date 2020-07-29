@@ -53,7 +53,6 @@ public class MyChangesFragment extends Fragment {
     private Lesson[][][] timetable;
     private int weekDay;
     private View mView;
-    private Boolean weekIsInverted = false;
 
     // Refresh the list of changes whenever the broadcast "changesRefreshed" is received
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -113,14 +112,11 @@ public class MyChangesFragment extends Fragment {
         };
 
         // Get filtered timetable
-        timetable = (new Gson()).fromJson(prefs.getString("timetableMine" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+        timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
         if (isTimetableEmpty(timetable))
             timetable = new Lesson[5][0][0];
         else
             view.findViewById(R.id.card_timetable).setVisibility(View.VISIBLE);
-
-        ((TextView) view.findViewById(R.id.titleTextView)).append(new Resolver().isEvenWeek() ? getString(R.string.corona_even_week) : getString(R.string.corona_odd_week));
-        view.findViewById(R.id.switchWeekButton).setVisibility(View.VISIBLE);
 
         // Set up 5 recyclerviews, one for each day
         for (int i = 0; i < dayRecyclers.length; i++) {
@@ -163,20 +159,6 @@ public class MyChangesFragment extends Fragment {
         };
         view.findViewById(R.id.compactLayout).setOnClickListener(expandListener);
         expandButton.setOnClickListener(expandListener);
-
-        //Switch AB week
-        view.findViewById(R.id.switchWeekButton).setOnClickListener(v -> {
-            weekIsInverted = !weekIsInverted;
-            timetable = (new Gson()).fromJson(prefs.getString("timetableMine" + new Resolver().getWeekSuffix(weekIsInverted), ""), Lesson[][][].class);
-            for (int i = 0; i < dayRecyclers.length; i++) {
-                RecyclerView recycler = dayRecyclers[i];
-                ((LessonsAdapter) recycler.getAdapter()).setDataset(timetable[i]);
-            }
-            boolean isEvenWeek = new Resolver().isEvenWeek();
-            if (weekIsInverted) isEvenWeek = !isEvenWeek;
-            titleTextView.setText(R.string.timetable);
-            titleTextView.append(isEvenWeek ? getString(R.string.corona_even_week) : getString(R.string.corona_odd_week));
-        });
 
         // Enable transition for expanding the timetable
         ((ViewGroup) todayRecycler.getParent()).getLayoutTransition()
@@ -228,6 +210,7 @@ public class MyChangesFragment extends Fragment {
         LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(mFailedReceiver);
         super.onDestroy();
     }
+
 
     @SuppressLint("SetTextI18n")
     private void refreshList() {
@@ -299,7 +282,7 @@ public class MyChangesFragment extends Fragment {
 
         try {
             // Get filtered timetable
-            timetable = (new Gson()).fromJson(prefs.getString("timetableMine" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+            timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
 
             // Hide card if timetable is empty
             if (isTimetableEmpty(timetable))

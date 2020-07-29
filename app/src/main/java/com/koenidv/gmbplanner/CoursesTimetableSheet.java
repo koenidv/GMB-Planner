@@ -51,7 +51,7 @@ public class CoursesTimetableSheet extends BottomSheetDialogFragment {
         final SharedPreferences prefs = Objects.requireNonNull(getActivity()).getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
 
         // Show a recyclerview containing all courses for the selected time
-        Lesson[][][] allTable = (new Gson()).fromJson(prefs.getString("timetableAll" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+        Lesson[][][] allTable = (new Gson()).fromJson(prefs.getString("timetableAll", ""), Lesson[][][].class);
         List<String> newCourses = new ArrayList<>();
 
         for (Lesson lesson : allTable[mDay][mPeriod]) {

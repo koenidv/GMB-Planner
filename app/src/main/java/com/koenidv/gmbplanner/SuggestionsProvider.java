@@ -12,6 +12,8 @@ public class SuggestionsProvider {
 
     public String provideSuggestion(Context context) {
 
+        if (context == null) return null;
+
         // Simply returns the worst graded subject on that day if it's before 13h on a weekday at this point in time
 
         SharedPreferences prefs = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
@@ -20,7 +22,7 @@ public class SuggestionsProvider {
         if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 13 && weekDay >= 0 && weekDay <= 4) {
 
             // Get filtered timetable for today
-            Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine" + new Resolver().getWeekSuffix(), ""), Lesson[][][].class);
+            Lesson[][][] timetable = (new Gson()).fromJson(prefs.getString("timetableMine", ""), Lesson[][][].class);
             Lesson[][] today = timetable[weekDay];
 
             Float worstGrade = null;

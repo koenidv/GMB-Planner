@@ -276,8 +276,8 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                     }.execute();
                 }
 
-                // Get timetable for the first time or after 8 weeks
-                if (prefs.getString("timetableAll_even", "").length() < 10 || Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastTimetableRefresh", 0) > /*4838400L*/ 432000L * 1000) {
+                // Get timetable for the first time or after 5 days (//8weeks)
+                if (prefs.getString("timetableAll", "").length() < 10 || Calendar.getInstance().getTimeInMillis() - prefs.getLong("lastTimetableRefresh", 0) > /*4838400L*/ 432000L * 1000) {
                     // Get timetable from koenidv.de
                     final String finalGrade = grade;
                     // Ignore first refresh broadcast, as this request will still be still running
@@ -289,24 +289,16 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                         protected String doInBackground(String... mStrings) {
                             // Network request needs to be async
                             Request request = new Request.Builder()
-                                    /*.url(context.getString(R.string.url_timetable).replace("%grade", finalGrade.toLowerCase()))*/
-                                    .url("https://koenidv.de/gmbplanner/timetable_q12_corona.json")
+                                    .url(context.getString(R.string.url_timetable).replace("%grade", finalGrade.toLowerCase()))
                                     .header("User-Agent", "GMB Planner")
                                     .build();
                             try (Response response = client.newCall(request).execute()) {
                                 String responseString = Objects.requireNonNull(response.body()).string();
                                 // Remove newlines so that gson can parse the data
                                 responseString = responseString.replace("\n", "");
-                                Lesson[][][][] lessons = gson.fromJson(responseString, Lesson[][][][].class);
+                                Lesson[][][] lessons = gson.fromJson(responseString, Lesson[][][].class);
 
-                                /*
                                 prefsEdit.putString("timetableAll", gson.toJson(lessons))
-                                        .putLong("lastTimetableRefresh", Calendar.getInstance().getTimeInMillis())
-                                        .commit();
-                                 */
-
-                                prefsEdit.putString("timetableAll_odd", gson.toJson(lessons[0]))
-                                        .putString("timetableAll_even", gson.toJson(lessons[1]))
                                         .putLong("lastTimetableRefresh", Calendar.getInstance().getTimeInMillis())
                                         .commit();
 

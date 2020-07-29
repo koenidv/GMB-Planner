@@ -151,13 +151,15 @@ public class EditGradesSheet extends BottomSheetDialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty() && Float.parseFloat(s.toString()) <= 15) {
-                    thisGrade.setGrade(Float.parseFloat(s.toString()));
-                    gradeLayout.setErrorEnabled(false);
-                } else if (!s.toString().isEmpty()) {
-                    gradeLayout.setErrorEnabled(true);
+                if (!s.toString().equals(".")) {
+                    if (!s.toString().isEmpty() && Float.parseFloat(s.toString()) <= 15) {
+                        thisGrade.setGrade(Float.parseFloat(s.toString()));
+                        gradeLayout.setErrorEnabled(false);
+                    } else if (!s.toString().isEmpty()) {
+                        gradeLayout.setErrorEnabled(true);
+                    }
+                    checkInputValid();
                 }
-                checkInputValid();
             }
         });
 
