@@ -31,7 +31,8 @@ public class SuggestionsProvider {
 
             for (Lesson[] lesson : today) {
                 for (Lesson thisLesson : lesson) {
-                    if (worstGrade == null || resolver.getCourse(thisLesson.getCourse(), context).getGradeAverage() < worstGrade) {
+                    if ((worstGrade == null && resolver.getCourse(thisLesson.getCourse(), context).getGradeAverage() != null)
+                            || (worstGrade != null && resolver.getCourse(thisLesson.getCourse(), context).getGradeAverage() < worstGrade)) {
                         worstGrade = resolver.getCourse(thisLesson.getCourse(), context).getGradeAverage();
                         worstCourse = thisLesson.getCourse();
                     }
