@@ -46,11 +46,6 @@ public class AllChangesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mView = view;
         refreshList();
-        try {
-            view.findViewById(R.id.disclaimerTextView).setVisibility(View.VISIBLE);
-        } catch (NullPointerException ignored) {
-
-        }
     }
 
     @Override

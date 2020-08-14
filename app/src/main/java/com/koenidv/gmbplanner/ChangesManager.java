@@ -175,9 +175,15 @@ public class ChangesManager extends AsyncTask<String, String, String> {
                 }
 
                 //todo debugging
-                //mChangeList.add(new Change("EVA", "Fr 13.3.", "1 - 2", "D-GK-5", "A13", "Kow"));
-                //mChangeList.add(new Change("Raum", "Mo 9.3.", "5 - 6", "E-GK-3", "M120", "Asc"));
-                //mChangeList.add(new Change("Klausur", "Mo 9.3.", "3 - 4", "PH-LK-1", "E14", "Fgr"));
+
+                //mChangeList.add(new Change("Raum", "Mi 27.7.", "5 - 6", "D-GK-4", "M120", "Sha", "B12"));
+                //mChangeList.add(new Change("EVA", "Mi 27.7.", "5 - 6", "BIO-LK-1", "M120", "Gil", "M120"));
+                //mChangeList.add(new Change("Klausur", "Do 30.7.", "3 - 4", "PH-LK-1", "E14", "Fgr"));
+                //mChangeList.add(new Change("Klausur", "Do 30.7.", "3 - 4", "CH-LK-1", "D24", "Cas"));
+                //mChangeList.add(new Change("EVA", "Fr 31.7.", "1 - 2", "D-GK-2", "M119", "Tre", "M113"));
+                //mChangeList.add(new Change("EVA", "Fr 31.7.", "5 - 6", "E-GK-3", "M113", "Asc"));
+                //mmChangeList.add(new Change("Raum", "Fr 31.7.", "5 - 6", "CH-GK-1", "D24", "Zir", "D12"));
+
 
                 // Add all courses that have not yet been seen and add changes to courses
                 // Get all courses

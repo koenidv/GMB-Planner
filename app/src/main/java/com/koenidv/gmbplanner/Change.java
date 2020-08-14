@@ -91,6 +91,23 @@ public class Change {
         this.teacherNew = teacher;
     }
 
+    Change(String type, String date, String time, String course, String room, String teacher, String roomNew) {
+        this.type = type;
+        this.date = date;
+        this.time = time;
+        this.course = course;
+        this.room = room;
+        this.teacher = teacher;
+
+        this.courseChanged = false;
+        this.roomChanged = !room.equals(roomNew);
+        this.teacherChanged = false;
+
+        this.courseNew = course;
+        this.roomNew = roomNew;
+        this.teacherNew = teacher;
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         try {

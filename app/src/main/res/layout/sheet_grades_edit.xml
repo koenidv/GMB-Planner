@@ -91,7 +91,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/transparent"
-        android:src="@drawable/ic_more"
+        android:src="@drawable/ic_delete"
         android:tint="@color/textColor"
         app:layout_constraintBottom_toBottomOf="@+id/saveButton"
         app:layout_constraintStart_toStartOf="parent"

@@ -112,7 +112,7 @@ public class Course {
         overallCounter += examsCounter == 0 ? 0 : 50;
         overallAverage += participationCounter == 0 ? 0 : 50 * participationAverage;
         overallCounter += participationCounter == 0 ? 0 : 50;
-        overallAverage += othersCounter == 0 ? 0 : 50 * othersAverage;
+        overallAverage += othersCounter == 0 ? 0 : 20 * othersAverage;
         overallCounter += othersCounter == 0 ? 0 : 20;
 
         overallAverage /= overallCounter;
